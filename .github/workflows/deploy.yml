@@ -32,6 +32,8 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # URL pública del ng-agent (variable del repo; vacía = widget oculto)
+          NEXT_PUBLIC_AGENT_URL: ${{ vars.NEXT_PUBLIC_AGENT_URL }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

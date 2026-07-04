@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ChatWidget from "@/components/ui/ChatWidget";
 import Hero from "@/components/sections/Hero";
 import Evolution from "@/components/sections/Evolution";
 import Services from "@/components/sections/Services";
@@ -49,6 +50,7 @@ export default function Home() {
         <FinalCTA />
       </main>
       <Footer />
+      <ChatWidget />
     </>
   );
 }
