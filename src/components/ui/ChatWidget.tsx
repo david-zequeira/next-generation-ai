@@ -36,6 +36,13 @@ export default function ChatWidget() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 
+  // El CTA final puede abrir el chat ("o pregúntale a nuestra IA ahora mismo")
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("ng:open-chat", onOpen);
+    return () => window.removeEventListener("ng:open-chat", onOpen);
+  }, []);
+
   if (!AGENT_URL) return null;
 
   // Mensaje de bienvenida en el idioma activo (solo si aún no hay conversación)

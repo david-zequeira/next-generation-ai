@@ -145,12 +145,19 @@ const en = {
       { quote: "Every board meeting now starts with numbers their agents produced. That's how deep it goes.", name: "Isabelle Fournier", role: "Managing Partner · Verne & Co" },
     ],
   },
+  bridges: {
+    era: "Every era rewards those who move first.",
+    proof: "This is not a vision. It's already running.",
+    leap: "The future doesn't require a leap. Just a first call.",
+  },
   finalCta: {
     eyebrow: "The Future Is Already Here",
+    arrival: "You've just seen the future.",
     titleA: "Ready for the",
     titleB: "Next Generation?",
     sub: "One conversation is enough to see what your company looks like running on intelligence.",
     cta: "Book a Strategy Call",
+    orChat: "or ask our AI right now",
     note: "hello@nextgeneration.ai · Response within 24 hours",
   },
   footer: {
@@ -320,12 +327,19 @@ const es: typeof en = {
       { quote: "Cada consejo de administración empieza ahora con números producidos por sus agentes. Así de profundo llega.", name: "Isabelle Fournier", role: "Managing Partner · Verne & Co" },
     ],
   },
+  bridges: {
+    era: "Cada era premia a quienes se mueven primero.",
+    proof: "Esto no es una visión. Ya está funcionando.",
+    leap: "El futuro no exige un salto. Solo una primera llamada.",
+  },
   finalCta: {
     eyebrow: "El futuro ya está aquí",
+    arrival: "Acabas de ver el futuro.",
     titleA: "¿Listo para la",
     titleB: "Nueva Generación?",
     sub: "Una conversación basta para ver cómo se ve tu empresa funcionando sobre inteligencia.",
     cta: "Reserva una llamada estratégica",
+    orChat: "o pregúntale a nuestra IA ahora mismo",
     note: "hello@nextgeneration.ai · Respuesta en menos de 24 h",
   },
   footer: {

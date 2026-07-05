@@ -53,6 +53,16 @@ export default function FinalCTA() {
         className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 py-32 text-center"
         key={locale}
       >
+        {/* Reconocimiento del viaje: el visitante ya lo ha visto todo */}
+        <motion.p
+          initial={{ opacity: 0, filter: "blur(8px)" }}
+          whileInView={{ opacity: 1, filter: "blur(0px)" }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          className="text-gradient-dim mb-6 font-display text-[clamp(1.1rem,2vw,1.5rem)] font-medium tracking-tight"
+        >
+          {t.arrival}
+        </motion.p>
         <p className="eyebrow mb-8">{t.eyebrow}</p>
         <TextReveal
           text={t.titleA}
@@ -88,6 +98,23 @@ export default function FinalCTA() {
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </MagneticButton>
         </motion.div>
+        {/* Segundo permiso: la demo está a un clic — el chat ES el producto */}
+        {process.env.NEXT_PUBLIC_AGENT_URL && (
+          <motion.button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("ng:open-chat"))}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, delay: 1.2 }}
+            className="group mt-5 cursor-pointer text-sm text-mist transition-colors duration-300 hover:text-neon"
+          >
+            <span className="text-pulse/80">{"//"} </span>
+            <span className="underline decoration-mist/30 underline-offset-4 transition-colors duration-300 group-hover:decoration-neon/60">
+              {t.orChat}
+            </span>
+          </motion.button>
+        )}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

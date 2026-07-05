@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
 import SectionRail from "@/components/ui/SectionRail";
+import Bridge from "@/components/ui/Bridge";
 import Hero from "@/components/sections/Hero";
 import Evolution from "@/components/sections/Evolution";
 import Services from "@/components/sections/Services";
@@ -42,10 +43,13 @@ export default function Home() {
       <main>
         <Hero />
         <Evolution />
+        <Bridge id="era" />
         <Services />
         <Ecosystem />
+        <Bridge id="proof" />
         <CaseStudies />
         <Transformation />
+        <Bridge id="leap" />
         <Process />
         <Technology />
         <Testimonials />
