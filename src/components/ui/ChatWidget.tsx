@@ -43,6 +43,17 @@ export default function ChatWidget() {
     return () => window.removeEventListener("ng:open-chat", onOpen);
   }, []);
 
+  // Calentamiento: el plan gratuito de Render duerme el backend; un ping
+  // temprano lo despierta mientras el visitante navega, y el primer mensaje
+  // del chat responde al instante en vez de tardar ~40 s.
+  useEffect(() => {
+    if (!AGENT_URL) return;
+    const t = setTimeout(() => {
+      fetch(`${AGENT_URL}/api/health`).catch(() => {});
+    }, 2500);
+    return () => clearTimeout(t);
+  }, []);
+
   if (!AGENT_URL) return null;
 
   // Mensaje de bienvenida en el idioma activo (solo si aún no hay conversación)

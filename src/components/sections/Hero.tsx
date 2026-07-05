@@ -8,7 +8,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
@@ -36,6 +36,26 @@ export default function Hero() {
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "38%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
+
+  // Rendimiento percibido: el póster pinta al instante y el vídeo funde encima;
+  // el núcleo 3D (Three.js) se monta cuando el hilo principal queda libre.
+  const [videoReady, setVideoReady] = useState(false);
+  const [showCore, setShowCore] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Si el vídeo ya estaba cargado antes de hidratar (caché), el evento
+  // loadeddata nunca llega a React: comprobamos el estado al montar.
+  useEffect(() => {
+    if ((videoRef.current?.readyState ?? 0) >= 2) setVideoReady(true);
+  }, []);
+
+  useEffect(() => {
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+    };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => setShowCore(true), { timeout: 1500 });
+    else setTimeout(() => setShowCore(true), 900);
+  }, []);
 
   // Parallax del titular: se mueve suavemente al contrario que el núcleo
   const mx = useMotionValue(0);
@@ -73,14 +93,26 @@ export default function Hero() {
         transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
         className="absolute inset-0"
       >
+        {/* Póster: primer frame como imagen — LCP instantáneo mientras llega el vídeo */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero-poster.jpg`}
+          alt=""
+          aria-hidden
+          className="h-full w-full object-cover opacity-55"
+        />
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
           aria-hidden
-          className="h-full w-full object-cover opacity-55"
+          onLoadedData={() => setVideoReady(true)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
+            videoReady ? "opacity-55" : "opacity-0"
+          }`}
         >
           <source
             src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero.mp4`}
@@ -107,7 +139,7 @@ export default function Hero() {
       />
 
       {/* Núcleo 3D — se disuelve en partículas conforme el visitante avanza */}
-      <AICore className="z-10 opacity-90" dissolve={scrollYProgress} />
+      {showCore && <AICore className="z-10 opacity-90" dissolve={scrollYProgress} />}
 
       {/* Marcas de esquina — detalle de composición propio */}
       <motion.div
