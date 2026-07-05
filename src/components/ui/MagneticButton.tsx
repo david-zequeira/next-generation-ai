@@ -42,9 +42,10 @@ export default function MagneticButton({
   };
 
   const baseClasses = cn(
-    "group relative inline-flex min-h-[52px] cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-full px-8 py-3.5 font-display text-sm font-semibold tracking-wide transition-colors duration-300",
+    "group relative inline-flex min-h-[52px] cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-full px-8 py-3.5 font-display text-sm font-semibold tracking-wide transition-[background-color,box-shadow] duration-300",
+    // Sombra en dos capas: contacto (ambiente oscuro) + emisión (glow) — luz física
     variant === "primary"
-      ? "bg-electric text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.8)] hover:bg-[#3d78ff] hover:shadow-[0_0_60px_-6px_rgba(46,107,255,1)]"
+      ? "bg-electric text-white shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7),0_0_40px_-8px_rgba(46,107,255,0.8)] hover:bg-[#3d78ff] hover:shadow-[0_14px_32px_-14px_rgba(0,0,0,0.7),0_0_60px_-6px_rgba(46,107,255,1)]"
       : "glass text-frost hover:border-[rgba(148,170,255,0.35)] hover:bg-[rgba(30,44,90,0.5)]",
     className
   );
@@ -69,6 +70,8 @@ export default function MagneticButton({
       onMouseMove={onMouseMove}
       onMouseLeave={reset}
       style={{ x: springX, y: springY }}
+      whileTap={{ scale: 0.965 }}
+      transition={{ type: "spring", stiffness: 500, damping: 22 }}
       className="inline-block"
     >
       {href ? (

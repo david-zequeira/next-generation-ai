@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { MotionConfig } from "framer-motion";
 import { dictionaries, type Dict, type Locale } from "./dictionaries";
 
 type LocaleContextValue = {
@@ -51,7 +52,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale, dict: dictionaries[locale] }}>
-      {children}
+      {/* reducedMotion="user": Framer desactiva transforms animados si el SO lo pide */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </LocaleContext.Provider>
   );
 }

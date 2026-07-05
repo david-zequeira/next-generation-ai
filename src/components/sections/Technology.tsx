@@ -48,7 +48,7 @@ export default function Technology() {
   const t = dict.technology;
 
   return (
-    <section className="relative overflow-hidden bg-abyss py-32 md:py-40">
+    <section className="relative overflow-hidden bg-abyss py-32 md:py-44">
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-void to-transparent"
@@ -73,7 +73,7 @@ export default function Technology() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.3 }}
-          className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist"
+          className="mx-auto mt-6 max-w-xl text-pretty text-base leading-relaxed text-mist"
         >
           {t.sub}
         </motion.p>

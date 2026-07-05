@@ -12,16 +12,20 @@ import { useDict } from "@/i18n/LocaleContext";
 function Word({
   progress,
   range,
+  last,
   children,
 }: {
   progress: MotionValue<number>;
   range: [number, number];
+  last: boolean;
   children: string;
 }) {
   const opacity = useTransform(progress, range, [0.13, 1]);
   return (
     <motion.span style={{ opacity }} className="inline-block">
-      {children}&nbsp;
+      {children}
+      {/* sin espacio tras la última palabra: el bloque queda ópticamente centrado */}
+      {last ? "" : " "}
     </motion.span>
   );
 }
@@ -54,6 +58,7 @@ export default function Bridge({ id }: { id: "era" | "proof" | "leap" }) {
             key={`${id}-${i}`}
             progress={scrollYProgress}
             range={[i / words.length, (i + 1) / words.length]}
+            last={i === words.length - 1}
           >
             {w}
           </Word>

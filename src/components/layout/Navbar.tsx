@@ -82,7 +82,7 @@ export default function Navbar() {
             <span className="hidden md:inline-flex">{langButton}</span>
             <a
               href="#contact"
-              className="group hidden cursor-pointer items-center gap-1.5 rounded-full bg-electric px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_0_28px_-8px_rgba(46,107,255,0.9)] transition-all duration-300 hover:bg-[#3d78ff] hover:shadow-[0_0_38px_-6px_rgba(46,107,255,1)] md:inline-flex"
+              className="group hidden cursor-pointer items-center gap-1.5 rounded-full bg-electric px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_6px_18px_-10px_rgba(0,0,0,0.7),0_0_28px_-8px_rgba(46,107,255,0.9)] transition-all duration-300 hover:bg-[#3d78ff] hover:shadow-[0_8px_22px_-10px_rgba(0,0,0,0.7),0_0_38px_-6px_rgba(46,107,255,1)] active:scale-[0.97] md:inline-flex"
             >
               {t.cta}
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -94,7 +94,11 @@ export default function Navbar() {
               onClick={() => setOpen((v) => !v)}
               className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-frost transition-colors hover:bg-white/5 md:hidden"
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {open ? (
+                <X className="h-5 w-5" strokeWidth={1.8} />
+              ) : (
+                <Menu className="h-5 w-5" strokeWidth={1.8} />
+              )}
             </button>
           </div>
         </nav>

@@ -8,6 +8,7 @@ const en = {
     ariaOpen: "Open menu",
     ariaClose: "Close menu",
     ariaLang: "Cambiar a español",
+    railAria: "Chapters",
   },
   hero: {
     eyebrow: "Next Generation AI",
@@ -190,6 +191,7 @@ const es: typeof en = {
     ariaOpen: "Abrir menú",
     ariaClose: "Cerrar menú",
     ariaLang: "Switch to English",
+    railAria: "Capítulos",
   },
   hero: {
     eyebrow: "Next Generation AI",

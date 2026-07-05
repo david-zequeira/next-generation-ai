@@ -63,7 +63,7 @@ export default function Ecosystem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.3 }}
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist md:text-lg"
+            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist md:text-lg text-pretty"
           >
             {t.sub}
           </motion.p>

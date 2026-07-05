@@ -82,9 +82,13 @@ export default function ChatWidget() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed bottom-5 right-5 z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-electric text-white shadow-[0_0_40px_-6px_rgba(46,107,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(46,107,255,1)]"
+        className="fixed bottom-5 right-5 z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-electric text-white shadow-[0_0_40px_-6px_rgba(46,107,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(46,107,255,1)] active:scale-95"
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? (
+          <X className="h-6 w-6" strokeWidth={1.8} />
+        ) : (
+          <MessageCircle className="h-6 w-6" strokeWidth={1.8} />
+        )}
         {!open && (
           <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-neon animate-pulse-glow" />
         )}
@@ -169,9 +173,9 @@ export default function ChatWidget() {
                 type="submit"
                 aria-label={t.ariaSend}
                 disabled={busy || !input.trim()}
-                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-electric text-white transition-all duration-200 hover:bg-[#3d78ff] disabled:cursor-default disabled:opacity-40"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-electric text-white transition-all duration-200 hover:bg-[#3d78ff] active:scale-90 disabled:cursor-default disabled:opacity-40"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-4 w-4" strokeWidth={1.8} />
               </button>
             </form>
           </motion.div>

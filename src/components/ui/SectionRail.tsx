@@ -38,7 +38,7 @@ export default function SectionRail() {
 
   return (
     <motion.nav
-      aria-label="Chapters"
+      aria-label={dict.nav.railAria}
       initial={{ opacity: 0, x: 16 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 2.8, duration: 1 }}
