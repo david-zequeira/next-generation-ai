@@ -7,14 +7,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-
-const STAGES = [
-  { label: "Manual Business", sub: "People doing everything by hand." },
-  { label: "Automation", sub: "Rules take over the repetitive." },
-  { label: "AI", sub: "Systems that understand and decide." },
-  { label: "Autonomous Company", sub: "Operations that run themselves." },
-  { label: "Next Generation Business", sub: "Where we take you." },
-];
+import { useDict } from "@/i18n/LocaleContext";
 
 /**
  * Section 2 — "The Future of Business".
@@ -26,6 +19,8 @@ const STAGES = [
 export default function Evolution() {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  const t = useDict().evolution;
+  const stages = t.stages;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -34,8 +29,8 @@ export default function Evolution() {
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const idx = Math.min(
-      STAGES.length - 1,
-      Math.max(0, Math.floor(v * STAGES.length))
+      stages.length - 1,
+      Math.max(0, Math.floor(v * stages.length))
     );
     setActive(idx);
   });
@@ -84,15 +79,15 @@ export default function Evolution() {
 
         {/* Section header, pinned at top */}
         <div className="absolute top-[12vh] left-1/2 w-full -translate-x-1/2 text-center">
-          <p className="eyebrow">The Future of Business</p>
+          <p className="eyebrow">{t.eyebrow}</p>
         </div>
 
         {/* Stages: the active one focuses in, the rest dissolve away */}
         <div className="relative h-full w-full">
-          {STAGES.map((s, i) => {
+          {stages.map((s, i) => {
             const isActive = i === active;
             const isPast = i < active;
-            const isLast = i === STAGES.length - 1;
+            const isLast = i === stages.length - 1;
             return (
               <motion.div
                 key={s.label}

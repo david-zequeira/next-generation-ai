@@ -9,28 +9,38 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/i18n/LocaleContext";
 
-const LINKS = [
-  { label: "Vision", href: "#future" },
-  { label: "Services", href: "#services" },
-  { label: "Ecosystem", href: "#ecosystem" },
-  { label: "Work", href: "#work" },
-  { label: "Process", href: "#process" },
-];
+const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
 
 /**
  * Floating glass navigation. Slides away when scrolling down,
- * returns when scrolling up.
+ * returns when scrolling up. Includes the ES/EN language switch.
  */
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const { locale, setLocale, dict } = useLocale();
+  const t = dict.nav;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const prev = scrollY.getPrevious() ?? 0;
     setHidden(latest > prev && latest > 160 && !open);
   });
+
+  const otherLocale = locale === "en" ? "es" : "en";
+
+  const langButton = (
+    <button
+      type="button"
+      aria-label={t.ariaLang}
+      onClick={() => setLocale(otherLocale)}
+      className="inline-flex h-9 cursor-pointer items-center rounded-full border border-line px-3 font-display text-[11px] font-bold tracking-[0.2em] text-mist transition-all duration-300 hover:border-neon/40 hover:text-frost"
+    >
+      {otherLocale.toUpperCase()}
+    </button>
+  );
 
   return (
     <>
@@ -52,29 +62,30 @@ export default function Navbar() {
           </a>
 
           <ul className="hidden items-center gap-1 md:flex">
-            {LINKS.map((link) => (
-              <li key={link.href}>
+            {t.links.map((label, i) => (
+              <li key={HREFS[i]}>
                 <a
-                  href={link.href}
+                  href={HREFS[i]}
                   className="rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
                 >
-                  {link.label}
+                  {label}
                 </a>
               </li>
             ))}
           </ul>
 
           <div className="flex items-center gap-2">
+            <span className="hidden md:inline-flex">{langButton}</span>
             <a
               href="#contact"
               className="group hidden cursor-pointer items-center gap-1.5 rounded-full bg-electric px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_0_28px_-8px_rgba(46,107,255,0.9)] transition-all duration-300 hover:bg-[#3d78ff] hover:shadow-[0_0_38px_-6px_rgba(46,107,255,1)] md:inline-flex"
             >
-              Book a Call
+              {t.cta}
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
             <button
               type="button"
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? t.ariaClose : t.ariaOpen}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-frost transition-colors hover:bg-white/5 md:hidden"
@@ -94,10 +105,10 @@ export default function Navbar() {
             transition={{ duration: 0.35 }}
             className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-2 bg-void/90 backdrop-blur-2xl md:hidden"
           >
-            {LINKS.map((link, i) => (
+            {t.links.map((label, i) => (
               <motion.a
-                key={link.href}
-                href={link.href}
+                key={HREFS[i]}
+                href={HREFS[i]}
                 onClick={() => setOpen(false)}
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -106,18 +117,26 @@ export default function Navbar() {
                   "display cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
                 )}
               >
-                {link.label}
+                {label}
               </motion.a>
             ))}
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.32, duration: 0.45 }}
+              className="mt-2"
+            >
+              {langButton}
+            </motion.div>
             <motion.a
               href="#contact"
               onClick={() => setOpen(false)}
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.36, duration: 0.45 }}
-              className="mt-6 cursor-pointer rounded-full bg-electric px-8 py-4 font-display text-sm font-semibold text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.9)]"
+              transition={{ delay: 0.4, duration: 0.45 }}
+              className="mt-4 cursor-pointer rounded-full bg-electric px-8 py-4 font-display text-sm font-semibold text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.9)]"
             >
-              Book a Strategy Call
+              {t.ctaLong}
             </motion.a>
           </motion.div>
         )}

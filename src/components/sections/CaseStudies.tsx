@@ -4,74 +4,53 @@ import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLocale } from "@/i18n/LocaleContext";
 
-type Metric = { value: number; suffix: string; decimals?: number; label: string };
-
-type Study = {
-  client: string;
-  sector: string;
-  headline: string;
-  story: string;
-  metrics: Metric[];
-  accent: string;
-};
-
-const STUDIES: Study[] = [
+/** Datos estructurales (números y color) — los textos viven en el diccionario, por índice. */
+const STRUCTURE = [
   {
-    client: "Atlas Logistics",
-    sector: "Global freight",
-    headline: "Dispatch that runs itself.",
-    story:
-      "An autonomous dispatch brain now routes every shipment, negotiates carrier capacity and handles exceptions before humans notice them.",
-    metrics: [
-      { value: 87, suffix: "%", label: "Faster fulfilment ops" },
-      { value: 24, suffix: "/7", label: "Autonomous dispatch" },
-      { value: 32, suffix: "%", label: "Margin uplift" },
-    ],
     accent: "#2e6bff",
+    metrics: [
+      { value: 87, suffix: "%" },
+      { value: 24, suffix: "/7" },
+      { value: 32, suffix: "%" },
+    ],
   },
   {
-    client: "Meridian Capital",
-    sector: "Financial services",
-    headline: "A back office with zero backlog.",
-    story:
-      "Document agents read, reconcile and file everything that used to sit in inboxes — with an audit trail humans actually trust.",
-    metrics: [
-      { value: 40, suffix: "h", label: "Saved per analyst / week" },
-      { value: 99.2, suffix: "%", decimals: 1, label: "Reconciliation accuracy" },
-      { value: 11, suffix: "×", label: "Faster reporting cycle" },
-    ],
     accent: "#38d4ff",
+    metrics: [
+      { value: 40, suffix: "h" },
+      { value: 99.2, suffix: "%", decimals: 1 },
+      { value: 11, suffix: "×" },
+    ],
   },
   {
-    client: "Nova Retail Group",
-    sector: "E-commerce",
-    headline: "Support that scales like software.",
-    story:
-      "Intelligent support agents resolve the routine and escalate the rare — so human teams only touch conversations that matter.",
-    metrics: [
-      { value: 3.4, suffix: "×", decimals: 1, label: "Support capacity" },
-      { value: 61, suffix: "%", label: "Cost reduction" },
-      { value: 92, suffix: "%", label: "CSAT maintained" },
-    ],
     accent: "#7c5cff",
+    metrics: [
+      { value: 3.4, suffix: "×", decimals: 1 },
+      { value: 61, suffix: "%" },
+      { value: 92, suffix: "%" },
+    ],
   },
   {
-    client: "Helios Manufacturing",
-    sector: "Industrial",
-    headline: "12,000 hours, returned to people.",
-    story:
-      "Procurement, quality reporting and maintenance planning now run as a single intelligent workflow across four plants.",
-    metrics: [
-      { value: 12, suffix: "k", label: "Hours automated / year" },
-      { value: 4, suffix: "", label: "Plants orchestrated" },
-      { value: 28, suffix: "%", label: "Downtime reduction" },
-    ],
     accent: "#5f8dff",
+    metrics: [
+      { value: 12, suffix: "k" },
+      { value: 4, suffix: "" },
+      { value: 28, suffix: "%" },
+    ],
   },
 ];
 
-function Counter({ value, suffix, decimals = 0 }: Omit<Metric, "label">) {
+function Counter({
+  value,
+  suffix,
+  decimals = 0,
+}: {
+  value: number;
+  suffix: string;
+  decimals?: number;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15% 0px -15% 0px" });
   const [display, setDisplay] = useState("0");
@@ -150,6 +129,8 @@ function ScreenMock({ accent }: { accent: string }) {
 export default function CaseStudies() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const { locale, dict } = useLocale();
+  const t = dict.work;
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -191,82 +172,82 @@ export default function CaseStudies() {
         >
           {/* Intro panel */}
           <div className="flex w-[82vw] shrink-0 snap-center flex-col justify-center md:w-[36vw]">
-            <p className="eyebrow mb-6">Selected Work</p>
+            <p className="eyebrow mb-6">{t.eyebrow}</p>
             <h2 className="display text-[clamp(2.4rem,5.5vw,5rem)] text-frost">
-              Proof,
+              {t.titleA}
               <br />
-              <span className="text-gradient-dim">not promises.</span>
+              <span className="text-gradient-dim">{t.titleB}</span>
             </h2>
-            <p className="mt-6 max-w-sm text-base leading-relaxed text-mist">
-              Real systems, in production, moving real numbers. Keep scrolling —
-              the journey continues sideways.
-            </p>
+            <p className="mt-6 max-w-sm text-base leading-relaxed text-mist">{t.sub}</p>
           </div>
 
-          {STUDIES.map((study) => (
-            <article
-              key={study.client}
-              className="group relative w-[86vw] shrink-0 snap-center overflow-hidden rounded-3xl border border-line bg-panel/30 p-7 transition-colors duration-500 hover:border-[rgba(94,140,255,0.35)] md:w-[58vw] md:p-12"
-            >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-25 blur-3xl transition-opacity duration-700 group-hover:opacity-45"
-                style={{ background: study.accent }}
-              />
-              <div className="relative grid gap-8 md:grid-cols-2 md:gap-10">
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <div className="mb-8 flex items-center gap-3">
-                      <span
-                        className="h-2 w-2 rounded-full"
-                        style={{ background: study.accent }}
-                      />
-                      <span className="font-display text-sm font-semibold text-frost">
-                        {study.client}
-                      </span>
-                      <span className="text-xs uppercase tracking-[0.2em] text-mist/60">
-                        {study.sector}
-                      </span>
-                    </div>
-                    <h3 className="display text-3xl text-frost md:text-4xl">
-                      {study.headline}
-                    </h3>
-                    <p className="mt-5 max-w-md text-sm leading-relaxed text-mist">
-                      {study.story}
-                    </p>
-                  </div>
-                  <div className="mt-10 grid grid-cols-3 gap-4">
-                    {study.metrics.map((m) => (
-                      <div key={m.label}>
-                        <p
-                          className="font-display text-2xl font-bold tracking-tight md:text-4xl"
-                          style={{ color: study.accent }}
-                        >
-                          <Counter
-                            value={m.value}
-                            suffix={m.suffix}
-                            decimals={m.decimals}
-                          />
-                        </p>
-                        <p className="mt-1.5 text-[11px] leading-snug text-mist/80">
-                          {m.label}
-                        </p>
+          {STRUCTURE.map((s, i) => {
+            const study = t.studies[i];
+            return (
+              <article
+                key={`${study.client}-${locale}`}
+                className="group relative w-[86vw] shrink-0 snap-center overflow-hidden rounded-3xl border border-line bg-panel/30 p-7 transition-colors duration-500 hover:border-[rgba(94,140,255,0.35)] md:w-[58vw] md:p-12"
+              >
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-25 blur-3xl transition-opacity duration-700 group-hover:opacity-45"
+                  style={{ background: s.accent }}
+                />
+                <div className="relative grid gap-8 md:grid-cols-2 md:gap-10">
+                  <div className="flex flex-col justify-between">
+                    <div>
+                      <div className="mb-8 flex items-center gap-3">
+                        <span
+                          className="h-2 w-2 rounded-full"
+                          style={{ background: s.accent }}
+                        />
+                        <span className="font-display text-sm font-semibold text-frost">
+                          {study.client}
+                        </span>
+                        <span className="text-xs uppercase tracking-[0.2em] text-mist/60">
+                          {study.sector}
+                        </span>
                       </div>
-                    ))}
+                      <h3 className="display text-3xl text-frost md:text-4xl">
+                        {study.headline}
+                      </h3>
+                      <p className="mt-5 max-w-md text-sm leading-relaxed text-mist">
+                        {study.story}
+                      </p>
+                    </div>
+                    <div className="mt-10 grid grid-cols-3 gap-4">
+                      {s.metrics.map((m, j) => (
+                        <div key={j}>
+                          <p
+                            className="font-display text-2xl font-bold tracking-tight md:text-4xl"
+                            style={{ color: s.accent }}
+                          >
+                            <Counter
+                              value={m.value}
+                              suffix={m.suffix}
+                              decimals={"decimals" in m ? m.decimals : 0}
+                            />
+                          </p>
+                          <p className="mt-1.5 text-[11px] leading-snug text-mist/80">
+                            {study.metricLabels[j]}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30, rotate: 1.5 }}
+                    whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                    className="self-center"
+                  >
+                    <ScreenMock accent={s.accent} />
+                  </motion.div>
                 </div>
-                <motion.div
-                  initial={{ opacity: 0, y: 30, rotate: 1.5 }}
-                  whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="self-center"
-                >
-                  <ScreenMock accent={study.accent} />
-                </motion.div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

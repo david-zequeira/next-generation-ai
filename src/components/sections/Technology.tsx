@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "@/components/ui/TextReveal";
+import { useLocale } from "@/i18n/LocaleContext";
 
 const ROW_A = ["OpenAI", "Anthropic", "Claude", "GPT", "n8n", "Supabase", "Firebase"];
 const ROW_B = ["AWS", "Docker", "Cursor", "MCP", "LangChain", "Vercel", "Cloudflare"];
@@ -43,6 +44,9 @@ function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boo
  * streams of glass capsules.
  */
 export default function Technology() {
+  const { locale, dict } = useLocale();
+  const t = dict.technology;
+
   return (
     <section className="relative overflow-hidden bg-abyss py-32 md:py-40">
       <div
@@ -58,10 +62,10 @@ export default function Technology() {
         className="absolute left-1/2 top-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric/10 blur-[140px]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 text-center">
-        <p className="eyebrow mb-6">Technology</p>
+      <div className="relative mx-auto max-w-7xl px-6 text-center" key={locale}>
+        <p className="eyebrow mb-6">{t.eyebrow}</p>
         <TextReveal
-          text="Built on the frontier."
+          text={t.title}
           className="text-[clamp(2.2rem,5.5vw,4.75rem)] text-frost"
         />
         <motion.p
@@ -71,8 +75,7 @@ export default function Technology() {
           transition={{ duration: 0.9, delay: 0.3 }}
           className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist"
         >
-          We build with the same tools powering the world&apos;s most advanced
-          AI products — and swap them the moment something better exists.
+          {t.sub}
         </motion.p>
       </div>
 

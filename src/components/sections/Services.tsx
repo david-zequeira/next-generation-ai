@@ -17,72 +17,36 @@ import {
 } from "lucide-react";
 import TextReveal from "@/components/ui/TextReveal";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/i18n/LocaleContext";
 
-type Service = {
-  icon: LucideIcon;
-  title: string;
-  desc: string;
-  wide?: boolean;
-};
-
-const SERVICES: Service[] = [
-  {
-    icon: Bot,
-    title: "AI Automation",
-    desc: "Autonomous systems that execute entire workstreams end-to-end — no hand-offs, no waiting.",
-    wide: true,
-  },
-  {
-    icon: Cpu,
-    title: "AI Agents",
-    desc: "Digital workers that think, decide and act inside your operation.",
-  },
-  {
-    icon: Workflow,
-    title: "Business Process Automation",
-    desc: "Every repetitive process, identified and eliminated.",
-  },
-  {
-    icon: Route,
-    title: "Workflow Optimization",
-    desc: "Operations redesigned around intelligence, not habit.",
-  },
-  {
-    icon: Terminal,
-    title: "Custom AI Software",
-    desc: "Bespoke systems engineered for your competitive edge.",
-  },
-  {
-    icon: Compass,
-    title: "AI Consulting",
-    desc: "A precise roadmap from where you are to what's next — strategy, stack and sequencing.",
-    wide: true,
-  },
-  {
-    icon: Layers,
-    title: "Enterprise Integrations",
-    desc: "AI woven into the tools your teams already run on.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Intelligent Customer Support",
-    desc: "Support that never sleeps, never queues, never forgets.",
-  },
-  {
-    icon: Database,
-    title: "Data Intelligence",
-    desc: "Your data, refined into foresight and leverage.",
-  },
-  {
-    icon: Wrench,
-    title: "Internal AI Tools",
-    desc: "In-house superpowers, purpose-built for every team.",
-  },
+/** Estructura (iconos y anchos) — los textos viven en el diccionario, por índice. */
+const STRUCTURE: { icon: LucideIcon; wide?: boolean }[] = [
+  { icon: Bot, wide: true },
+  { icon: Cpu },
+  { icon: Workflow },
+  { icon: Route },
+  { icon: Terminal },
+  { icon: Compass, wide: true },
+  { icon: Layers },
+  { icon: MessageSquare },
+  { icon: Database },
+  { icon: Wrench },
 ];
 
-function ServiceModule({ service, index }: { service: Service; index: number }) {
+function ServiceModule({
+  icon: Icon,
+  wide,
+  title,
+  desc,
+  index,
+}: {
+  icon: LucideIcon;
+  wide?: boolean;
+  title: string;
+  desc: string;
+  index: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const Icon = service.icon;
 
   const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     const rect = ref.current?.getBoundingClientRect();
@@ -101,7 +65,7 @@ function ServiceModule({ service, index }: { service: Service; index: number }) 
         delay: (index % 3) * 0.09,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className={cn(service.wide && "lg:col-span-2")}
+      className={cn(wide && "lg:col-span-2")}
     >
       <div
         ref={ref}
@@ -133,11 +97,9 @@ function ServiceModule({ service, index }: { service: Service; index: number }) 
             </span>
           </div>
           <h3 className="font-display text-xl font-semibold tracking-tight text-frost md:text-2xl">
-            {service.title}
+            {title}
           </h3>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-mist">
-            {service.desc}
-          </p>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-mist">{desc}</p>
         </div>
       </div>
     </motion.div>
@@ -150,6 +112,9 @@ function ServiceModule({ service, index }: { service: Service; index: number }) 
  * lit by a cursor-tracked glow.
  */
 export default function Services() {
+  const { locale, dict } = useLocale();
+  const t = dict.services;
+
   return (
     <section id="services" className="relative bg-void py-32 md:py-44">
       <div
@@ -157,10 +122,10 @@ export default function Services() {
         className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-line to-transparent"
       />
       <div className="mx-auto max-w-7xl px-6">
-        <p className="eyebrow mb-6">Capabilities</p>
-        <div className="max-w-4xl">
+        <p className="eyebrow mb-6">{t.eyebrow}</p>
+        <div className="max-w-4xl" key={locale}>
           <TextReveal
-            text="Not services. Systems."
+            text={t.title}
             className="text-[clamp(2.4rem,6vw,5.5rem)] text-frost"
           />
         </div>
@@ -171,13 +136,19 @@ export default function Services() {
           transition={{ duration: 0.9, delay: 0.3 }}
           className="mt-6 max-w-xl text-base leading-relaxed text-mist md:text-lg"
         >
-          Every engagement ships as a working product: designed, engineered and
-          deployed inside your business.
+          {t.sub}
         </motion.p>
 
         <div className="mt-16 grid gap-4 md:mt-24 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
-          {SERVICES.map((s, i) => (
-            <ServiceModule key={s.title} service={s} index={i} />
+          {STRUCTURE.map((s, i) => (
+            <ServiceModule
+              key={i}
+              icon={s.icon}
+              wide={s.wide}
+              title={t.items[i].title}
+              desc={t.items[i].desc}
+              index={i}
+            />
           ))}
         </div>
       </div>

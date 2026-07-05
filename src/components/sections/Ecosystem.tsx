@@ -2,30 +2,21 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "@/components/ui/TextReveal";
+import { useLocale } from "@/i18n/LocaleContext";
 
-type Node = { x: number; y: number; label: string };
-
-const NODES: Node[] = [
-  { x: 170, y: 130, label: "Sales Agent" },
-  { x: 720, y: 105, label: "Support Agent" },
-  { x: 110, y: 420, label: "Ops Agent" },
-  { x: 760, y: 440, label: "Finance Agent" },
-  { x: 300, y: 555, label: "Data Agent" },
-  { x: 590, y: 560, label: "Research Agent" },
+/** Posiciones de los nodos — las etiquetas viven en el diccionario, por índice. */
+const NODE_POS = [
+  { x: 170, y: 130 },
+  { x: 720, y: 105 },
+  { x: 110, y: 420 },
+  { x: 760, y: 440 },
+  { x: 300, y: 555 },
+  { x: 590, y: 560 },
 ];
 
 const CENTER = { x: 450, y: 310 };
 
-const LOG_LINES = [
-  "agent://sales     → qualified 14 inbound leads",
-  "agent://support   → resolved ticket #8241 in 6s",
-  "agent://ops       → rerouted supply order · saved €2.1k",
-  "agent://finance   → reconciled 312 invoices",
-  "agent://data      → anomaly detected · margin +0.8%",
-  "agent://research  → competitor brief compiled",
-];
-
-function pathTo(n: Node): string {
+function pathTo(n: { x: number; y: number }): string {
   const mx = (CENTER.x + n.x) / 2 + (n.y < CENTER.y ? -30 : 30);
   const my = (CENTER.y + n.y) / 2 + (n.x < CENTER.x ? 24 : -24);
   return `M ${CENTER.x} ${CENTER.y} Q ${mx} ${my} ${n.x} ${n.y}`;
@@ -38,6 +29,9 @@ function pathTo(n: Node): string {
  * what the swarm is doing.
  */
 export default function Ecosystem() {
+  const { locale, dict } = useLocale();
+  const t = dict.ecosystem;
+
   return (
     <section
       id="ecosystem"
@@ -58,10 +52,10 @@ export default function Ecosystem() {
       />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow mb-6">AI Ecosystem</p>
+        <div className="mx-auto max-w-3xl text-center" key={locale}>
+          <p className="eyebrow mb-6">{t.eyebrow}</p>
           <TextReveal
-            text="One intelligence. Every department."
+            text={t.title}
             className="text-[clamp(2.2rem,5.5vw,4.75rem)] text-frost"
           />
           <motion.p
@@ -71,8 +65,7 @@ export default function Ecosystem() {
             transition={{ duration: 0.9, delay: 0.3 }}
             className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist md:text-lg"
           >
-            Your business becomes a network of intelligent agents — sensing,
-            deciding and communicating in real time.
+            {t.sub}
           </motion.p>
         </div>
 
@@ -84,7 +77,7 @@ export default function Ecosystem() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.35 }}
             role="img"
-            aria-label="Network of AI agents connected to a central core"
+            aria-label={t.svgAria}
           >
             <defs>
               <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
@@ -99,8 +92,8 @@ export default function Ecosystem() {
             </defs>
 
             {/* Connections */}
-            {NODES.map((n, i) => (
-              <g key={n.label}>
+            {NODE_POS.map((n, i) => (
+              <g key={i}>
                 <motion.path
                   d={pathTo(n)}
                   fill="none"
@@ -183,14 +176,14 @@ export default function Ecosystem() {
                 fontSize="9"
                 letterSpacing="3"
               >
-                CORE
+                {t.core}
               </text>
             </motion.g>
 
             {/* Agent nodes */}
-            {NODES.map((n, i) => (
+            {NODE_POS.map((n, i) => (
               <motion.g
-                key={n.label}
+                key={`node-${i}`}
                 variants={{
                   hidden: { scale: 0, opacity: 0 },
                   visible: {
@@ -228,7 +221,7 @@ export default function Ecosystem() {
                   fontSize="12"
                   letterSpacing="1"
                 >
-                  {n.label}
+                  {t.nodes[i]}
                 </text>
               </motion.g>
             ))}
@@ -245,11 +238,11 @@ export default function Ecosystem() {
             <div className="mb-3 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-neon animate-pulse-glow" />
               <span className="font-display text-[11px] font-semibold uppercase tracking-[0.25em] text-mist">
-                Live agent activity
+                {t.liveTitle}
               </span>
             </div>
             <div className="space-y-2 font-mono text-[11px] leading-relaxed text-mist/90">
-              {LOG_LINES.map((line, i) => (
+              {t.logs.map((line, i) => (
                 <motion.p
                   key={line}
                   initial={{ opacity: 0, x: -8 }}

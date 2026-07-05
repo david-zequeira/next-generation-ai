@@ -2,45 +2,9 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "@/components/ui/TextReveal";
+import { useLocale } from "@/i18n/LocaleContext";
 
-type Testimonial = {
-  quote: string;
-  name: string;
-  role: string;
-};
-
-const TESTIMONIALS: Testimonial[] = [
-  {
-    quote:
-      "It genuinely feels like we hired a hundred brilliant people overnight. Our operation runs while we sleep.",
-    name: "Elena Marchetti",
-    role: "COO · Atlas Logistics",
-  },
-  {
-    quote:
-      "They didn't sell us AI. They rebuilt how our company thinks. The back office simply… disappeared.",
-    name: "Daniel Okafor",
-    role: "CEO · Meridian Capital",
-  },
-  {
-    quote:
-      "Three months in, our support capacity tripled and our customers noticed nothing except faster answers.",
-    name: "Sofia Lindqvist",
-    role: "VP Customer · Nova Retail Group",
-  },
-  {
-    quote:
-      "The most impressive engineering partner we've ever worked with. Ship velocity like nothing I've seen.",
-    name: "Marcus Chen",
-    role: "CTO · Helios Manufacturing",
-  },
-  {
-    quote:
-      "Every board meeting now starts with numbers their agents produced. That's how deep it goes.",
-    name: "Isabelle Fournier",
-    role: "Managing Partner · Verne & Co",
-  },
-];
+type Testimonial = { quote: string; name: string; role: string };
 
 function Card({ t }: { t: Testimonial }) {
   return (
@@ -69,14 +33,16 @@ function Card({ t }: { t: Testimonial }) {
  * Hover pauses the drift.
  */
 export default function Testimonials() {
-  const doubled = [...TESTIMONIALS, ...TESTIMONIALS];
+  const { locale, dict } = useLocale();
+  const t = dict.testimonials;
+  const doubled = [...t.items, ...t.items];
 
   return (
     <section className="relative bg-void py-32 md:py-40">
-      <div className="mx-auto max-w-7xl px-6 text-center">
-        <p className="eyebrow mb-6">What They Say</p>
+      <div className="mx-auto max-w-7xl px-6 text-center" key={locale}>
+        <p className="eyebrow mb-6">{t.eyebrow}</p>
         <TextReveal
-          text="Trusted at the highest level."
+          text={t.title}
           className="text-[clamp(2.2rem,5.5vw,4.75rem)] text-frost"
         />
       </div>
@@ -93,8 +59,8 @@ export default function Testimonials() {
         }}
       >
         <div className="flex w-max animate-marquee py-4 hover:[animation-play-state:paused]">
-          {doubled.map((t, i) => (
-            <Card key={`${t.name}-${i}`} t={t} />
+          {doubled.map((item, i) => (
+            <Card key={`${item.name}-${i}`} t={item} />
           ))}
         </div>
       </motion.div>

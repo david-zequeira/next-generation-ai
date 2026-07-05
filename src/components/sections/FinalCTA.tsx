@@ -6,6 +6,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
+import { useLocale } from "@/i18n/LocaleContext";
 
 const AICore = dynamic(() => import("@/components/three/AICore"), {
   ssr: false,
@@ -18,6 +19,8 @@ const AICore = dynamic(() => import("@/components/three/AICore"), {
 export default function FinalCTA() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "40% 0px" });
+  const { locale, dict } = useLocale();
+  const t = dict.finalCta;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -48,14 +51,15 @@ export default function FinalCTA() {
       <motion.div
         style={{ y: rise }}
         className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 py-32 text-center"
+        key={locale}
       >
-        <p className="eyebrow mb-8">The Future Is Already Here</p>
+        <p className="eyebrow mb-8">{t.eyebrow}</p>
         <TextReveal
-          text="Ready for the"
+          text={t.titleA}
           className="block text-[clamp(2.8rem,8vw,7.5rem)] text-frost"
         />
         <TextReveal
-          text="Next Generation?"
+          text={t.titleB}
           delay={0.25}
           className="block text-[clamp(2.8rem,8vw,7.5rem)]"
           wordClassName="text-gradient"
@@ -67,8 +71,7 @@ export default function FinalCTA() {
           transition={{ duration: 1, delay: 0.7 }}
           className="mt-8 max-w-lg text-balance text-base leading-relaxed text-mist md:text-lg"
         >
-          One conversation is enough to see what your company looks like
-          running on intelligence.
+          {t.sub}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.95 }}
@@ -81,7 +84,7 @@ export default function FinalCTA() {
             href="mailto:hello@nextgeneration.ai"
             className="px-12 py-5 text-base shadow-[0_0_80px_-10px_rgba(46,107,255,1)]"
           >
-            Book a Strategy Call
+            {t.cta}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </MagneticButton>
         </motion.div>
@@ -92,7 +95,7 @@ export default function FinalCTA() {
           transition={{ duration: 1.4, delay: 1.4 }}
           className="mt-8 text-sm text-mist/70"
         >
-          hello@nextgeneration.ai · Response within 24 hours
+          {t.note}
         </motion.p>
       </motion.div>
     </section>

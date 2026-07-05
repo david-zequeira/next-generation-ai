@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
+import { useLocale } from "@/i18n/LocaleContext";
 
 const AICore = dynamic(() => import("@/components/three/AICore"), {
   ssr: false,
@@ -18,6 +19,8 @@ const AICore = dynamic(() => import("@/components/three/AICore"), {
  */
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const { locale, dict } = useLocale();
+  const t = dict.hero;
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
@@ -69,22 +72,23 @@ export default function Hero() {
           transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="eyebrow mb-8"
         >
-          Next Generation AI
+          {t.eyebrow}
         </motion.p>
 
         <h1 className="sr-only">
-          NEXT GENERATION AI — Building the Future of Business
+          NEXT GENERATION AI — {t.titleA} {t.titleB}
         </h1>
-        <div aria-hidden>
+        {/* key={locale}: relanza la animación del titular al cambiar idioma */}
+        <div aria-hidden key={locale}>
           <TextReveal
             as="span"
-            text="Building the Future"
+            text={t.titleA}
             delay={0.45}
             className="block text-[clamp(3rem,9.5vw,8.75rem)] text-frost"
           />
           <TextReveal
             as="span"
-            text="of Business."
+            text={t.titleB}
             delay={0.75}
             className="block text-[clamp(3rem,9.5vw,8.75rem)]"
             wordClassName="text-gradient"
@@ -97,8 +101,7 @@ export default function Hero() {
           transition={{ duration: 1, delay: 1.35, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 max-w-xl text-balance text-base leading-relaxed text-mist md:text-lg"
         >
-          We bring next-generation intelligence and automation to businesses of
-          every size — so yours can operate like a billion-dollar company.
+          {t.sub}
         </motion.p>
 
         <motion.div
@@ -108,12 +111,12 @@ export default function Hero() {
           className="mt-12 flex flex-col items-center gap-4 sm:flex-row"
         >
           <MagneticButton href="#contact">
-            Book a Strategy Call
+            {t.ctaPrimary}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </MagneticButton>
           <MagneticButton href="#work" variant="ghost">
             <Play className="h-4 w-4 text-neon" />
-            Watch Demo
+            {t.ctaSecondary}
           </MagneticButton>
         </motion.div>
       </motion.div>
@@ -126,7 +129,7 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3"
       >
         <span className="text-[11px] uppercase tracking-[0.35em] text-mist">
-          Scroll
+          {t.scroll}
         </span>
         <div className="h-12 w-px overflow-hidden bg-white/10">
           <motion.div

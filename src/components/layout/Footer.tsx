@@ -1,3 +1,7 @@
+"use client";
+
+import { useDict } from "@/i18n/LocaleContext";
+
 type IconProps = { className?: string };
 
 /* Brand marks (Simple Icons paths) — lucide no longer ships brand logos. */
@@ -25,14 +29,7 @@ function GitHubIcon({ className }: IconProps) {
   );
 }
 
-const NAV = [
-  { label: "Vision", href: "#future" },
-  { label: "Services", href: "#services" },
-  { label: "Ecosystem", href: "#ecosystem" },
-  { label: "Work", href: "#work" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
-];
+const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
 
 const SOCIALS = [
   { label: "X (Twitter)", href: "https://x.com", icon: XIcon },
@@ -41,6 +38,10 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const dict = useDict();
+  const t = dict.footer;
+  const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "#contact" }];
+
   return (
     <footer className="relative border-t border-line bg-void">
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -49,14 +50,12 @@ export default function Footer() {
             <p className="font-display text-lg font-bold tracking-[0.22em] text-frost">
               NG<span className="text-neon">{"//"}</span>AI
             </p>
-            <p className="mt-2 max-w-xs text-sm leading-relaxed text-mist">
-              Next Generation AI — Building the Future of Business.
-            </p>
+            <p className="mt-2 max-w-xs text-sm leading-relaxed text-mist">{t.tagline}</p>
           </div>
 
-          <nav aria-label="Pie de página">
+          <nav aria-label={t.navAria}>
             <ul className="flex flex-wrap gap-x-7 gap-y-3">
-              {NAV.map((item) => (
+              {links.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
@@ -86,8 +85,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-xs text-mist/60 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Next Generation AI. All rights reserved.</p>
-          <p className="font-display tracking-[0.3em]">BUILT FOR WHAT&apos;S NEXT</p>
+          <p>
+            © {new Date().getFullYear()} Next Generation AI. {t.rights}
+          </p>
+          <p className="font-display tracking-[0.3em]">{t.built}</p>
         </div>
       </div>
     </footer>

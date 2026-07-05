@@ -3,15 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, Send, X } from "lucide-react";
+import { useDict } from "@/i18n/LocaleContext";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
 type Msg = { role: "user" | "assistant"; text: string };
-
-const WELCOME: Msg = {
-  role: "assistant",
-  text: "¡Hola! 👋 Soy el asistente de Next Generation AI. Pregúntame qué hacemos, precios o plazos — o reserva una llamada de estrategia gratis escribiendo «cita».",
-};
 
 function getSessionId(): string {
   const KEY = "ng-chat-session";
@@ -26,10 +22,12 @@ function getSessionId(): string {
 /**
  * Widget de chat conectado al ng-agent (el mismo cerebro que responde por
  * WhatsApp). Solo se renderiza si NEXT_PUBLIC_AGENT_URL está configurada.
+ * El agente responde en el idioma en el que le escriba el visitante.
  */
 export default function ChatWidget() {
+  const t = useDict().chat;
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
@@ -40,11 +38,16 @@ export default function ChatWidget() {
 
   if (!AGENT_URL) return null;
 
+  // Mensaje de bienvenida en el idioma activo (solo si aún no hay conversación)
+  const displayMessages: Msg[] =
+    messages.length > 0 ? messages : [{ role: "assistant", text: t.welcome }];
+
   const send = async () => {
     const text = input.trim();
     if (!text || busy) return;
     setInput("");
-    setMessages((m) => [...m, { role: "user", text }]);
+    const base = messages.length > 0 ? messages : [{ role: "assistant" as const, text: t.welcome }];
+    setMessages([...base, { role: "user", text }]);
     setBusy(true);
     try {
       const res = await fetch(`${AGENT_URL}/api/chat`, {
@@ -56,13 +59,7 @@ export default function ChatWidget() {
       const data: { reply: string } = await res.json();
       setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
     } catch {
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          text: "Ups, no consigo conectar ahora mismo. Escríbenos a hello@nextgeneration.ai 🙏",
-        },
-      ]);
+      setMessages((m) => [...m, { role: "assistant", text: t.error }]);
     } finally {
       setBusy(false);
     }
@@ -73,7 +70,7 @@ export default function ChatWidget() {
       {/* Botón flotante */}
       <motion.button
         type="button"
-        aria-label={open ? "Cerrar chat" : "Abrir chat"}
+        aria-label={open ? t.ariaClose : t.ariaOpen}
         onClick={() => setOpen((v) => !v)}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -96,7 +93,7 @@ export default function ChatWidget() {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="glass fixed bottom-[5.5rem] right-5 z-[60] flex h-[min(560px,calc(100svh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl"
             role="dialog"
-            aria-label="Chat con el asistente"
+            aria-label={t.ariaDialog}
           >
             {/* Cabecera */}
             <div className="flex items-center gap-3 border-b border-line px-5 py-4">
@@ -106,17 +103,15 @@ export default function ChatWidget() {
               </div>
               <div>
                 <p className="font-display text-sm font-semibold text-frost">
-                  Asistente NG//AI
+                  {t.headerName}
                 </p>
-                <p className="text-[11px] text-mist">
-                  Responde al instante · también en WhatsApp
-                </p>
+                <p className="text-[11px] text-mist">{t.headerSub}</p>
               </div>
             </div>
 
             {/* Mensajes */}
             <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-              {messages.map((m, i) => (
+              {displayMessages.map((m, i) => (
                 <div
                   key={i}
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
@@ -159,13 +154,13 @@ export default function ChatWidget() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Escríbeme algo…"
-                aria-label="Mensaje"
+                placeholder={t.placeholder}
+                aria-label={t.ariaInput}
                 className="min-h-[44px] flex-1 rounded-full border border-line bg-void/60 px-4 text-sm text-frost placeholder:text-mist/60 focus:border-electric/60 focus:outline-none"
               />
               <button
                 type="submit"
-                aria-label="Enviar"
+                aria-label={t.ariaSend}
                 disabled={busy || !input.trim()}
                 className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-electric text-white transition-all duration-200 hover:bg-[#3d78ff] disabled:cursor-default disabled:opacity-40"
               >

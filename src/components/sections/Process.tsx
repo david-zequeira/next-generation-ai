@@ -2,43 +2,24 @@
 
 import { motion } from "framer-motion";
 import TextReveal from "@/components/ui/TextReveal";
-
-const STEPS = [
-  {
-    title: "Discover",
-    desc: "We map your operation end-to-end and locate the highest-leverage points for intelligence.",
-  },
-  {
-    title: "Design",
-    desc: "Agents, architecture and integrations — blueprinted around how your business actually runs.",
-  },
-  {
-    title: "Build",
-    desc: "Production-grade systems engineered in weeks, not quarters. You see progress every week.",
-  },
-  {
-    title: "Deploy",
-    desc: "Shipped into your stack with security, observability and guardrails from day one.",
-  },
-  {
-    title: "Scale",
-    desc: "What works gets expanded across teams, regions and workflows — compounding returns.",
-  },
-];
+import { useLocale } from "@/i18n/LocaleContext";
 
 /**
  * Section 7 — How we work. A vertical journey: each step lights up as
  * it enters the frame, connected by a growing line of light.
  */
 export default function Process() {
+  const { locale, dict } = useLocale();
+  const t = dict.process;
+
   return (
     <section id="process" className="relative bg-void py-32 md:py-44">
       <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-[1fr_1.2fr] lg:gap-24">
         {/* Sticky intro */}
-        <div className="lg:sticky lg:top-32 lg:self-start">
-          <p className="eyebrow mb-6">How We Work</p>
+        <div className="lg:sticky lg:top-32 lg:self-start" key={locale}>
+          <p className="eyebrow mb-6">{t.eyebrow}</p>
           <TextReveal
-            text="From first call to fully autonomous."
+            text={t.title}
             className="text-[clamp(2.2rem,5vw,4.5rem)] text-frost"
           />
           <motion.p
@@ -48,8 +29,7 @@ export default function Process() {
             transition={{ duration: 0.9, delay: 0.3 }}
             className="mt-6 max-w-md text-base leading-relaxed text-mist"
           >
-            A tight, proven path. No discovery theatre, no endless decks —
-            working systems, fast.
+            {t.sub}
           </motion.p>
         </div>
 
@@ -59,7 +39,7 @@ export default function Process() {
             aria-hidden
             className="absolute bottom-6 left-[27px] top-6 w-px bg-white/[0.07]"
           />
-          {STEPS.map((step, i) => (
+          {t.steps.map((step, i) => (
             <motion.li
               key={step.title}
               initial={{ opacity: 0, x: 40 }}

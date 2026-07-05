@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import CursorGlow from "@/components/ui/CursorGlow";
+import { LocaleProvider } from "@/i18n/LocaleContext";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -53,10 +54,12 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} noise bg-void font-sans text-frost antialiased`}
       >
-        <SmoothScroll>
-          <CursorGlow />
-          {children}
-        </SmoothScroll>
+        <LocaleProvider>
+          <SmoothScroll>
+            <CursorGlow />
+            {children}
+          </SmoothScroll>
+        </LocaleProvider>
       </body>
     </html>
   );
