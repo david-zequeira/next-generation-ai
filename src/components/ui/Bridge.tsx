@@ -45,7 +45,7 @@ export default function Bridge({ id }: { id: "era" | "proof" | "leap" }) {
   return (
     <div
       ref={ref}
-      className="relative mx-auto flex max-w-4xl items-center justify-center px-6 py-24 md:py-36"
+      className="relative mx-auto flex max-w-4xl items-center justify-center px-6 py-32 md:py-56"
     >
       <p className="display text-center text-[clamp(1.5rem,3.4vw,2.9rem)] leading-snug text-frost">
         <span className="text-pulse/80">{"//"} </span>

@@ -106,8 +106,8 @@ export default function Hero() {
         }}
       />
 
-      {/* Núcleo 3D */}
-      <AICore className="z-10 opacity-90" />
+      {/* Núcleo 3D — se disuelve en partículas conforme el visitante avanza */}
+      <AICore className="z-10 opacity-90" dissolve={scrollYProgress} />
 
       {/* Marcas de esquina — detalle de composición propio */}
       <motion.div

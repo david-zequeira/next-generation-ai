@@ -104,9 +104,14 @@ export default function Evolution() {
                 <span className="eyebrow mb-6">
                   {String(i + 1).padStart(2, "0")} / 05
                 </span>
+                {/* La etapa "IA" rompe la escala: dos letras del tamaño del mundo */}
                 <h3
-                  className={`display text-[clamp(2.5rem,7.5vw,6.5rem)] ${
-                    isLast ? "text-gradient" : "text-frost"
+                  className={`display ${
+                    i === 2
+                      ? "text-gradient text-[clamp(6rem,26vw,22rem)]"
+                      : isLast
+                        ? "text-gradient text-[clamp(2.5rem,7.5vw,6.5rem)]"
+                        : "text-frost text-[clamp(2.5rem,7.5vw,6.5rem)]"
                   }`}
                 >
                   {s.label}

@@ -53,17 +53,16 @@ export default function FinalCTA() {
         className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 py-32 text-center"
         key={locale}
       >
-        {/* Reconocimiento del viaje: el visitante ya lo ha visto todo */}
+        {/* Reconocimiento del viaje — una sola línea susurrada; el mundo se simplifica */}
         <motion.p
           initial={{ opacity: 0, filter: "blur(8px)" }}
           whileInView={{ opacity: 1, filter: "blur(0px)" }}
           viewport={{ once: true }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-gradient-dim mb-6 font-display text-[clamp(1.1rem,2vw,1.5rem)] font-medium tracking-tight"
+          transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-gradient-dim mb-12 font-display text-[clamp(1.1rem,2vw,1.5rem)] font-medium tracking-tight"
         >
           {t.arrival}
         </motion.p>
-        <p className="eyebrow mb-8">{t.eyebrow}</p>
         <TextReveal
           text={t.titleA}
           className="block text-[clamp(2.8rem,8vw,7.5rem)] text-frost"
@@ -119,8 +118,8 @@ export default function FinalCTA() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.4, delay: 1.4 }}
-          className="mt-8 text-sm text-mist/70"
+          transition={{ duration: 2, delay: 1.8 }}
+          className="mt-10 text-xs tracking-wide text-mist/50"
         >
           {t.note}
         </motion.p>
