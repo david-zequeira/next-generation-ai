@@ -66,9 +66,13 @@ export default function Navbar() {
               <li key={HREFS[i]}>
                 <a
                   href={HREFS[i]}
-                  className="rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
+                  className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
                 >
                   {label}
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
+                  />
                 </a>
               </li>
             ))}

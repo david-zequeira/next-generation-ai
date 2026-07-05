@@ -43,8 +43,15 @@ export default function Footer() {
   const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "#contact" }];
 
   return (
-    <footer className="relative border-t border-line bg-void">
-      <div className="mx-auto max-w-7xl px-6 py-16">
+    <footer className="relative overflow-hidden border-t border-line bg-void">
+      {/* Marca de agua monumental — el nombre como arquitectura */}
+      <div
+        aria-hidden
+        className="text-outline pointer-events-none absolute inset-x-0 -bottom-6 select-none whitespace-nowrap text-center font-display text-[clamp(4rem,13vw,11rem)] font-bold leading-none tracking-tight"
+      >
+        NEXT GENERATION AI
+      </div>
+      <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
           <div>
             <p className="font-display text-lg font-bold tracking-[0.22em] text-frost">

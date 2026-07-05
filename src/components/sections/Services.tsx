@@ -3,6 +3,7 @@
 import { useRef, type MouseEvent } from "react";
 import { motion } from "framer-motion";
 import {
+  ArrowUpRight,
   Bot,
   Compass,
   Cpu,
@@ -48,31 +49,58 @@ function ServiceModule({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
+  // Luz interior que sigue al cursor + inclinación 3D sutil hacia él
   const onMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    ref.current!.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-    ref.current!.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    const el = ref.current;
+    const rect = el?.getBoundingClientRect();
+    if (!el || !rect) return;
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    el.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    el.style.setProperty("--rx", `${(0.5 - py) * 5}deg`);
+    el.style.setProperty("--ry", `${(px - 0.5) * 5}deg`);
+  };
+
+  const onMouseLeave = () => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty("--rx", "0deg");
+    el.style.setProperty("--ry", "0deg");
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 44, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{
-        duration: 0.8,
+        duration: 0.9,
         delay: (index % 3) * 0.09,
         ease: [0.16, 1, 0.3, 1],
       }}
       className={cn(wide && "lg:col-span-2")}
+      style={{ perspective: "900px" }}
     >
       <div
         ref={ref}
         onMouseMove={onMouseMove}
-        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-line bg-panel/30 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[rgba(94,140,255,0.4)] hover:shadow-[0_24px_70px_-30px_rgba(46,107,255,0.45)] md:p-10"
+        onMouseLeave={onMouseLeave}
+        style={{
+          transform: "rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))",
+          transformStyle: "preserve-3d",
+        }}
+        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-line bg-panel/30 p-8 transition-[border-color,box-shadow,transform] duration-300 will-change-transform hover:border-[rgba(94,140,255,0.4)] hover:shadow-[0_24px_70px_-30px_rgba(46,107,255,0.45)] md:p-10"
       >
-        {/* Cursor-tracked inner glow */}
+        {/* Numeral gigante hueco — marca de agua de la casa */}
+        <span
+          aria-hidden
+          className="text-outline pointer-events-none absolute -right-3 -top-7 select-none font-display text-[7rem] font-bold leading-none transition-all duration-500 group-hover:-translate-y-1 group-hover:[-webkit-text-stroke-color:rgba(94,160,255,0.32)] md:text-[8.5rem]"
+        >
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
+        {/* Luz interior que sigue al cursor */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -81,7 +109,7 @@ function ServiceModule({
               "radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(46,107,255,0.14), transparent 55%)",
           }}
         />
-        {/* Glowing top border sweep */}
+        {/* Barrido superior de neón */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -89,17 +117,22 @@ function ServiceModule({
 
         <div className="relative flex h-full flex-col">
           <div className="mb-8 flex items-start justify-between">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-space/70 text-neon transition-all duration-300 group-hover:scale-110 group-hover:border-neon/40 group-hover:shadow-[0_0_24px_-4px_rgba(56,212,255,0.6)]">
+            <div className="conic-ring flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-space/70 text-neon transition-all duration-300 group-hover:shadow-[0_0_24px_-4px_rgba(56,212,255,0.6)]">
               <Icon className="h-5 w-5" strokeWidth={1.6} />
             </div>
-            <span className="font-display text-xs tracking-[0.3em] text-mist/50">
-              {String(index + 1).padStart(2, "0")}
-            </span>
           </div>
           <h3 className="font-display text-xl font-semibold tracking-tight text-frost md:text-2xl">
             {title}
           </h3>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-mist">{desc}</p>
+
+          {/* Flecha que llega — el módulo invita a la conversación */}
+          <div className="mt-auto flex justify-end pt-6">
+            <ArrowUpRight
+              className="h-4 w-4 -translate-x-2 translate-y-2 text-neon/0 transition-all duration-400 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-neon/80"
+              strokeWidth={1.6}
+            />
+          </div>
         </div>
       </div>
     </motion.div>
@@ -107,9 +140,9 @@ function ServiceModule({
 }
 
 /**
- * Section 3 — Services as premium product modules.
- * Each capability is presented like hardware: numbered, engineered,
- * lit by a cursor-tracked glow.
+ * Sección 3 — Servicios como módulos de producto premium: numerados como
+ * piezas de una máquina, con material propio (anillo cónico), profundidad
+ * real (tilt 3D) y una luz que responde a la mano del visitante.
  */
 export default function Services() {
   const { locale, dict } = useLocale();
@@ -120,6 +153,11 @@ export default function Services() {
       <div
         aria-hidden
         className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-line to-transparent"
+      />
+      {/* Atmósfera propia de la sección: bruma eléctrica en la esquina */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-40 top-40 h-[480px] w-[480px] rounded-full bg-electric/[0.07] blur-[120px]"
       />
       <div className="mx-auto max-w-7xl px-6">
         <p className="eyebrow mb-6">{t.eyebrow}</p>
