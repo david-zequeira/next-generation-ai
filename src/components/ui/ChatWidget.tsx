@@ -4,20 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
+import { getSessionId } from "@/lib/session";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
 type Msg = { role: "user" | "assistant"; text: string };
-
-function getSessionId(): string {
-  const KEY = "ng-chat-session";
-  let id = sessionStorage.getItem(KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem(KEY, id);
-  }
-  return id;
-}
 
 /**
  * Widget de chat conectado al ng-agent (el mismo cerebro que responde por

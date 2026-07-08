@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import Analytics from "@/components/ui/Analytics";
 import CursorGlow from "@/components/ui/CursorGlow";
 import { LocaleProvider } from "@/i18n/LocaleContext";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${inter.variable} noise bg-void font-sans text-frost antialiased`}
       >
         <LocaleProvider>
+          <Analytics />
           <SmoothScroll>
             <CursorGlow />
             {children}
