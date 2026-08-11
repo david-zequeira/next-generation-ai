@@ -180,6 +180,8 @@ const en = {
     ariaSend: "Send",
     ariaInput: "Message",
     ariaDialog: "Chat with the assistant",
+    privacyNote: "You're talking to an AI assistant. We store this conversation to answer you and manage your booking.",
+    privacyLink: "Privacy policy",
   },
 };
 
@@ -363,6 +365,8 @@ const es: typeof en = {
     ariaSend: "Enviar",
     ariaInput: "Mensaje",
     ariaDialog: "Chat con el asistente",
+    privacyNote: "Hablas con un asistente de IA. Guardamos esta conversación para atenderte y gestionar tu cita.",
+    privacyLink: "Política de privacidad",
   },
 };
 

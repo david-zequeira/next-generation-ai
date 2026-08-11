@@ -1,6 +1,8 @@
 "use client";
 
-import { useDict } from "@/i18n/LocaleContext";
+import Link from "next/link";
+import { useDict, useLocale } from "@/i18n/LocaleContext";
+import { LEGAL_SLUGS, legalLinkLabels } from "@/i18n/legal";
 
 type IconProps = { className?: string };
 
@@ -39,6 +41,7 @@ const SOCIALS = [
 
 export default function Footer() {
   const dict = useDict();
+  const { locale } = useLocale();
   const t = dict.footer;
   const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "#contact" }];
 
@@ -95,6 +98,21 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} Next Generation AI. {t.rights}
           </p>
+
+          {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
+          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            {LEGAL_SLUGS.map((slug) => (
+              <li key={slug}>
+                <Link
+                  href={`/legal/${slug}`}
+                  className="transition-colors duration-200 hover:text-frost"
+                >
+                  {legalLinkLabels[locale][slug]}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
           <p className="font-display tracking-[0.3em]">{t.built}</p>
         </div>
       </div>

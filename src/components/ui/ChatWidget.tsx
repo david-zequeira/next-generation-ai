@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
@@ -64,9 +65,12 @@ export default function ChatWidget() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ sessionId: getSessionId(), message: text }),
       });
-      if (!res.ok) throw new Error(String(res.status));
-      const data: { reply: string } = await res.json();
-      setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
+      // El backend puede rechazar el turno por límite de uso (429/503) y aun así
+      // devolver un texto humano explicando por qué. Si lo trae, ese es el
+      // mensaje que merece ver el visitante — no un error genérico.
+      const data: { reply?: string } = await res.json().catch(() => ({}));
+      if (!data.reply) throw new Error(String(res.status));
+      setMessages((m) => [...m, { role: "assistant", text: data.reply! }]);
     } catch {
       setMessages((m) => [...m, { role: "assistant", text: t.error }]);
     } finally {
@@ -180,6 +184,18 @@ export default function ChatWidget() {
                 <Send className="h-4 w-4" strokeWidth={1.8} />
               </button>
             </form>
+
+            {/* Transparencia RGPD: quien escribe sabe que habla con una IA y
+                dónde acaban sus datos, sin robarle sitio a la conversación */}
+            <p className="border-t border-line px-4 py-2.5 text-[11px] leading-snug text-mist/60">
+              {t.privacyNote}{" "}
+              <Link
+                href="/legal/privacidad"
+                className="underline decoration-mist/30 underline-offset-2 transition-colors hover:text-frost"
+              >
+                {t.privacyLink}
+              </Link>
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
