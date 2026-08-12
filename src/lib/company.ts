@@ -10,9 +10,13 @@
  *
  * Obligatorio por la LSSI-CE (art. 10) y el RGPD (arts. 13-14).
  */
+import { SITE_URL } from "./site";
+
 export const COMPANY = {
   /** Nombre comercial */
-  brand: "Next Generation AI",
+  brand: "Asenix",
+  /** Tagline de marca (del manual de identidad) */
+  tagline: "Digital Evolution",
   /** Razón social o nombre y apellidos si es autónomo */
   legalName: "[COMPLETAR: razón social o nombre y apellidos]",
   /** NIF / CIF */
@@ -20,11 +24,16 @@ export const COMPANY = {
   /** Domicilio a efectos de notificaciones */
   address: "[COMPLETAR: domicilio completo]",
   /** Email de contacto y de ejercicio de derechos RGPD */
-  email: "hello@nextgeneration.ai",
+  email: "projects@asenix.es",
   /** Datos registrales, si la sociedad está inscrita (dejar vacío si no aplica) */
   registry: "",
-  /** Dominio público del sitio */
-  site: "https://david-zequeira.github.io/next-generation-ai",
+  /**
+   * Dominio público del sitio. Sale de la URL real del despliegue para que el
+   * aviso legal no pueda declarar un dominio distinto del que sirve la web:
+   * hoy es la de GitHub Pages y pasará a ser asenix.es en cuanto se defina
+   * NEXT_PUBLIC_SITE_URL, sin tocar este archivo.
+   */
+  site: SITE_URL,
   /** Fecha de última revisión de los textos legales */
-  updated: "2026-08-11",
+  updated: "2026-08-12",
 } as const;

@@ -1,6 +1,11 @@
-# NEXT GENERATION AI — Website
+# ASENIX — Website
 
-Sitio cinematográfico de agencia de IA. **Next.js 15 · React 19 · TypeScript · Tailwind CSS v4 · Framer Motion · GSAP (ScrollTrigger) · Lenis · React Three Fiber.**
+Sitio cinematográfico de **Asenix · Digital Evolution**, agencia de IA y automatización.
+**Next.js 15 · React 19 · TypeScript · Tailwind CSS v4 · Framer Motion · GSAP (ScrollTrigger) · Lenis · React Three Fiber.**
+
+> El repositorio sigue llamándose `next-generation-ai` (nombre anterior de la marca):
+> renombrarlo cambiaría la URL de GitHub Pages y el `basePath`, así que se deja para
+> cuando el sitio viva en `asenix.es` con dominio propio.
 
 ## Arranque
 
@@ -22,11 +27,11 @@ src/
     legal/                # privacidad · aviso legal · cookies (bilingües)
     sitemap.ts robots.ts  # generados en el build, viajan con el export
     globals.css           # design tokens (@theme), glass, gradientes, keyframes
+    icon.png              # marca de Asenix → icono de pestaña (favicon)
+    apple-icon.png        # icono para iOS (allí la transparencia se pinta negra)
+    favicon.ico           # multitamaño 16/32/48 para navegadores antiguos
   lib/company.ts          # datos identificativos del titular (LSSI-CE/RGPD)
   i18n/legal.ts           # textos legales ES/EN
-scripts/
-  og-card.mjs             # tarjeta de Open Graph (1200×630)
-  postbuild.mjs           # la renderiza a out/og.png tras el build
   components/
     providers/SmoothScroll.tsx   # Lenis + GSAP ticker compartido
     ui/
@@ -37,7 +42,24 @@ scripts/
     layout/               # Navbar de cristal flotante, Footer
     sections/             # Hero, Evolution, Services, Ecosystem, CaseStudies,
                           # Transformation, Process, Technology, Testimonials, FinalCTA
+public/
+  logo-lockup.png         # lockup de marca (versión clara) para la tarjeta OG
+scripts/
+  og-card.mjs             # tarjeta de Open Graph (1200×630) con el lockup
+  postbuild.mjs           # la renderiza a out/og.png tras el build
 ```
+
+## Identidad
+
+La marca es **Asenix** y el tagline oficial **Digital Evolution**. Los assets vienen del
+manual de identidad; los iconos se generaron recortando el isotipo a su contenido y
+centrándolo con aire (ver el commit del cambio de marca si hay que regenerarlos).
+
+- Azul de marca del logo: `#1A4DFF`. El token `--color-electric` del sitio es `#2E6BFF`
+  — parecidos pero no idénticos. Unificarlos es decisión de diseño, no la he tocado.
+- Los wordmarks de la interfaz (navbar, pie, marca de agua) son **tipográficos**
+  (`ASENIX`), no el lockup en imagen: es el sistema visual que ya tenía el sitio y así no
+  se pisa el trabajo de UI que está en Figma.
 
 ## Antes de publicar para un cliente
 
@@ -49,7 +71,7 @@ scripts/
    política que no coincide con la realidad es peor que no tenerla.
 3. **Dominio propio**: apuntar el DNS a GitHub Pages, definir el dominio en Settings →
    Pages y crear la variable de repo `NEXT_PUBLIC_SITE_URL` (p. ej.
-   `https://nextgenerationai.es`). El workflow deja entonces el `basePath` vacío y el
+   `https://asenix.es`). El workflow deja entonces el `basePath` vacío y el
    sitemap, el Open Graph y el aviso legal apuntan solos al dominio bueno.
 
 ## Legal y privacidad

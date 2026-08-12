@@ -166,7 +166,7 @@ export default function Ecosystem() {
                 fontWeight="700"
                 letterSpacing="2"
               >
-                NG//AI
+                ASENIX
               </text>
               <text
                 x={CENTER.x}

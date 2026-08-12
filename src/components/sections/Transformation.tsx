@@ -61,7 +61,7 @@ function FlowDiagram({
       {/* Core */}
       <circle cx="360" cy="180" r="42" fill="#0b1226" stroke="#2e6bff" strokeOpacity="0.8" />
       <circle cx="360" cy="180" r="54" fill="none" stroke="#38d4ff" strokeOpacity="0.35" strokeDasharray="3 7" className="animate-dash" />
-      <text x="360" y="176" textAnchor="middle" fill="#eef2ff" fontSize="12" fontWeight="700" letterSpacing="2">NG//AI</text>
+      <text x="360" y="176" textAnchor="middle" fill="#eef2ff" fontSize="12" fontWeight="700" letterSpacing="2">ASENIX</text>
       <text x="360" y="192" textAnchor="middle" fill="#38d4ff" fontSize="8" letterSpacing="2">{engine}</text>
 
       {outputs.map((label, i) => {

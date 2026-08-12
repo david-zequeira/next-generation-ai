@@ -11,7 +11,7 @@ const en = {
     railAria: "Chapters",
   },
   hero: {
-    eyebrow: "Next Generation AI",
+    eyebrow: "Asenix",
     titleA: "Building the Future",
     titleB: "of Business.",
     sub: "We bring next-generation intelligence and automation to businesses of every size — so yours can operate like a billion-dollar company.",
@@ -159,10 +159,10 @@ const en = {
     sub: "One conversation is enough to see what your company looks like running on intelligence.",
     cta: "Book a Strategy Call",
     orChat: "or ask our AI right now",
-    note: "hello@nextgeneration.ai · Response within 24 hours",
+    note: "projects@asenix.es · Response within 24 hours",
   },
   footer: {
-    tagline: "Next Generation AI — Building the Future of Business.",
+    tagline: "Asenix — Digital Evolution.",
     contact: "Contact",
     rights: "All rights reserved.",
     built: "BUILT FOR WHAT'S NEXT",
@@ -170,11 +170,11 @@ const en = {
   },
   chat: {
     welcome:
-      "Hi! 👋 I'm the Next Generation AI assistant. Ask me what we do, pricing or timelines — or book a free strategy call.",
-    headerName: "NG//AI Assistant",
+      "Hi! 👋 I'm the Asenix assistant. Ask me what we do, pricing or timelines — or book a free strategy call.",
+    headerName: "Asenix Assistant",
     headerSub: "Replies instantly · also on WhatsApp",
     placeholder: "Type a message…",
-    error: "Oops, I can't connect right now. Write to us at hello@nextgeneration.ai 🙏",
+    error: "Oops, I can't connect right now. Write to us at projects@asenix.es 🙏",
     ariaOpen: "Open chat",
     ariaClose: "Close chat",
     ariaSend: "Send",
@@ -196,7 +196,7 @@ const es: typeof en = {
     railAria: "Capítulos",
   },
   hero: {
-    eyebrow: "Next Generation AI",
+    eyebrow: "Asenix",
     titleA: "Construyendo el futuro",
     titleB: "de los negocios.",
     sub: "Llevamos inteligencia y automatización de nueva generación a empresas de cualquier tamaño — para que la tuya opere como una de mil millones.",
@@ -344,10 +344,10 @@ const es: typeof en = {
     sub: "Una conversación basta para ver cómo se ve tu empresa funcionando sobre inteligencia.",
     cta: "Reserva una llamada estratégica",
     orChat: "o pregúntale a nuestra IA ahora mismo",
-    note: "hello@nextgeneration.ai · Respuesta en menos de 24 h",
+    note: "projects@asenix.es · Respuesta en menos de 24 h",
   },
   footer: {
-    tagline: "Next Generation AI — Construyendo el futuro de los negocios.",
+    tagline: "Asenix — Evolución digital.",
     contact: "Contacto",
     rights: "Todos los derechos reservados.",
     built: "CONSTRUIDO PARA LO QUE VIENE",
@@ -355,11 +355,11 @@ const es: typeof en = {
   },
   chat: {
     welcome:
-      "¡Hola! 👋 Soy el asistente de Next Generation AI. Pregúntame qué hacemos, precios o plazos — o reserva una llamada de estrategia gratis.",
-    headerName: "Asistente NG//AI",
+      "¡Hola! 👋 Soy el asistente de Asenix. Pregúntame qué hacemos, precios o plazos — o reserva una llamada de estrategia gratis.",
+    headerName: "Asistente Asenix",
     headerSub: "Responde al instante · también en WhatsApp",
     placeholder: "Escríbeme algo…",
-    error: "Ups, no consigo conectar ahora mismo. Escríbenos a hello@nextgeneration.ai 🙏",
+    error: "Ups, no consigo conectar ahora mismo. Escríbenos a projects@asenix.es 🙏",
     ariaOpen: "Abrir chat",
     ariaClose: "Cerrar chat",
     ariaSend: "Enviar",

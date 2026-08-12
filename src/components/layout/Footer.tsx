@@ -52,13 +52,13 @@ export default function Footer() {
         aria-hidden
         className="text-outline pointer-events-none absolute inset-x-0 -bottom-6 select-none whitespace-nowrap text-center font-display text-[clamp(4rem,13vw,11rem)] font-bold leading-none tracking-tight"
       >
-        NEXT GENERATION AI
+        ASENIX
       </div>
       <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
           <div>
             <p className="font-display text-lg font-bold tracking-[0.22em] text-frost">
-              NG<span className="text-neon">{"//"}</span>AI
+              ASENIX
             </p>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-mist">{t.tagline}</p>
           </div>
@@ -96,7 +96,7 @@ export default function Footer() {
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-xs text-mist/60 md:flex-row md:items-center">
           <p>
-            © {new Date().getFullYear()} Next Generation AI. {t.rights}
+            © {new Date().getFullYear()} Asenix. {t.rights}
           </p>
 
           {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}

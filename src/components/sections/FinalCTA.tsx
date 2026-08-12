@@ -90,7 +90,7 @@ export default function FinalCTA() {
           className="mt-12"
         >
           <MagneticButton
-            href="mailto:hello@nextgeneration.ai"
+            href="mailto:projects@asenix.es"
             className="px-12 py-5 text-base shadow-[0_0_80px_-10px_rgba(46,107,255,1)]"
           >
             {t.cta}

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { createElement as h } from "react";
 
 /**
@@ -9,6 +11,10 @@ import { createElement as h } from "react";
  * por el content-type. Generándola desde el postbuild controlamos el nombre
  * final (`og.png`) — y el metadata del layout puede apuntar a él con confianza.
  *
+ * Lleva el lockup real de la marca (el del manual de identidad, versión clara
+ * sobre fondo oscuro), incrustado como data URI porque el renderizador no hace
+ * peticiones de red.
+ *
  * Se escribe con createElement en vez de JSX porque el script corre en Node
  * directamente, sin paso de compilación.
  */
@@ -19,13 +25,14 @@ const MIST = "#8A93A8";
 const ELECTRIC = "#2E6BFF";
 const NEON = "#38D4FF";
 
-const wordmark = (text, color) =>
-  h("span", { style: { fontSize: 26, fontWeight: 700, letterSpacing: 8, color } }, text);
+const lockup =
+  "data:image/png;base64," +
+  readFileSync(join(process.cwd(), "public", "logo-lockup.png")).toString("base64");
 
 const headline = (text, color) =>
   h(
     "div",
-    { style: { fontSize: 88, fontWeight: 800, lineHeight: 1.02, letterSpacing: -3, color } },
+    { style: { fontSize: 82, fontWeight: 800, lineHeight: 1.04, letterSpacing: -3, color } },
     text
   );
 
@@ -49,13 +56,7 @@ export function ogCard() {
           "radial-gradient(700px 380px at 100% 100%, rgba(56,212,255,0.18), transparent 60%)",
       },
     },
-    h(
-      "div",
-      { style: { display: "flex", alignItems: "center", gap: 14 } },
-      wordmark("NG", FROST),
-      wordmark("//", NEON),
-      wordmark("AI", FROST)
-    ),
+    h("img", { src: lockup, width: 300, style: { objectFit: "contain" } }),
     h(
       "div",
       { style: { display: "flex", flexDirection: "column" } },

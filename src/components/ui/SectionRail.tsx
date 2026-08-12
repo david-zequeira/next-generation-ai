@@ -13,7 +13,7 @@ const ANCHORS = ["#top", "#future", "#services", "#ecosystem", "#work", "#proces
  */
 export default function SectionRail() {
   const dict = useDict();
-  const labels = ["NG//AI", ...dict.nav.links, dict.footer.contact];
+  const labels = ["ASENIX", ...dict.nav.links, dict.footer.contact];
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24 });

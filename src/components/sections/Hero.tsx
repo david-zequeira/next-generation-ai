@@ -168,7 +168,7 @@ export default function Hero() {
         </motion.p>
 
         <h1 className="sr-only">
-          NEXT GENERATION AI — {t.titleA} {t.titleB}
+          ASENIX — {t.titleA} {t.titleB}
         </h1>
         {/* key={locale}: relanza la animación del titular al cambiar idioma */}
         <motion.div aria-hidden key={locale} style={{ x: headX, y: headY }}>

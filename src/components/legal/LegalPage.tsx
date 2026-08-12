@@ -30,7 +30,7 @@ export default function LegalPage({ slug }: { slug: LegalSlug }) {
 
         <header className="mt-10 border-b border-line pb-8">
           <p className="font-display text-xs font-bold tracking-[0.3em] text-neon">
-            NG<span className="text-frost">{"//"}</span>AI
+            ASENIX
           </p>
           <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-frost md:text-5xl">
             {doc.title}

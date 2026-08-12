@@ -58,7 +58,7 @@ export default function Navbar() {
             href="#top"
             className="font-display text-sm font-bold tracking-[0.22em] text-frost"
           >
-            NG<span className="text-neon">{"//"}</span>AI
+            ASENIX
           </a>
 
           <ul className="hidden items-center gap-1 md:flex">

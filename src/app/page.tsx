@@ -17,11 +17,11 @@ import FinalCTA from "@/components/sections/FinalCTA";
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Next Generation AI",
-  slogan: "Building the Future of Business.",
+  name: "Asenix",
+  slogan: "Digital Evolution.",
   description:
     "Next-generation Artificial Intelligence and Automation for businesses of every size.",
-  email: "hello@nextgeneration.ai",
+  email: "projects@asenix.es",
   knowsAbout: [
     "AI Automation",
     "AI Agents",

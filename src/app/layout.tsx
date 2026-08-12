@@ -21,7 +21,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "NEXT GENERATION AI — Building the Future of Business",
+  title: "ASENIX — Digital Evolution",
   description:
     "Next-generation Artificial Intelligence and Automation for businesses of every size. AI agents, process automation, custom AI software and enterprise integrations.",
   keywords: [
@@ -33,20 +33,20 @@ export const metadata: Metadata = {
     "AI consulting",
   ],
   openGraph: {
-    title: "NEXT GENERATION AI — Building the Future of Business",
+    title: "ASENIX — Digital Evolution",
     description:
       "Every company should operate like a billion-dollar company. We make it real with next-generation AI and automation.",
     type: "website",
     locale: "en_US",
-    siteName: "NEXT GENERATION AI",
+    siteName: "ASENIX",
     // La tarjeta se dibuja en `opengraph-image.tsx` y el postbuild la deja en
     // /og.png — con extensión, para que Pages la sirva como imagen.
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Next Generation AI" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Asenix — Digital Evolution" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NEXT GENERATION AI",
-    description: "Building the Future of Business.",
+    title: "ASENIX",
+    description: "Digital Evolution.",
     images: ["/og.png"],
   },
   robots: { index: true, follow: true },
