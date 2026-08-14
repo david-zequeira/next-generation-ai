@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   AnimatePresence,
   motion,
@@ -76,6 +77,18 @@ export default function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/precios"
+                className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
+              >
+                {t.pricing}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
+                />
+              </Link>
+            </li>
           </ul>
 
           <div className="flex items-center gap-2">
@@ -128,6 +141,19 @@ export default function Navbar() {
                 {label}
               </motion.a>
             ))}
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.06 * t.links.length, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link
+                href="/precios"
+                onClick={() => setOpen(false)}
+                className="display block cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
+              >
+                {t.pricing}
+              </Link>
+            </motion.div>
             <motion.div
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

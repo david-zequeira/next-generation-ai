@@ -3,6 +3,7 @@ export type Locale = "en" | "es";
 const en = {
   nav: {
     links: ["Vision", "Services", "Ecosystem", "Work", "Process"],
+    pricing: "Pricing",
     cta: "Book a Call",
     ctaLong: "Book a Strategy Call",
     ariaOpen: "Open menu",
@@ -188,6 +189,7 @@ const en = {
 const es: typeof en = {
   nav: {
     links: ["Visión", "Servicios", "Ecosistema", "Casos", "Proceso"],
+    pricing: "Precios",
     cta: "Reservar llamada",
     ctaLong: "Reserva una llamada estratégica",
     ariaOpen: "Abrir menú",

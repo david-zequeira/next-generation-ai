@@ -75,6 +75,14 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/precios"
+                  className="text-sm text-mist transition-colors duration-200 hover:text-frost"
+                >
+                  {dict.nav.pricing}
+                </Link>
+              </li>
             </ul>
           </nav>
 

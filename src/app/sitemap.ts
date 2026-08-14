@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "monthly", priority: 1 },
+    { url: absoluteUrl("/precios"), lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     ...LEGAL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/legal/${slug}`),
       lastModified: now,
