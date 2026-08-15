@@ -134,11 +134,13 @@ export default function PricingPage() {
               <ArrowLeft className="h-4 w-4" strokeWidth={1.8} />
               {t.back}
             </Link>
-            <Link
-              href="/"
-              className="hidden font-display text-sm font-bold tracking-[0.22em] text-frost sm:block"
-            >
-              ASENIX
+            <Link href="/" className="hidden sm:block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+                alt="Asenix"
+                className="h-7 w-auto"
+              />
             </Link>
             <button
               type="button"
@@ -500,8 +502,12 @@ export default function PricingPage() {
 
           {/* ——— Pie compacto ——— */}
           <footer className="border-t border-line py-14 text-center">
-            <p className="font-display text-sm font-bold tracking-[0.32em] text-frost">ASENIX</p>
-            <p className="mt-2 text-xs font-light text-mist">Digital Evolution</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+              alt="Asenix — Digital Evolution"
+              className="mx-auto h-9 w-auto"
+            />
             <nav
               aria-label={locale === "es" ? "Páginas legales" : "Legal pages"}
               className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2"

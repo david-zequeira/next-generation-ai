@@ -55,11 +55,13 @@ export default function Navbar() {
           aria-label="Principal"
           className="glass mx-auto flex max-w-5xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5"
         >
-          <a
-            href="#top"
-            className="font-display text-sm font-bold tracking-[0.22em] text-frost"
-          >
-            ASENIX
+          <a href="#top" className="flex items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+              alt="Asenix"
+              className="h-7 w-auto"
+            />
           </a>
 
           <ul className="hidden items-center gap-1 md:flex">

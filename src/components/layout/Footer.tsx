@@ -57,10 +57,13 @@ export default function Footer() {
       <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
           <div>
-            <p className="font-display text-lg font-bold tracking-[0.22em] text-frost">
-              ASENIX
-            </p>
-            <p className="mt-2 max-w-xs text-sm leading-relaxed text-mist">{t.tagline}</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+              alt="Asenix"
+              className="h-10 w-auto"
+            />
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-mist">{t.tagline}</p>
           </div>
 
           <nav aria-label={t.navAria}>

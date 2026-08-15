@@ -29,9 +29,12 @@ export default function LegalPage({ slug }: { slug: LegalSlug }) {
         </Link>
 
         <header className="mt-10 border-b border-line pb-8">
-          <p className="font-display text-xs font-bold tracking-[0.3em] text-neon">
-            ASENIX
-          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+            alt="Asenix"
+            className="h-8 w-auto"
+          />
           <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-frost md:text-5xl">
             {doc.title}
           </h1>
