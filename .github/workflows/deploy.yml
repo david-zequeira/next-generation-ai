@@ -33,7 +33,9 @@ jobs:
         env:
           # Con dominio propio (variable de repo NEXT_PUBLIC_SITE_URL) el sitio se
           # sirve en la raíz y el basePath sobra; sin ella, Pages lo sirve bajo /<repo>/.
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_SITE_URL && '' || format('/{0}', github.event.repository.name) }}
+          # Ojo con el ternario a && b || c: si b es '' (falsy) siempre cae en c,
+          # así que la rama "con valor" tiene que ser la del format().
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_SITE_URL == '' && format('/{0}', github.event.repository.name) || '' }}
           # URL canónica del sitio: metadata de Open Graph, sitemap y aviso legal
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
           # URL pública del ng-agent (variable del repo; vacía = widget oculto)
