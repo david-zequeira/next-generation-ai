@@ -4,9 +4,11 @@
  * poder reutilizar toda la landing como plantilla de otro cliente cambiando
  * un solo archivo.
  *
- * ⚠️ Los valores entre corchetes son marcadores a propósito: si se publican sin
- * rellenar, se ven a simple vista en la web. Es preferible a inventar un NIF o
- * un domicilio, que sería peor que no tener aviso legal.
+ * ⚠️ Un campo VACÍO se omite de las páginas legales (no se publica ningún
+ * marcador). La sociedad está en constitución: en cuanto existan razón social,
+ * NIF y domicilio, rellenarlos aquí y las líneas aparecen solas. Hasta
+ * entonces la identificación mínima es el email de contacto. Nunca inventar
+ * un NIF o un domicilio: eso sí es peor que la omisión temporal.
  *
  * Obligatorio por la LSSI-CE (art. 10) y el RGPD (arts. 13-14).
  */
@@ -17,12 +19,12 @@ export const COMPANY = {
   brand: "Asenix",
   /** Tagline de marca (del manual de identidad) */
   tagline: "Digital Evolution",
-  /** Razón social o nombre y apellidos si es autónomo */
-  legalName: "[COMPLETAR: razón social o nombre y apellidos]",
-  /** NIF / CIF */
-  taxId: "[COMPLETAR: NIF/CIF]",
-  /** Domicilio a efectos de notificaciones */
-  address: "[COMPLETAR: domicilio completo]",
+  /** Razón social o nombre y apellidos si es autónomo (vacío = se omite) */
+  legalName: "",
+  /** NIF / CIF (vacío = se omite) */
+  taxId: "",
+  /** Domicilio a efectos de notificaciones (vacío = se omite) */
+  address: "",
   /** Email de contacto y de ejercicio de derechos RGPD */
   email: "projects@asenix.es",
   /** Datos registrales, si la sociedad está inscrita (dejar vacío si no aplica) */
@@ -35,5 +37,5 @@ export const COMPANY = {
    */
   site: SITE_URL,
   /** Fecha de última revisión de los textos legales */
-  updated: "2026-08-12",
+  updated: "2026-08-18",
 } as const;

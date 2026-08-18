@@ -44,18 +44,21 @@ export const legalLinkLabels: Record<Locale, Record<LegalSlug, string>> = {
   },
 };
 
+// Cada línea aparece solo si su dato existe (mismo patrón que registry): la
+// sociedad está en constitución y publicar "[COMPLETAR: NIF]" a la vista de
+// cualquiera es peor que omitir la línea hasta tener el dato real.
 const identification = {
   es: [
-    `Titular: ${COMPANY.legalName}`,
-    `NIF: ${COMPANY.taxId}`,
-    `Domicilio: ${COMPANY.address}`,
+    ...(COMPANY.legalName ? [`Titular: ${COMPANY.legalName}`] : []),
+    ...(COMPANY.taxId ? [`NIF: ${COMPANY.taxId}`] : []),
+    ...(COMPANY.address ? [`Domicilio: ${COMPANY.address}`] : []),
     `Correo electrónico: ${COMPANY.email}`,
     ...(COMPANY.registry ? [`Datos registrales: ${COMPANY.registry}`] : []),
   ],
   en: [
-    `Owner: ${COMPANY.legalName}`,
-    `Tax ID: ${COMPANY.taxId}`,
-    `Address: ${COMPANY.address}`,
+    ...(COMPANY.legalName ? [`Owner: ${COMPANY.legalName}`] : []),
+    ...(COMPANY.taxId ? [`Tax ID: ${COMPANY.taxId}`] : []),
+    ...(COMPANY.address ? [`Address: ${COMPANY.address}`] : []),
     `Email: ${COMPANY.email}`,
     ...(COMPANY.registry ? [`Registry details: ${COMPANY.registry}`] : []),
   ],
