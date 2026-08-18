@@ -13,20 +13,32 @@ import Process from "@/components/sections/Process";
 import Technology from "@/components/sections/Technology";
 import FinalCTA from "@/components/sections/FinalCTA";
 
+import { SITE_URL } from "@/lib/site";
+
+// ProfessionalService (no un Organization pelado): dice a Google QUÉ vendemos,
+// DÓNDE y en qué idioma — la señal geográfica que le faltaba a un dominio .es
+// cuyo HTML estaba congelado en inglés.
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "ProfessionalService",
   name: "Asenix",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo-lockup.png`,
+  image: `${SITE_URL}/og.png`,
   slogan: "Digital Evolution.",
   description:
-    "Next-generation Artificial Intelligence and Automation for businesses of every size.",
+    "Marca, web premium y agentes de IA que atienden, reservan citas y capturan clientes 24/7 para negocios en España.",
   email: "projects@asenix.es",
+  areaServed: { "@type": "Country", name: "España" },
+  inLanguage: ["es", "en"],
+  priceRange: "€€",
   knowsAbout: [
-    "AI Automation",
-    "AI Agents",
-    "Business Process Automation",
-    "Custom AI Software",
-    "AI Consulting",
+    "Agentes de IA",
+    "Automatización de procesos",
+    "Diseño web premium",
+    "Sistemas de reservas",
+    "Agentes de WhatsApp",
+    "Software a medida",
   ],
 };
 

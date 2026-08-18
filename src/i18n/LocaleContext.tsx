@@ -18,26 +18,29 @@ type LocaleContextValue = {
 };
 
 const LocaleContext = createContext<LocaleContextValue>({
-  locale: "en",
+  locale: "es",
   setLocale: () => {},
-  dict: dictionaries.en,
+  dict: dictionaries.es,
 });
 
 const STORAGE_KEY = "ng-locale";
 
 /**
- * Idioma del sitio: preferencia guardada → idioma del navegador → inglés.
- * Client-side (el sitio es un export estático en GitHub Pages).
+ * Idioma del sitio: preferencia guardada → idioma del navegador → ESPAÑOL.
+ * El defecto es "es" a propósito: es lo que queda congelado en el HTML
+ * prerenderizado del export estático, y por tanto lo que indexa Google y lo
+ * que ven los previsualizadores de enlaces. El mercado de Asenix es España;
+ * con "en" por defecto, el contenido español no existía para un buscador.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("es");
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
     if (saved === "en" || saved === "es") {
       setLocaleState(saved);
-    } else if (navigator.language.toLowerCase().startsWith("es")) {
-      setLocaleState("es");
+    } else if (!navigator.language.toLowerCase().startsWith("es")) {
+      setLocaleState("en");
     }
   }, []);
 

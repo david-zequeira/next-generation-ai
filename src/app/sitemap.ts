@@ -5,15 +5,16 @@ import { absoluteUrl } from "@/lib/site";
 /** Sitemap estático: se genera en el build y viaja con el export a Pages. */
 export const dynamic = "force-static";
 
+// Sin lastModified a propósito: con `new Date()` del build, TODAS las URLs
+// decían "modificado hoy" en cada despliegue — una señal ruidosa que enseña al
+// crawler a ignorar el dato. Mejor no declararlo que declararlo mal.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   return [
-    { url: absoluteUrl("/"), lastModified: now, changeFrequency: "monthly", priority: 1 },
-    { url: absoluteUrl("/precios"), lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: absoluteUrl("/contacto"), lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
+    { url: absoluteUrl("/precios"), changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/contacto"), changeFrequency: "monthly", priority: 0.8 },
     ...LEGAL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/legal/${slug}`),
-      lastModified: now,
       changeFrequency: "yearly" as const,
       priority: 0.3,
     })),
