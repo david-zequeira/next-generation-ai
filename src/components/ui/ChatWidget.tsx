@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
 import { getSessionId } from "@/lib/session";
+import { trackEvent } from "@/lib/track";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
@@ -34,6 +35,16 @@ export default function ChatWidget() {
     window.addEventListener("ng:open-chat", onOpen);
     return () => window.removeEventListener("ng:open-chat", onOpen);
   }, []);
+
+  // Evento de conversión: primera apertura del chat en esta sesión, venga del
+  // botón flotante o de cualquier CTA que dispare "ng:open-chat".
+  const openTracked = useRef(false);
+  useEffect(() => {
+    if (open && !openTracked.current) {
+      openTracked.current = true;
+      trackEvent("chat_opened");
+    }
+  }, [open]);
 
   // Calentamiento: el plan gratuito de Render duerme el backend; un ping
   // temprano lo despierta mientras el visitante navega, y el primer mensaje

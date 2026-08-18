@@ -11,6 +11,7 @@ import {
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
+import { trackEvent } from "@/lib/track";
 
 const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
 
@@ -95,13 +96,14 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <span className="hidden md:inline-flex">{langButton}</span>
-            <a
-              href="#contact"
+            <Link
+              href="/contacto"
+              onClick={() => trackEvent("cta_navbar")}
               className="group hidden cursor-pointer items-center gap-1.5 rounded-full bg-electric px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_6px_18px_-10px_rgba(0,0,0,0.7),0_0_28px_-8px_rgba(46,107,255,0.9)] transition-all duration-300 hover:bg-[#3d78ff] hover:shadow-[0_8px_22px_-10px_rgba(0,0,0,0.7),0_0_38px_-6px_rgba(46,107,255,1)] active:scale-[0.97] md:inline-flex"
             >
               {t.cta}
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </Link>
             <button
               type="button"
               aria-label={open ? t.ariaClose : t.ariaOpen}
@@ -164,16 +166,22 @@ export default function Navbar() {
             >
               {langButton}
             </motion.div>
-            <motion.a
-              href="#contact"
-              onClick={() => setOpen(false)}
+            <motion.div
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.45 }}
-              className="mt-4 cursor-pointer rounded-full bg-electric px-8 py-4 font-display text-sm font-semibold text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.9)]"
             >
-              {t.ctaLong}
-            </motion.a>
+              <Link
+                href="/contacto"
+                onClick={() => {
+                  setOpen(false);
+                  trackEvent("cta_navbar");
+                }}
+                className="mt-4 block cursor-pointer rounded-full bg-electric px-8 py-4 font-display text-sm font-semibold text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.9)]"
+              >
+                {t.ctaLong}
+              </Link>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

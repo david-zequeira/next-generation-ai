@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowUpRight, Check, Minus } from "lucide-react";
 import ChatWidget from "@/components/ui/ChatWidget";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
+import { trackEvent } from "@/lib/track";
 import { pricingDicts } from "@/i18n/pricing";
 import { LEGAL_SLUGS, legalLinkLabels } from "@/i18n/legal";
 
@@ -278,8 +279,11 @@ export default function PricingPage() {
                       ))}
                     </div>
 
-                    <a
-                      href="#contacto"
+                    {/* El slug del plan viaja en la URL: /contacto lo preselecciona
+                        y el evento distingue QUÉ plan generó el clic. */}
+                    <Link
+                      href={`/contacto?plan=${plan.name.toLowerCase()}`}
+                      onClick={() => trackEvent(`cta_plan_${plan.name.toLowerCase()}`)}
                       className={cn(
                         "mt-6 block rounded-xl py-3 text-center font-display text-sm font-semibold transition-all duration-300",
                         plan.star
@@ -288,7 +292,7 @@ export default function PricingPage() {
                       )}
                     >
                       {plan.cta}
-                    </a>
+                    </Link>
                   </article>
                 </Reveal>
               ))}
@@ -488,13 +492,14 @@ export default function PricingPage() {
                 <p className="mx-auto mt-5 max-w-lg font-light leading-relaxed text-mist">
                   {t.final.sub}
                 </p>
-                <a
-                  href="mailto:projects@asenix.es"
+                <Link
+                  href="/contacto"
+                  onClick={() => trackEvent("cta_final_precios")}
                   className="group mt-9 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-electric to-neon px-10 py-4 font-display text-base font-semibold text-void shadow-[0_18px_52px_-16px_rgba(56,212,255,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_26px_66px_-16px_rgba(56,212,255,0.9)]"
                 >
                   {t.final.cta}
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
+                </Link>
                 <p className="mt-4 text-xs text-mist">{t.final.mini}</p>
               </div>
             </Reveal>

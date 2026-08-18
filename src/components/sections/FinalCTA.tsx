@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
+import { trackEvent } from "@/lib/track";
 
 const AICore = dynamic(() => import("@/components/three/AICore"), {
   ssr: false,
@@ -90,7 +91,8 @@ export default function FinalCTA() {
           className="mt-12"
         >
           <MagneticButton
-            href="mailto:projects@asenix.es"
+            href="/contacto"
+            onClick={() => trackEvent("cta_final_home")}
             className="px-12 py-5 text-base shadow-[0_0_80px_-10px_rgba(46,107,255,1)]"
           >
             {t.cta}
