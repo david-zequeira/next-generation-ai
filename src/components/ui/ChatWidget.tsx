@@ -10,6 +10,17 @@ import { trackEvent } from "@/lib/track";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
+/** Historial visible, por pestaña (el backend guarda el suyo por sessionId). */
+const HISTORY_KEY = "ng-chat-history";
+
+/**
+ * Techo de espera por respuesta. Generoso a propósito: el cold start del plan
+ * gratuito de Render ronda los 40 s y un turno con reserva incluye llamadas a
+ * Google Calendar. Antes no había techo: los tres puntitos podían quedarse
+ * animando para siempre.
+ */
+const REPLY_TIMEOUT_MS = 60_000;
+
 type Msg = { role: "user" | "assistant"; text: string };
 
 /**
@@ -28,6 +39,27 @@ export default function ChatWidget() {
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
+
+  // El historial visible vive en sessionStorage: navegar de la home a /precios
+  // remonta el widget, y sin esto el visitante veía el panel en blanco aunque
+  // el backend recordara la conversación (misma sessionId).
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(HISTORY_KEY);
+      if (raw) setMessages(JSON.parse(raw) as Msg[]);
+    } catch {
+      // historial corrupto: se empieza de cero
+    }
+  }, []);
+  useEffect(() => {
+    try {
+      if (messages.length > 0) {
+        sessionStorage.setItem(HISTORY_KEY, JSON.stringify(messages.slice(-40)));
+      }
+    } catch {
+      // sin sitio en sessionStorage: el chat sigue funcionando sin persistir
+    }
+  }, [messages]);
 
   // El CTA final puede abrir el chat ("o pregúntale a nuestra IA ahora mismo")
   useEffect(() => {
@@ -70,11 +102,14 @@ export default function ChatWidget() {
     const base = messages.length > 0 ? messages : [{ role: "assistant" as const, text: t.welcome }];
     setMessages([...base, { role: "user", text }]);
     setBusy(true);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REPLY_TIMEOUT_MS);
     try {
       const res = await fetch(`${AGENT_URL}/api/chat`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ sessionId: getSessionId(), message: text }),
+        signal: controller.signal,
       });
       // El backend puede rechazar el turno por límite de uso (429/503) y aun así
       // devolver un texto humano explicando por qué. Si lo trae, ese es el
@@ -84,7 +119,10 @@ export default function ChatWidget() {
       setMessages((m) => [...m, { role: "assistant", text: data.reply! }]);
     } catch {
       setMessages((m) => [...m, { role: "assistant", text: t.error }]);
+      // El texto vuelve al input: reintentar es un clic, no volver a escribirlo
+      setInput(text);
     } finally {
+      clearTimeout(timer);
       setBusy(false);
     }
   };
