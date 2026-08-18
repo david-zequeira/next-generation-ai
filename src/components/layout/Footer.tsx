@@ -33,17 +33,18 @@ function GitHubIcon({ className }: IconProps) {
 
 const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
 
-const SOCIALS = [
-  { label: "X (Twitter)", href: "https://x.com", icon: XIcon },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedInIcon },
-  { label: "GitHub", href: "https://github.com", icon: GitHubIcon },
-];
+/**
+ * Sin perfiles sociales reales todavía: la lista queda vacía a propósito (tres
+ * botones que llevaban a x.com/linkedin.com/github.com a secas eran peor señal
+ * que no tenerlos). Al crear los perfiles, añadir aquí las URL completas.
+ */
+const SOCIALS: { label: string; href: string; icon: (p: IconProps) => React.JSX.Element }[] = [];
 
 export default function Footer() {
   const dict = useDict();
   const { locale } = useLocale();
   const t = dict.footer;
-  const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "#contact" }];
+  const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "/contacto" }];
 
   return (
     <footer className="relative overflow-hidden border-t border-line bg-void">

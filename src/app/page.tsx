@@ -11,7 +11,6 @@ import CaseStudies from "@/components/sections/CaseStudies";
 import Transformation from "@/components/sections/Transformation";
 import Process from "@/components/sections/Process";
 import Technology from "@/components/sections/Technology";
-import Testimonials from "@/components/sections/Testimonials";
 import FinalCTA from "@/components/sections/FinalCTA";
 
 const jsonLd = {
@@ -52,7 +51,7 @@ export default function Home() {
         <Bridge id="leap" />
         <Process />
         <Technology />
-        <Testimonials />
+        {/* Testimonials: retirado hasta tener testimonios reales (ver dictionaries.ts) */}
         <FinalCTA />
       </main>
       <Footer />
