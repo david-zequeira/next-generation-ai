@@ -7,6 +7,7 @@ import { useLocale } from "@/i18n/LocaleContext";
 import { getSessionId } from "@/lib/session";
 import { trackEvent } from "@/lib/track";
 import ChatWidget from "@/components/ui/ChatWidget";
+import VoiceWidget from "@/components/ui/VoiceWidget";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 const EMAIL = "projects@asenix.es";
@@ -246,6 +247,7 @@ export default function ContactPage() {
       </main>
 
       <ChatWidget />
+      <VoiceWidget />
     </div>
   );
 }

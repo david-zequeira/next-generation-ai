@@ -5,6 +5,7 @@ import { type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Check, Minus } from "lucide-react";
 import ChatWidget from "@/components/ui/ChatWidget";
+import VoiceWidget from "@/components/ui/VoiceWidget";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
@@ -531,6 +532,7 @@ export default function PricingPage() {
         </main>
       </div>
       <ChatWidget />
+      <VoiceWidget />
     </>
   );
 }
