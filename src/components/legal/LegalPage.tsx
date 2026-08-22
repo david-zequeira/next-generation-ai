@@ -47,7 +47,9 @@ export default function LegalPage({ slug }: { slug: LegalSlug }) {
 
         <div className="mt-12 space-y-10">
           {doc.sections.map((section) => (
-            <section key={section.heading}>
+            // scroll-mt: que el ancla (#agente-de-voz desde el widget de voz)
+            // no aterrice con el título pegado al borde superior.
+            <section key={section.heading} id={section.id} className="scroll-mt-24">
               <h2 className="font-display text-xl font-bold text-frost">{section.heading}</h2>
               {section.body?.map((paragraph) => (
                 <p key={paragraph} className="mt-4 leading-relaxed text-mist">
