@@ -191,7 +191,7 @@ const en = {
     hangup: "Hang up",
     error: "I can't start the call right now. Ask me anything on the chat instead 🙏",
     privacyNote:
-      "You're talking to an AI voice assistant. The conversation is processed to answer your query and the call is recorded.",
+      "You're talking to an AI assistant: the call is recorded for customer service and booking purposes.",
     privacyLink: "Privacy policy",
   },
   contact: {
@@ -408,7 +408,7 @@ const es: typeof en = {
     hangup: "Colgar",
     error: "Ahora mismo no puedo iniciar la llamada. Pregúntame lo que quieras por el chat 🙏",
     privacyNote:
-      "Hablas con un asistente de IA por voz. La conversación se procesa para atender tu consulta y la llamada se graba.",
+      "Hablas con un asistente de IA: la llamada se graba con fines de atención al cliente y gestión de reservas.",
     privacyLink: "Política de privacidad",
   },
   contact: {

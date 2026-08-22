@@ -290,11 +290,11 @@ export default function VoiceWidget() {
             )}
 
             {/* Transparencia RGPD, como en el chat, con la grabación explícita.
-                El texto definitivo lo cierra la Fase 7 (legal). */}
+                Texto final de la Fase 7; enlaza a la sección del agente de voz. */}
             <p className="border-t border-line px-4 py-2.5 text-[11px] leading-snug text-mist/60">
               {t.privacyNote}{" "}
               <Link
-                href="/legal/privacidad"
+                href="/legal/privacidad#agente-de-voz"
                 className="underline decoration-mist/30 underline-offset-2 transition-colors hover:text-frost"
               >
                 {t.privacyLink}
