@@ -193,9 +193,9 @@ export default function PricingPage() {
 
           {/* ——— Planes ——— */}
           <div className="mx-auto max-w-7xl px-6">
-            <div className="grid items-stretch gap-5 min-[680px]:grid-cols-2 xl:grid-cols-4">
+            <div className="mx-auto grid max-w-6xl items-stretch gap-5 min-[680px]:grid-cols-2 xl:grid-cols-3">
               {t.plans.map((plan, i) => (
-                <Reveal key={plan.name} delay={(i % 4) * 0.08} className="h-full">
+                <Reveal key={plan.name} delay={(i % 3) * 0.08} className="h-full">
                   <article
                     className={cn(
                       "group relative flex h-full flex-col rounded-[22px] border p-7 pt-9 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2",
@@ -224,22 +224,22 @@ export default function PricingPage() {
                     </h3>
                     <p className="mt-2 min-h-10 text-[13px] font-light text-mist">{plan.who}</p>
 
+                    {/* La CUOTA va primero y en grande: es la cifra que el dueño
+                        compara con una nómina. La puesta en marcha, debajo y en
+                        pequeño — enseñarla primero era el error de conversión de
+                        la versión anterior de esta página. */}
                     <div className="mt-6 border-t border-line pt-5">
                       <div className="font-display text-[2.15rem] font-bold tracking-tight">
-                        {plan.setupPrefix && (
-                          <span className="mr-1.5 text-base font-normal text-mist">
-                            {plan.setupPrefix}
-                          </span>
-                        )}
                         <span className="bg-gradient-to-r from-frost to-[#7fb0ff] bg-clip-text text-transparent">
-                          {plan.setup}
+                          {plan.mrr}
                         </span>
-                        <span className="ml-1.5 text-sm font-normal text-mist">
-                          {plan.setupNote}
-                        </span>
+                        <span className="ml-1 text-sm font-normal text-mist">{plan.mrrNote}</span>
                       </div>
                       <p className="mt-1 text-sm font-medium text-neon">
-                        {plan.mrr} <span className="font-light text-mist">{plan.mrrNote}</span>
+                        {plan.setupPrefix && (
+                          <span className="font-light text-mist">{plan.setupPrefix} </span>
+                        )}
+                        {plan.setup} <span className="font-light text-mist">{plan.setupNote}</span>
                       </p>
                       <p className="mt-3 rounded-lg border border-neon/[0.18] bg-neon/[0.08] px-2.5 py-1.5 text-xs text-[#8fd6ff]">
                         <Rich text={plan.kitline} strongClass="font-semibold text-[#c8ecff]" />
@@ -301,7 +301,7 @@ export default function PricingPage() {
           </div>
 
           {/* ——— Diagnóstico ——— */}
-          <section className="mx-auto max-w-7xl px-6 py-24">
+          <section className="mx-auto max-w-7xl px-6 pb-6 pt-24">
             <Reveal>
               <div className="flex flex-col items-start gap-4 rounded-2xl border border-pulse/30 bg-gradient-to-r from-pulse/[0.13] to-electric/[0.07] p-6 sm:flex-row sm:items-center md:px-7">
                 <span className="shrink-0 rounded-full bg-pulse px-3.5 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-white">
@@ -309,6 +309,20 @@ export default function PricingPage() {
                 </span>
                 <p className="text-sm leading-relaxed text-[#cfe3ff]">
                   <Rich text={t.diag.body} strongClass="font-semibold text-white" />
+                </p>
+              </div>
+            </Reveal>
+          </section>
+
+          {/* ——— Agente de voz: lista de espera, no venta ——— */}
+          <section className="mx-auto max-w-7xl px-6 pb-24">
+            <Reveal>
+              <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-panel/35 p-6 sm:flex-row sm:items-center md:px-7">
+                <span className="shrink-0 rounded-full border border-line bg-space/70 px-3.5 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-mist">
+                  {t.voice.badge}
+                </span>
+                <p className="text-sm leading-relaxed text-mist">
+                  <Rich text={t.voice.body} strongClass="font-semibold text-frost" />
                 </p>
               </div>
             </Reveal>
@@ -330,7 +344,7 @@ export default function PricingPage() {
                           key={col}
                           className={cn(
                             "border-b border-line bg-panel/70 px-4 py-4 text-center font-display text-[13px] font-semibold text-frost",
-                            i === 1 && "bg-electric/[0.12]"
+                            i === 0 && "bg-electric/[0.12]"
                           )}
                         >
                           {col}
@@ -358,7 +372,7 @@ export default function PricingPage() {
                             className={cn(
                               "px-4 py-3.5 text-center text-[13px]",
                               ri < t.compare.rows.length - 1 && "border-b border-line",
-                              ci === 1 && "bg-electric/[0.06]",
+                              ci === 0 && "bg-electric/[0.06]",
                               row.strong ? "font-semibold text-frost" : "text-mist",
                               row.accent && "font-semibold text-neon"
                             )}
