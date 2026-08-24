@@ -13,6 +13,9 @@ import type { Locale } from "./dictionaries";
 
 export type LegalSection = {
   heading: string;
+  /** Ancla opcional (id del <section>): permite enlazar la sección desde fuera,
+   *  p. ej. el aviso del widget de voz → /legal/privacidad#agente-de-voz. */
+  id?: string;
   /** Párrafos; se renderizan en orden. */
   body?: string[];
   /** Lista de puntos, después de los párrafos. */
@@ -119,32 +122,46 @@ const es: Record<LegalSlug, LegalDoc> = {
         ],
       },
       {
-        heading: "6. Tus derechos",
+        heading: "6. Agente de voz: llamadas grabadas",
+        id: "agente-de-voz",
+        body: [
+          "El asistente también puede atenderte por voz (llamada desde la web o por teléfono). Al descolgar, una locución te informa de que hablas con un asistente virtual y de que la llamada se graba; si no quieres que se grabe, basta con no continuar la llamada y escribirnos por el chat o por email. En las llamadas tratamos:",
+        ],
+        list: [
+          "Qué se procesa: el audio de la llamada y su transcripción y, si llamas por teléfono, tu número.",
+          "Finalidad y base legal: atención al cliente y gestión de reservas — ejecución de tu solicitud (art. 6.1.b RGPD). La grabación se te informa siempre al inicio de la llamada.",
+          "Plazos de conservación: la grabación de audio, un máximo de 30 días; la transcripción, un máximo de 12 meses. Pasado ese plazo, los números de teléfono de la llamada se anonimizan.",
+          "Encargados y subencargados: Retell AI (motor de voz y grabación; EE. UU., con cláusulas contractuales tipo), Twilio (telefonía), Supabase (base de datos, servidores en la UE) y el proveedor de IA que genera las respuestas (Mistral AI, UE, o Anthropic, EE. UU., con cláusulas contractuales tipo).",
+          `Tus derechos: puedes pedir acceso a tus llamadas y transcripciones, o su supresión, escribiendo a ${COMPANY.email}.`,
+        ],
+      },
+      {
+        heading: "7. Tus derechos",
         body: [
           `Puedes ejercer en cualquier momento tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a ${COMPANY.email}. Te responderemos en el plazo de un mes.`,
           "Si crees que no hemos atendido tu solicitud correctamente, puedes reclamar ante la Agencia Española de Protección de Datos (www.aepd.es).",
         ],
       },
       {
-        heading: "7. Decisiones automatizadas",
+        heading: "8. Decisiones automatizadas",
         body: [
           "El asistente responde de forma automática usando inteligencia artificial, pero no toma decisiones con efectos jurídicos sobre ti. Cuando algo se sale de su ámbito, la conversación pasa a una persona del equipo. Puedes pedir hablar con una persona en cualquier momento.",
         ],
       },
       {
-        heading: "8. Menores de edad",
+        heading: "9. Menores de edad",
         body: [
           "Este servicio está dirigido a personas mayores de 18 años. No recogemos datos de menores de forma consciente; si detectamos alguno, lo eliminamos.",
         ],
       },
       {
-        heading: "9. Seguridad",
+        heading: "10. Seguridad",
         body: [
           "Aplicamos medidas técnicas y organizativas razonables: cifrado en tránsito, acceso restringido por credenciales al panel de gestión y límites de uso para evitar accesos abusivos. Ningún sistema es infalible, pero notificaremos cualquier brecha que te afecte conforme al RGPD.",
         ],
       },
       {
-        heading: "10. Cambios",
+        heading: "11. Cambios",
         body: [
           `Si cambiamos esta política, publicaremos la versión actualizada en esta misma página. Última actualización: ${COMPANY.updated}.`,
         ],
@@ -289,32 +306,46 @@ const en: Record<LegalSlug, LegalDoc> = {
         ],
       },
       {
-        heading: "6. Your rights",
+        heading: "6. Voice agent: recorded calls",
+        id: "agente-de-voz",
+        body: [
+          "The assistant can also serve you by voice (web call or phone call). When the call starts, a spoken notice tells you that you are talking to a virtual assistant and that the call is recorded; if you'd rather not be recorded, simply end the call and write to us via the chat or by email. On calls we process:",
+        ],
+        list: [
+          "What is processed: the call audio and its transcript and, if you call by phone, your number.",
+          "Purpose and legal basis: customer service and booking management — steps taken at your request (Art. 6(1)(b) GDPR). The recording is always announced at the start of the call.",
+          "Retention periods: the audio recording, 30 days maximum; the transcript, 12 months maximum. After that, the call's phone numbers are anonymised.",
+          "Processors and sub-processors: Retell AI (voice engine and recording; US, under standard contractual clauses), Twilio (telephony), Supabase (database, EU servers) and the AI provider generating the replies (Mistral AI, EU, or Anthropic, US, under standard contractual clauses).",
+          `Your rights: you can request access to your calls and transcripts, or their erasure, by writing to ${COMPANY.email}.`,
+        ],
+      },
+      {
+        heading: "7. Your rights",
         body: [
           `You can exercise your rights of access, rectification, erasure, objection, restriction and portability at any time by writing to ${COMPANY.email}. We will reply within one month.`,
           "If you believe your request was not handled properly, you may lodge a complaint with the Spanish Data Protection Agency (www.aepd.es).",
         ],
       },
       {
-        heading: "7. Automated decisions",
+        heading: "8. Automated decisions",
         body: [
           "The assistant replies automatically using artificial intelligence, but it makes no decisions with legal effects on you. Anything outside its scope is handed to a human. You can ask to speak to a person at any time.",
         ],
       },
       {
-        heading: "8. Minors",
+        heading: "9. Minors",
         body: [
           "This service is intended for people over 18. We do not knowingly collect data from minors; if we detect any, we delete it.",
         ],
       },
       {
-        heading: "9. Security",
+        heading: "10. Security",
         body: [
           "We apply reasonable technical and organisational measures: encryption in transit, credential-restricted access to the management panel, and usage limits to prevent abusive access. No system is infallible, but we will notify any breach affecting you as required by the GDPR.",
         ],
       },
       {
-        heading: "10. Changes",
+        heading: "11. Changes",
         body: [
           `If we change this policy we will publish the updated version on this page. Last updated: ${COMPANY.updated}.`,
         ],

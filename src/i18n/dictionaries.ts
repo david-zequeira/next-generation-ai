@@ -181,6 +181,19 @@ const en = {
     privacyNote: "You're talking to an AI assistant. We store this conversation to answer you and manage your booking.",
     privacyLink: "Privacy policy",
   },
+  voice: {
+    ariaStart: "Start a voice call with the assistant",
+    ariaHangup: "Hang up",
+    ariaDialog: "Voice call with the assistant",
+    headerName: "Asenix Assistant",
+    connecting: "Connecting…",
+    inCall: "On a call — speak naturally",
+    hangup: "Hang up",
+    error: "I can't start the call right now. Ask me anything on the chat instead 🙏",
+    privacyNote:
+      "You're talking to an AI assistant: the call is recorded for customer service and booking purposes.",
+    privacyLink: "Privacy policy",
+  },
   contact: {
     eyebrow: "Contact",
     titleA: "Tell us about",
@@ -383,6 +396,19 @@ const es: typeof en = {
     ariaInput: "Mensaje",
     ariaDialog: "Chat con el asistente",
     privacyNote: "Hablas con un asistente de IA. Guardamos esta conversación para atenderte y gestionar tu cita.",
+    privacyLink: "Política de privacidad",
+  },
+  voice: {
+    ariaStart: "Iniciar una llamada de voz con el asistente",
+    ariaHangup: "Colgar",
+    ariaDialog: "Llamada de voz con el asistente",
+    headerName: "Asistente Asenix",
+    connecting: "Conectando…",
+    inCall: "En llamada — habla con normalidad",
+    hangup: "Colgar",
+    error: "Ahora mismo no puedo iniciar la llamada. Pregúntame lo que quieras por el chat 🙏",
+    privacyNote:
+      "Hablas con un asistente de IA: la llamada se graba con fines de atención al cliente y gestión de reservas.",
     privacyLink: "Política de privacidad",
   },
   contact: {

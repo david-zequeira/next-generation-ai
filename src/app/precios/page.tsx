@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Planes y precios · Plans & pricing — Asenix",
   description:
-    "Signal, Core, Orbit y Nexus: marca, web premium y agentes de IA que atienden, reservan y no se van a dormir. Desde 149 €/mes, con opción de 0 € de entrada.",
+    "Arranque, Core y Nexus: un asistente que atiende en tu web y tu WhatsApp, responde con la información real de tu negocio y cierra la cita en tu agenda. 349 €/mes, funcionando en 7 días.",
   robots: { index: true, follow: true },
 };
 

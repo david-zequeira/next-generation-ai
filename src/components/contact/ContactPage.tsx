@@ -7,18 +7,23 @@ import { useLocale } from "@/i18n/LocaleContext";
 import { getSessionId } from "@/lib/session";
 import { trackEvent } from "@/lib/track";
 import ChatWidget from "@/components/ui/ChatWidget";
+import VoiceWidget from "@/components/ui/VoiceWidget";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 const EMAIL = "projects@asenix.es";
 
 /** Slugs estables de plan — coinciden con los ids de ng-agent (`src/plans.ts`). */
-const PLANS = ["signal", "core", "orbit", "nexus"] as const;
+// Los planes que /precios publica hoy. Signal y Orbit salieron de la página el
+// 23/08/2026 (Orbit vuelve con la voz), así que tampoco se ofrecen aquí: un
+// desplegable que nombra planes que no están en la tarifa genera leads que hay
+// que desdecir en la primera llamada.
+const PLANS = ["arranque", "core", "nexus"] as const;
 
 /**
  * /contacto — el primer camino de conversión real de la web: hasta ahora todos
  * los CTA acababan en un `mailto:`. Envía a `POST /api/lead` de ng-agent, que
  * guarda el lead en el CRM y avisa por Telegram. El plan llega preseleccionado
- * desde los CTA de /precios (`/contacto?plan=core`).
+ * desde los CTA de /precios (`/contacto?plan=arranque`).
  */
 export default function ContactPage() {
   const { locale, dict, setLocale } = useLocale();
@@ -28,7 +33,7 @@ export default function ContactPage() {
   const [plan, setPlan] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
 
-  // El plan viene en la query (?plan=core) desde los CTA de /precios. Se lee en
+  // El plan viene en la query (?plan=arranque) desde los CTA de /precios. Se lee en
   // efecto y no con useSearchParams para no necesitar Suspense en export estático.
   useEffect(() => {
     const fromQuery = new URLSearchParams(window.location.search).get("plan") ?? "";
@@ -246,6 +251,7 @@ export default function ContactPage() {
       </main>
 
       <ChatWidget />
+      <VoiceWidget />
     </div>
   );
 }
