@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
     { url: absoluteUrl("/precios"), changeFrequency: "monthly", priority: 0.9 },
+    { url: absoluteUrl("/calculadora"), changeFrequency: "monthly", priority: 0.85 },
     { url: absoluteUrl("/contacto"), changeFrequency: "monthly", priority: 0.8 },
     ...LEGAL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/legal/${slug}`),

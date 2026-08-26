@@ -3,6 +3,7 @@ export type Locale = "en" | "es";
 const en = {
   nav: {
     links: ["Vision", "Services", "Ecosystem", "Work", "Process"],
+    calc: "Calculator",
     pricing: "Pricing",
     cta: "Book a Call",
     ctaLong: "Book a Strategy Call",
@@ -159,6 +160,27 @@ const en = {
     orChat: "or ask our AI right now",
     note: "projects@asenix.es · Response within 24 hours",
   },
+  roi: {
+    eyebrow: "Do the maths",
+    titleA: "Before you hire anyone,",
+    titleB: "do the maths.",
+    body: "Not a brochure and not a promise: your own figures, our assumptions in plain sight, and a number you can argue with. Four questions, no sign-up — and if it doesn't pay for your business, it says so.",
+    exampleLabel: "Worked example · neighbourhood salon",
+    inputsLabel: "What the owner typed in",
+    inputs: [
+      "€45 average per visit",
+      "6 visits a year per client",
+      "10 enquiries a week left unanswered",
+      "12 no-shows a month",
+    ],
+    leakLabel: "Slipping away today",
+    netLabel: "Left over each month",
+    paybackLabel: "Pays for itself in",
+    months: "months",
+    cta: "Do the maths with my numbers",
+    note: "No sign-up. Four questions. Every assumption on screen.",
+    diagCta: "Request the free Diagnostic",
+  },
   footer: {
     tagline: "Asenix — Digital Evolution.",
     contact: "Contact",
@@ -223,6 +245,7 @@ const en = {
 const es: typeof en = {
   nav: {
     links: ["Visión", "Servicios", "Ecosistema", "Casos", "Proceso"],
+    calc: "Calculadora",
     pricing: "Precios",
     cta: "Reservar llamada",
     ctaLong: "Reserva una llamada estratégica",
@@ -375,6 +398,27 @@ const es: typeof en = {
     cta: "Reserva una llamada estratégica",
     orChat: "o pregúntale a nuestra IA ahora mismo",
     note: "projects@asenix.es · Respuesta en menos de 24 h",
+  },
+  roi: {
+    eyebrow: "La cuenta",
+    titleA: "Antes de contratar nada,",
+    titleB: "haz la cuenta.",
+    body: "Ni un folleto ni una promesa: tus cifras, nuestras hipótesis a la vista y un número que puedes discutir. Cuatro preguntas, sin registro — y si a tu negocio no le compensa, lo dice.",
+    exampleLabel: "Ejemplo real de la cuenta · peluquería de barrio",
+    inputsLabel: "Lo que puso el dueño",
+    inputs: [
+      "45 € de media por visita",
+      "6 visitas al año por cliente",
+      "10 consultas a la semana sin responder",
+      "12 plantones al mes",
+    ],
+    leakLabel: "Se le escapa hoy",
+    netLabel: "Le quedaría a favor cada mes",
+    paybackLabel: "Se paga solo en",
+    months: "meses",
+    cta: "Hacer la cuenta con mis números",
+    note: "Sin registro. Cuatro preguntas. Las hipótesis, en pantalla.",
+    diagCta: "Pedir el Diagnóstico gratis",
   },
   footer: {
     tagline: "Asenix — Evolución digital.",
