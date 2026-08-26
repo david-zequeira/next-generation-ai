@@ -18,11 +18,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # Explícito a propósito: desde setup-node v5 la caché puede activarse
+          # sola si package.json declara `packageManager`. Aquí no lo declara, así
+          # que sin esta línea no habría caché — no es redundante, es la que manda.
           cache: npm
 
       - name: Instalar dependencias
@@ -41,7 +44,7 @@ jobs:
           # URL pública del ng-agent (variable del repo; vacía = widget oculto)
           NEXT_PUBLIC_AGENT_URL: ${{ vars.NEXT_PUBLIC_AGENT_URL }}
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: out
 
@@ -53,4 +56,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
