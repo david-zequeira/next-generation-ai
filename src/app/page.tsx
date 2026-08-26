@@ -12,6 +12,7 @@ import CaseStudies from "@/components/sections/CaseStudies";
 import Transformation from "@/components/sections/Transformation";
 import Process from "@/components/sections/Process";
 import Technology from "@/components/sections/Technology";
+import Roi from "@/components/sections/Roi";
 import FinalCTA from "@/components/sections/FinalCTA";
 
 import { SITE_URL } from "@/lib/site";
@@ -64,6 +65,7 @@ export default function Home() {
         <Bridge id="leap" />
         <Process />
         <Technology />
+        <Roi />
         {/* Testimonials: retirado hasta tener testimonios reales (ver dictionaries.ts) */}
         <FinalCTA />
       </main>

@@ -300,8 +300,30 @@ export default function PricingPage() {
             </div>
           </div>
 
+          {/* ——— Calculadora: la cuenta antes que la tarifa ——— */}
+          <section className="mx-auto max-w-7xl px-6 pt-24">
+            <Reveal>
+              <div className="flex flex-col items-start gap-4 rounded-2xl border border-neon/25 bg-gradient-to-r from-neon/[0.09] to-electric/[0.05] p-6 sm:flex-row sm:items-center md:px-7">
+                <span className="shrink-0 rounded-full border border-neon/40 bg-space/70 px-3.5 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-neon">
+                  {t.calc.badge}
+                </span>
+                <p className="text-sm leading-relaxed text-mist">
+                  <Rich text={t.calc.body} />
+                </p>
+                <Link
+                  href="/calculadora"
+                  onClick={() => trackEvent("cta_calculadora_precios")}
+                  className="group shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-neon/40 px-5 py-2.5 font-display text-[13px] font-semibold text-frost transition-all duration-300 hover:bg-neon/10"
+                >
+                  {t.calc.cta}
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </div>
+            </Reveal>
+          </section>
+
           {/* ——— Diagnóstico ——— */}
-          <section className="mx-auto max-w-7xl px-6 pb-6 pt-24">
+          <section className="mx-auto max-w-7xl px-6 pb-6 pt-6">
             <Reveal>
               <div className="flex flex-col items-start gap-4 rounded-2xl border border-pulse/30 bg-gradient-to-r from-pulse/[0.13] to-electric/[0.07] p-6 sm:flex-row sm:items-center md:px-7">
                 <span className="shrink-0 rounded-full bg-pulse px-3.5 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-white">

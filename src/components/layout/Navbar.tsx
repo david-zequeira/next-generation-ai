@@ -82,6 +82,18 @@ export default function Navbar() {
             ))}
             <li>
               <Link
+                href="/calculadora"
+                className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
+              >
+                {t.calc}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
+                />
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/precios"
                 className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
               >
@@ -150,6 +162,13 @@ export default function Navbar() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.06 * t.links.length, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             >
+              <Link
+                href="/calculadora"
+                onClick={() => setOpen(false)}
+                className="display block cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
+              >
+                {t.calc}
+              </Link>
               <Link
                 href="/precios"
                 onClick={() => setOpen(false)}

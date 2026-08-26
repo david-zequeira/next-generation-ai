@@ -34,6 +34,29 @@
  *
  * Antes de volver a añadir cualquiera de estas líneas, compruébalo contra el
  * código. El playbook lo detalla en `enterprise-ai/02-ventas/asenix-sales-gtm-playbook.md` §2.4.
+ *
+ * ---
+ *
+ * **Cambio del 26/08/2026 — el Diagnóstico pasa de 490 € a 0 €.** Con cero
+ * clientes, cobrar 490 € por el diagnóstico filtraba justo a la gente que hace
+ * falta ahora: negocios dispuestos a enseñarnos sus números. La prioridad no es
+ * facturar el diagnóstico, es tener casos reales. Se regala igual que la llamada.
+ *
+ * Dos cosas que NO cambian con esto, y que sostienen el precio de los planes:
+ *
+ * - El trabajo es el mismo. Dos semanas, mismo entregable. Gratis no es "más
+ *   corto" ni "por encima": eso sería devaluar el producto de verdad.
+ * - Ya no hay descuento que aplicar. Antes los 490 € se descontaban del plan;
+ *   ahora no hay nada que descontar, así que esa frase desaparece en vez de
+ *   quedarse como reclamo vacío.
+ *
+ * Cuando haya cartera, esto vuelve a tener precio. Al subirlo, revisar también
+ * `diag` en `src/i18n/calculadora.ts`, que cuenta lo mismo.
+ *
+ * **El texto público NO cuenta este motivo.** "Somos nuevos y necesitamos casos"
+ * es la razón interna y es cierta, pero dicha en la web solo consigue que el
+ * lector rebaje lo que cree que vale el diagnóstico — y de paso, el resto. Fuera
+ * se dice qué se lleva y que corre de nuestra cuenta. Por qué, es cosa nuestra.
  */
 
 export type PricingPlan = {
@@ -60,6 +83,8 @@ export type PricingDict = {
   header: { eyebrow: string; titleA: string; titleB: string; lede: string };
   kit: { badge: string; body: string };
   plans: PricingPlan[];
+  /** Puente a /calculadora: la cuenta antes que la tarifa, para quien duda. */
+  calc: { badge: string; body: string; cta: string };
   diag: { badge: string; body: string };
   /** Agente de voz: construido, aún no entregable. Lista de espera, no venta. */
   voice: { badge: string; body: string };
@@ -169,9 +194,14 @@ const es: PricingDict = {
       cta: "Diseñar el sistema",
     },
   ],
+  calc: {
+    badge: "¿Te compensa?",
+    body: "Antes de mirar precios, mira la cuenta: **cuatro preguntas sobre tu negocio** y verás cuánto se te escapa hoy por consultas sin responder y plantones, y en cuántos meses se paga solo. Sin registro, y con las hipótesis a la vista para que puedas discutirlas.",
+    cta: "Hacer la cuenta",
+  },
   diag: {
-    badge: "Antes de decidir",
-    body: "**Diagnóstico de IA — 490 €.** Dos semanas. Mapeamos tus procesos, medimos por dónde se te escapan clientes (llamadas sin contestar, mensajes fuera de horario, huecos sin revender) y te entregamos las oportunidades ordenadas por retorno, con cifras de tu negocio. **Se te descuenta entero** si contratas cualquier plan en 60 días.",
+    badge: "Gratis, antes de decidir",
+    body: "**Diagnóstico de IA — 0 €.** Dos semanas. Mapeamos tus procesos, medimos por dónde se te escapan clientes (llamadas sin contestar, mensajes fuera de horario, huecos sin revender) y te entregamos las oportunidades ordenadas por retorno, con las cifras de tu negocio. **Corre de nuestra cuenta**: preferimos enseñarte el número antes de pedirte una decisión. El informe es tuyo, lo contrates o no.",
   },
   voice: {
     badge: "En pruebas",
@@ -344,9 +374,14 @@ const en: PricingDict = {
       cta: "Design the system",
     },
   ],
+  calc: {
+    badge: "Is it worth it?",
+    body: "Before looking at prices, look at the maths: **four questions about your business** and you'll see how much slips away today through unanswered enquiries and no-shows, and how many months it takes to pay for itself. No sign-up, and every assumption in plain sight so you can argue with it.",
+    cta: "Run the numbers",
+  },
   diag: {
-    badge: "Before deciding",
-    body: "**AI Diagnostic — €490.** Two weeks. We map your processes, measure where clients slip away (unanswered calls, after-hours messages, unsold slots) and hand you the opportunities ranked by return, with your business's own numbers. **Fully deducted** if you sign any plan within 60 days.",
+    badge: "Free, before you decide",
+    body: "**AI Diagnostic — €0.** Two weeks. We map your processes, measure where clients slip away (unanswered calls, after-hours messages, unsold slots) and hand you the opportunities ranked by return, using your business's own numbers. **It's on us**: we'd rather show you the number before asking you for a decision. The report is yours, whether you sign up or not.",
   },
   voice: {
     badge: "In testing",

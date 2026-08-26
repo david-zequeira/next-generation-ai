@@ -81,6 +81,14 @@ export default function Footer() {
               ))}
               <li>
                 <Link
+                  href="/calculadora"
+                  className="text-sm text-mist transition-colors duration-200 hover:text-frost"
+                >
+                  {dict.nav.calc}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/precios"
                   className="text-sm text-mist transition-colors duration-200 hover:text-frost"
                 >
