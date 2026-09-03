@@ -9,10 +9,13 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
+import { warmUpVoice } from "@/lib/voice-warmup";
+
+const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
 const AICore = dynamic(() => import("@/components/three/AICore"), {
   ssr: false,
@@ -206,10 +209,25 @@ export default function Hero() {
             {t.ctaPrimary}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </MagneticButton>
-          <MagneticButton href="#work" variant="ghost">
-            <Play className="h-4 w-4 text-neon" />
-            {t.ctaSecondary}
-          </MagneticButton>
+          {/* La "demo" ya no es un vídeo: es hablar con el agente. El CTA
+              desaparece si no hay backend de agente, como el resto de
+              entradas a la IA del sitio.
+
+              El span envuelve al MagneticButton en vez de pasarle props
+              nuevas porque `onFocus` en React burbujea (focusin), así que
+              calienta igual llegando con Tab, y MagneticButton se queda como
+              está para el resto del sitio. */}
+          {AGENT_URL && (
+            <span onPointerEnter={warmUpVoice} onFocus={warmUpVoice}>
+              <MagneticButton
+                variant="ghost"
+                onClick={() => window.dispatchEvent(new CustomEvent("ng:open-voice"))}
+              >
+                <Mic className="h-4 w-4 text-neon" />
+                {t.ctaSecondary}
+              </MagneticButton>
+            </span>
+          )}
         </motion.div>
       </motion.div>
 

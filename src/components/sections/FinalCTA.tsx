@@ -3,11 +3,12 @@
 import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
+import { warmUpVoice } from "@/lib/voice-warmup";
 
 const AICore = dynamic(() => import("@/components/three/AICore"), {
   ssr: false,
@@ -99,22 +100,42 @@ export default function FinalCTA() {
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </MagneticButton>
         </motion.div>
-        {/* Segundo permiso: la demo está a un clic — el chat ES el producto */}
+        {/* Segundo permiso: la demo está a un clic — el chat ES el producto.
+            Y al lado, la voz: es lo que más impresiona en una demo en vivo,
+            así que no puede vivir solo en un botón flotante de la esquina. */}
         {process.env.NEXT_PUBLIC_AGENT_URL && (
-          <motion.button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent("ng:open-chat"))}
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, delay: 1.2 }}
-            className="group mt-5 cursor-pointer text-sm text-mist transition-colors duration-300 hover:text-neon"
+            className="mt-5 flex flex-col items-center gap-2 sm:flex-row sm:gap-6"
           >
-            <span className="text-pulse/80">{"//"} </span>
-            <span className="underline decoration-mist/30 underline-offset-4 transition-colors duration-300 group-hover:decoration-neon/60">
-              {t.orChat}
-            </span>
-          </motion.button>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("ng:open-chat"))}
+              className="group cursor-pointer text-sm text-mist transition-colors duration-300 hover:text-neon"
+            >
+              <span className="text-pulse/80">{"//"} </span>
+              <span className="underline decoration-mist/30 underline-offset-4 transition-colors duration-300 group-hover:decoration-neon/60">
+                {t.orChat}
+              </span>
+            </button>
+            {/* Calentamiento del SDK + del backend dormido al acercarse: el
+                token se sigue pidiendo solo en el clic (caduca en 30 s). */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("ng:open-voice"))}
+              onPointerEnter={warmUpVoice}
+              onFocus={warmUpVoice}
+              className="group inline-flex cursor-pointer items-center gap-2 text-sm text-mist transition-colors duration-300 hover:text-neon"
+            >
+              <Mic className="h-3.5 w-3.5 text-neon" strokeWidth={1.8} />
+              <span className="underline decoration-mist/30 underline-offset-4 transition-colors duration-300 group-hover:decoration-neon/60">
+                {t.orVoice}
+              </span>
+            </button>
+          </motion.div>
         )}
         <motion.p
           initial={{ opacity: 0 }}
