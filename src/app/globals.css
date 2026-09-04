@@ -28,6 +28,8 @@
   --animate-jitter: jitter 3.2s ease-in-out infinite;
   --animate-dash: dash 2.4s linear infinite;
   --animate-shimmer: shimmer 2.8s linear infinite;
+  /* Punto de luz recorriendo una órbita (modo voz): la duración la fija cada anillo. */
+  --animate-orbit-path: orbit-path 6s linear infinite;
   --animate-sheen: sheen 5s linear infinite;
 
   @keyframes marquee {
@@ -62,6 +64,10 @@
   @keyframes shimmer {
     from { background-position: 200% center; }
     to { background-position: -200% center; }
+  }
+  @keyframes orbit-path {
+    from { offset-distance: 0%; }
+    to { offset-distance: 100%; }
   }
   @keyframes sheen {
     from { background-position: 200% 0; }
