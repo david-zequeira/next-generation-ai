@@ -38,7 +38,15 @@ export type VoiceState =
   | "error";
 
 /** Herramientas que tienen etiqueta propia en la interfaz. */
-export type VoiceTool = "agenda" | "reserva";
+export type VoiceTool = "agenda" | "reserva" | "contacto";
+
+/**
+ * Campo de correo en pantalla (07/09/2026): el agente lo abre con la
+ * herramienta `pedir_contacto_en_pantalla`, el visitante escribe su correo
+ * (más fiable que dictarlo) y llega al backend por HTTP, ligado a la llamada.
+ * `sent` cuando el backend lo ha aceptado.
+ */
+export type ContactForm = "closed" | "open" | "sending" | "sent" | "failed";
 
 /**
  * Causa del fallo. Se guarda el CÓDIGO y no el texto: así el mensaje se
@@ -74,6 +82,10 @@ export type VoiceCall = {
   tool: VoiceTool | null;
   /** Última intervención del AGENTE, para el subtítulo. */
   transcript: string | null;
+  /** Campo de correo en pantalla, pedido por el agente. */
+  contactForm: ContactForm;
+  /** Envía el correo escrito; resuelve cuando el backend lo acepta. */
+  submitContact: (email: string) => Promise<void>;
   muted: boolean;
   /** 0..1 suavizados, para animar el orbe. */
   agentLevel: MotionValue<number>;
@@ -138,7 +150,10 @@ function localMessage(t: Dict["voice"], code: VoiceErrorCode): string {
 const TOOL_LABELS: Record<string, VoiceTool | undefined> = {
   consultar_disponibilidad: "agenda",
   crear_reserva: "reserva",
+  pedir_contacto_en_pantalla: "contacto",
 };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   typeof value === "object" && value !== null ? (value as Record<string, unknown>) : null;
@@ -176,7 +191,10 @@ function lastAgentLine(payload: unknown): string | null {
   return null;
 }
 
-type VoiceMeta = { state: "tool"; tool: VoiceTool | null } | { state: "answering" };
+type VoiceMeta =
+  | { state: "tool"; tool: VoiceTool | null }
+  | { state: "answering" }
+  | { state: "contact_received" };
 
 /**
  * Evento `metadata`: nuestro backend manda `{state:"tool", tool:"<nombre>"}` al
@@ -191,6 +209,7 @@ function readMeta(payload: unknown): VoiceMeta | null {
   if (!outer) return null;
   const inner = asRecord(outer.metadata) ?? outer;
   if (inner.state === "answering") return { state: "answering" };
+  if (inner.state === "contact_received") return { state: "contact_received" };
   if (inner.state === "tool") {
     const name = typeof inner.tool === "string" ? inner.tool : "";
     return { state: "tool", tool: TOOL_LABELS[name] ?? null };
@@ -217,6 +236,9 @@ export function useVoiceCall(): VoiceCall {
   const [tool, setTool] = useState<VoiceTool | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);
+  const [contactForm, setContactForm] = useState<ContactForm>("closed");
+  /** call_id de Retell de ESTA llamada: lo devuelve el backend con el token. */
+  const callIdRef = useRef<string | null>(null);
 
   /**
    * Espejo síncrono del estado. Los eventos del SDK llegan fuera del ciclo de
@@ -350,6 +372,8 @@ export function useVoiceCall(): VoiceCall {
     setErrorReply(null);
     setTool(null);
     setTranscript(null);
+    setContactForm("closed");
+    callIdRef.current = null;
     setMuted(false);
     setState("connecting");
 
@@ -397,6 +421,7 @@ export function useVoiceCall(): VoiceCall {
       });
       const data: WebCallResponse = await res.json().catch(() => ({}));
       if (cancelled()) return; // el visitante colgó mientras viajaba el token
+      callIdRef.current = data.callId ?? null;
       if (!res.ok || !data.accessToken) {
         // El `reply` del backend ya está redactado para una persona y en el
         // idioma del tenant: gana siempre al texto local.
@@ -470,9 +495,16 @@ export function useVoiceCall(): VoiceCall {
         if (cancelled()) return;
         const meta = readMeta(payload);
         if (!meta) return; // clave desconocida: se ignora, jamás rompe
+        if (meta.state === "contact_received") {
+          setContactForm("sent");
+          return;
+        }
         if (meta.state === "tool") {
           setTool(meta.tool);
           setState("tool");
+          // El agente pide el correo: se abre el campo y se queda abierto
+          // aunque el agente siga hablando (el visitante escribe mientras).
+          if (meta.tool === "contacto") setContactForm("open");
         } else {
           setTool(null);
           // La tool terminó y el modelo está redactando la respuesta.
@@ -614,6 +646,35 @@ export function useVoiceCall(): VoiceCall {
   // Se memoiza el objeto entero porque quien consume el hook lo mete en las
   // dependencias de sus propios efectos y callbacks (`[call]`): un literal
   // nuevo en cada render le obligaría a re-suscribir listeners por nada.
+  /**
+   * Envía el correo escrito en pantalla. El backend solo lo acepta para ESTA
+   * llamada (call_id + sessionId) y mientras siga abierta; al aceptarlo, el
+   * canal manda `metadata {state:"contact_received"}` y el campo pasa a
+   * "enviado". Si la llamada vive en otra instancia del backend ese aviso no
+   * llega: se marca enviado igual con el 200, que es la confirmación real.
+   */
+  const submitContact = useCallback(async (email: string) => {
+    const callId = callIdRef.current;
+    const limpio = email.trim();
+    if (!callId || !EMAIL_RE.test(limpio)) {
+      setContactForm("failed");
+      return;
+    }
+    setContactForm("sending");
+    try {
+      const res = await fetch(`${AGENT_URL}/api/voice/web-call/${encodeURIComponent(callId)}/contact`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ sessionId: getSessionId(), email: limpio }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setContactForm("sent");
+      trackEvent("voice_contact_typed");
+    } catch {
+      setContactForm("failed");
+    }
+  }, []);
+
   return useMemo<VoiceCall>(
     () => ({
       state,
@@ -621,6 +682,8 @@ export function useVoiceCall(): VoiceCall {
       errorCode: state === "error" ? errorCode : null,
       tool,
       transcript,
+      contactForm,
+      submitContact,
       muted,
       agentLevel,
       userLevel,
@@ -634,6 +697,8 @@ export function useVoiceCall(): VoiceCall {
       errorCode,
       tool,
       transcript,
+      contactForm,
+      submitContact,
       muted,
       agentLevel,
       userLevel,

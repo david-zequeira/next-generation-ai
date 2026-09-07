@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mic, MicOff, MessageCircle, PhoneOff, X } from "lucide-react";
+import { Check, Mic, MicOff, MessageCircle, PhoneOff, Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
 import EdgeGlow from "./EdgeGlow";
 import VoiceOrb from "./VoiceOrb";
@@ -40,8 +40,15 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const hangupRef = useRef<HTMLButtonElement>(null);
 
-  const { state, error, tool, transcript } = call;
+  const { state, error, tool, transcript, contactForm } = call;
   const finished = state === "ended" || state === "error";
+  const [email, setEmail] = useState("");
+  const emailRef = useRef<HTMLInputElement>(null);
+  // El campo se abre cuando el agente lo pide: el foco va a él para que el
+  // visitante escriba sin buscar el ratón (la trampa de foco lo incluye).
+  useEffect(() => {
+    if (contactForm === "open") emailRef.current?.focus();
+  }, [contactForm]);
 
   // El foco entra en "Colgar": es la acción que el visitante puede necesitar
   // con urgencia (está sonando su micrófono) y debe estar a un Enter.
@@ -120,6 +127,7 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
         // solo a "Pensando…" — el overlay no depende de esa fase.
         if (tool === "agenda") return t.statusToolAgenda;
         if (tool === "reserva") return t.statusToolReserva;
+        if (tool === "contacto") return t.statusToolContacto;
         return t.statusThinking;
       case "speaking":
         return t.statusSpeaking;
@@ -211,6 +219,51 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
         >
           {state === "speaking" ? transcript : null}
         </p>
+
+        {/* Campo de correo en pantalla (07/09/2026): lo abre el agente con la
+            herramienta pedir_contacto_en_pantalla y se queda abierto mientras
+            el visitante escribe, aunque el agente siga hablando. Escribirlo es
+            más fiable que dictarlo: un correo dictado se transcribe mal. */}
+        {contactForm !== "closed" && !finished && (
+          <form
+            className="mt-2 flex w-full max-w-sm flex-col items-stretch gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (contactForm === "sending" || contactForm === "sent") return;
+              void call.submitContact(email);
+            }}
+          >
+            <label htmlFor="voice-contact-email" className="text-xs text-mist">
+              {t.contactLabel}
+            </label>
+            <div className="flex items-stretch gap-2">
+              <input
+                ref={emailRef}
+                id="voice-contact-email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t.contactPlaceholder}
+                disabled={contactForm === "sending" || contactForm === "sent"}
+                aria-invalid={contactForm === "failed"}
+                className="h-12 min-w-0 flex-1 rounded-full border border-line bg-space/70 px-4 text-sm text-frost placeholder:text-mist/50 focus:border-neon/60 focus:outline-none disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                disabled={contactForm === "sending" || contactForm === "sent"}
+                aria-label={t.contactSend}
+                className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon transition-colors hover:bg-neon/20 disabled:cursor-default disabled:opacity-60"
+              >
+                {contactForm === "sent" ? <Check className="h-5 w-5" strokeWidth={2} /> : <Send className="h-4 w-4" strokeWidth={1.8} />}
+              </button>
+            </div>
+            <p aria-live="polite" className={`min-h-[1.25rem] text-xs ${contactForm === "failed" ? "text-red-200" : "text-mist"}`}>
+              {contactForm === "sending" ? t.contactSending : contactForm === "sent" ? t.contactSent : contactForm === "failed" ? t.contactFailed : null}
+            </p>
+          </form>
+        )}
       </div>
 
       {/* Controles */}
