@@ -88,7 +88,7 @@ const es: Record<LegalSlug, LegalDoc> = {
         list: [
           "Conversaciones con el asistente: el contenido de tus mensajes y las respuestas. Si pides cita, además tu nombre y un contacto (teléfono o email).",
           "Reservas: fecha y hora elegidas, servicio y código de confirmación.",
-          "Medición de visitas: un identificador aleatorio de sesión, la página vista, la web de procedencia y los parámetros de campaña (UTM) de la URL. No usamos cookies publicitarias ni perfiles de terceros.",
+          "Medición de visitas, solo si la aceptas en el aviso de cookies: un identificador aleatorio de sesión, la página vista, la web de procedencia y los parámetros de campaña (UTM) de la URL. Si la rechazas, solo contamos visitas de forma agregada y anónima. No usamos cookies publicitarias ni perfiles de terceros.",
           "Datos técnicos: dirección IP y hora de las peticiones, tratados para seguridad y para evitar el uso abusivo del servicio.",
         ],
       },
@@ -97,7 +97,8 @@ const es: Record<LegalSlug, LegalDoc> = {
         list: [
           "Atenderte y responder a tus preguntas — ejecución de tu solicitud previa al contrato (art. 6.1.b RGPD).",
           "Gestionar la cita que reserves — ejecución de tu solicitud (art. 6.1.b RGPD).",
-          "Medir visitas de forma agregada y proteger el servicio frente a abusos — interés legítimo (art. 6.1.f RGPD).",
+          "Contar visitas de forma agregada y anónima y proteger el servicio frente a abusos — interés legítimo (art. 6.1.f RGPD).",
+          "Unir tu visita con tu conversación para medir campañas — tu consentimiento en el aviso de cookies (art. 6.1.a RGPD), que puedes retirar cuando quieras desde el pie de página.",
           "Contactarte comercialmente si nos lo pides expresamente — tu consentimiento (art. 6.1.a RGPD), revocable cuando quieras.",
         ],
       },
@@ -219,34 +220,38 @@ const es: Record<LegalSlug, LegalDoc> = {
     title: "Política de cookies",
     updated: COMPANY.updated,
     intro:
-      "Resumen corto: esta web no usa cookies publicitarias ni de terceros, y por eso no verás un banner pidiéndote permiso.",
+      "Resumen corto: esta web no usa cookies publicitarias ni de terceros. Guarda unos pocos datos en tu navegador para funcionar y, solo si lo aceptas en el aviso, une tu visita con tu conversación para saber qué campañas funcionan.",
     sections: [
       {
-        heading: "1. Qué usamos exactamente",
+        heading: "1. Qué guardamos en tu navegador",
         body: [
-          "No instalamos cookies de seguimiento ni de publicidad. Para funcionar, la web guarda dos datos en el almacenamiento local de tu navegador, que no viajan a terceros ni permiten identificarte fuera de este sitio:",
+          "No instalamos cookies de seguimiento ni de publicidad. La web usa el almacenamiento local del navegador (localStorage y sessionStorage) para estos datos, que no viajan a terceros ni permiten identificarte fuera de este sitio. Son necesarios para que funcione, así que no requieren consentimiento:",
         ],
         list: [
-          "Un identificador aleatorio de sesión (sessionStorage): permite que el asistente recuerde tu conversación mientras la pestaña está abierta. Se borra al cerrarla.",
-          "Tu idioma preferido (localStorage): para no volver a preguntártelo en la siguiente visita.",
+          "ng-locale (localStorage): tu idioma preferido, para no volver a preguntártelo. Dura hasta que lo borres.",
+          "ng-chat-session (sessionStorage): un identificador aleatorio para que el asistente siga el hilo de la conversación mientras la pestaña está abierta. Se borra al cerrarla.",
+          "ng-chat-history (sessionStorage): los últimos mensajes del chat, para que no desaparezcan al cambiar de página. Se borra al cerrar la pestaña.",
+          "ng-consent (localStorage): tu elección sobre la medición, con la fecha en que la tomaste, para no volver a mostrarte el aviso. Dura hasta que la cambies o la borres.",
         ],
       },
       {
-        heading: "2. Medición de visitas",
+        heading: "2. Medición de visitas: solo con tu permiso",
         body: [
-          "Contamos visitas de forma agregada (página vista, procedencia y parámetros de campaña de la URL) usando el identificador aleatorio anterior. No cruzamos esa información con otras webs ni construimos perfiles publicitarios. Al tratarse de una medición propia y estrictamente necesaria para conocer el rendimiento del sitio, no requiere consentimiento previo.",
+          "Si aceptas la medición, cada página que ves y cada acción relevante (abrir el chat, pulsar un plan, enviar un formulario) viaja a nuestros propios servidores con el mismo identificador de sesión del chat, la página, la web de procedencia y los parámetros de campaña (UTM) de la URL. Así una visita que llega desde un anuncio se une con la conversación que abre, y sabemos qué campañas traen clientes de verdad.",
+          "Si la rechazas, seguimos contando visitas de forma agregada y anónima: cada petición lleva un identificador aleatorio de un solo uso que no se guarda en tu navegador ni se puede unir a nada. Cifras, no personas.",
+          "En ningún caso hay cookies de terceros, píxeles publicitarios ni perfiles compartidos con otras webs. Los datos se tratan en nuestros servidores dentro de la Unión Europea.",
         ],
       },
       {
-        heading: "3. Cómo eliminarlos",
+        heading: "3. Cómo cambiar tu elección",
         body: [
-          "Puedes borrar ambos datos en cualquier momento desde las opciones de tu navegador (borrar datos de navegación del sitio) o navegando en modo privado. La web seguirá funcionando: solo perderás el hilo del chat y la preferencia de idioma.",
+          "Puedes cambiar de opinión cuando quieras desde «Preferencias de cookies», en el pie de cualquier página: se abre el mismo panel y tu nueva elección se aplica al momento. También puedes borrar los datos del sitio desde las opciones de tu navegador o navegar en modo privado; la web seguirá funcionando y solo perderás el hilo del chat, el idioma y tu elección.",
         ],
       },
       {
         heading: "4. Cambios",
         body: [
-          `Si en el futuro incorporamos cookies analíticas o de terceros, actualizaremos esta página y pediremos tu consentimiento antes de instalarlas. Última actualización: ${COMPANY.updated}.`,
+          `Si en el futuro incorporamos herramientas de terceros, actualizaremos esta página y volveremos a pedirte permiso antes de activarlas. Última actualización: ${COMPANY.updated}.`,
         ],
       },
     ],
@@ -272,7 +277,7 @@ const en: Record<LegalSlug, LegalDoc> = {
         list: [
           "Conversations with the assistant: the content of your messages and our replies. If you book a call, also your name and a contact (phone or email).",
           "Bookings: the date and time you chose, the service and a confirmation code.",
-          "Visit measurement: a random session identifier, the page viewed, the referring site and the campaign parameters (UTM) in the URL. No advertising cookies, no third-party profiling.",
+          "Visit measurement, only if you accept it in the cookie notice: a random session identifier, the page viewed, the referring site and the campaign parameters (UTM) in the URL. If you reject it, we only count visits in aggregate and anonymously. No advertising cookies, no third-party profiling.",
           "Technical data: IP address and request timestamps, processed for security and to prevent abuse of the service.",
         ],
       },
@@ -281,7 +286,8 @@ const en: Record<LegalSlug, LegalDoc> = {
         list: [
           "To answer your questions — steps taken at your request prior to a contract (Art. 6(1)(b) GDPR).",
           "To manage the appointment you book — steps taken at your request (Art. 6(1)(b) GDPR).",
-          "To measure visits in aggregate and protect the service from abuse — legitimate interest (Art. 6(1)(f) GDPR).",
+          "To count visits in aggregate and anonymously and protect the service from abuse — legitimate interest (Art. 6(1)(f) GDPR).",
+          "To link your visit with your conversation to measure campaigns — your consent in the cookie notice (Art. 6(1)(a) GDPR), which you can withdraw at any time from the footer.",
           "To contact you commercially if you explicitly ask us to — your consent (Art. 6(1)(a) GDPR), withdrawable at any time.",
         ],
       },
@@ -403,34 +409,38 @@ const en: Record<LegalSlug, LegalDoc> = {
     title: "Cookie policy",
     updated: COMPANY.updated,
     intro:
-      "Short version: this site uses no advertising or third-party cookies, which is why you won't see a consent banner.",
+      "Short version: this site uses no advertising or third-party cookies. It keeps a few items in your browser so it works and, only if you accept it in the notice, links your visit with your conversation to learn which campaigns work.",
     sections: [
       {
-        heading: "1. What we actually use",
+        heading: "1. What we store in your browser",
         body: [
-          "We install no tracking or advertising cookies. To work, the site stores two items in your browser's local storage. They never travel to third parties and cannot identify you outside this site:",
+          "We install no tracking or advertising cookies. The site uses the browser's local storage (localStorage and sessionStorage) for the items below. They never travel to third parties and cannot identify you outside this site. They are needed for the site to work, so they require no consent:",
         ],
         list: [
-          "A random session identifier (sessionStorage): lets the assistant remember your conversation while the tab is open. It is deleted when you close it.",
-          "Your preferred language (localStorage): so we don't have to ask again on your next visit.",
+          "ng-locale (localStorage): your preferred language, so we don't ask again. Kept until you delete it.",
+          "ng-chat-session (sessionStorage): a random identifier so the assistant can follow the conversation while the tab is open. Deleted when you close it.",
+          "ng-chat-history (sessionStorage): the latest chat messages, so they survive moving between pages. Deleted when you close the tab.",
+          "ng-consent (localStorage): your choice about measurement, with the date you made it, so we don't show the notice again. Kept until you change or delete it.",
         ],
       },
       {
-        heading: "2. Visit measurement",
+        heading: "2. Visit measurement: only with your permission",
         body: [
-          "We count visits in aggregate (page viewed, referrer and campaign parameters in the URL) using the random identifier above. We do not cross-reference it with other sites or build advertising profiles. As first-party measurement strictly necessary to understand how the site performs, it requires no prior consent.",
+          "If you accept measurement, every page you view and every relevant action (opening the chat, choosing a plan, sending a form) is sent to our own servers with the same session identifier the chat uses, the page, the referring site and the campaign parameters (UTM) in the URL. That way a visit arriving from an ad is linked with the conversation it opens, and we learn which campaigns actually bring customers.",
+          "If you reject it, we still count visits in aggregate and anonymously: each request carries a single-use random identifier that is never stored in your browser and cannot be linked to anything. Numbers, not people.",
+          "There are never third-party cookies, advertising pixels or profiles shared with other sites. The data is processed on our servers within the European Union.",
         ],
       },
       {
-        heading: "3. How to delete them",
+        heading: "3. How to change your choice",
         body: [
-          "You can clear both at any time from your browser settings (clear site browsing data) or by browsing privately. The site will keep working: you will only lose the chat thread and the language preference.",
+          "You can change your mind at any time from \"Cookie preferences\" in the footer of any page: the same panel opens and your new choice applies immediately. You can also clear the site's data from your browser settings or browse privately; the site keeps working and you only lose the chat thread, the language and your choice.",
         ],
       },
       {
         heading: "4. Changes",
         body: [
-          `If we ever add analytics or third-party cookies, we will update this page and ask for your consent before installing them. Last updated: ${COMPANY.updated}.`,
+          `If we ever add third-party tools, we will update this page and ask for your permission again before enabling them. Last updated: ${COMPANY.updated}.`,
         ],
       },
     ],

@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import Analytics from "@/components/ui/Analytics";
 import CursorGlow from "@/components/ui/CursorGlow";
+import CookieBanner from "@/components/ui/CookieBanner";
 import { LocaleProvider } from "@/i18n/LocaleContext";
 import { SITE_URL } from "@/lib/site";
 
@@ -60,6 +61,7 @@ export default function RootLayout({
           <SmoothScroll>
             <CursorGlow />
             {children}
+            <CookieBanner />
           </SmoothScroll>
         </LocaleProvider>
       </body>
