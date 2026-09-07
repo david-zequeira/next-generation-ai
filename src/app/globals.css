@@ -1,22 +1,30 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-display: var(--font-space-grotesk);
-  --font-sans: var(--font-inter);
+  /* Una sola familia en todo el sitio (Figma «Asenix Web»): Montserrat. Los dos
+     alias se conservan para que ningún componente tenga que cambiar de nombre.
+     La variable --font-montserrat la define next/font en <body> (Lenis
+     sobreescribe la clase de <html>, así que ahí no puede vivir), por eso las
+     reglas de abajo la referencian directamente en vez de pasar por :root. */
+  --font-display: var(--font-montserrat);
+  --font-sans: var(--font-montserrat);
 }
 
 @theme {
-  /* ——— Palette: deep space ——— */
-  --color-void: #04050a;
-  --color-abyss: #070b16;
-  --color-space: #0b1226;
-  --color-panel: #0d1530;
-  --color-electric: #2e6bff;
-  --color-neon: #38d4ff;
-  --color-pulse: #7c5cff;
-  --color-frost: #eef2ff;
-  --color-mist: #9aa5c0;
-  --color-line: rgba(148, 170, 255, 0.12);
+  /* ——— Paleta (Figma «Asenix Web», frame Asenix Desktop) ——— */
+  --color-void: #030617;      /* fondo de página */
+  --color-abyss: #050a1f;     /* secciones ligeramente elevadas */
+  --color-space: #0b1435;     /* base de tarjetas */
+  --color-panel: #131f4a;     /* tarjetas azul marino */
+  --color-electric: #1a4dff;  /* azul de marca */
+  --color-neon: #b8f21e;      /* lima: acento de éxito y de "vivo" */
+  --color-pulse: #94b2fc;     /* azul claro: bordes y detalles */
+  --color-mint: #7de3c3;      /* verde menta del orbe de voz */
+  --color-frost: #eceFFF;     /* texto principal */
+  --color-mist: #9aa5c0;      /* texto secundario */
+  --color-paper: #f1f3fe;     /* cierre claro: contacto y pie */
+  --color-ink: #0b1226;       /* texto sobre fondos claros */
+  --color-line: rgba(148, 178, 252, 0.18);
 
   /* ——— Motion ——— */
   --animate-marquee: marquee 48s linear infinite;
@@ -31,6 +39,8 @@
   /* Punto de luz recorriendo una órbita (modo voz): la duración la fija cada anillo. */
   --animate-orbit-path: orbit-path 6s linear infinite;
   --animate-sheen: sheen 5s linear infinite;
+  --animate-ring: ring 2.8s ease-out infinite;
+  --animate-twinkle: twinkle 4s ease-in-out infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -73,6 +83,15 @@
     from { background-position: 200% 0; }
     to { background-position: -200% 0; }
   }
+  /* Anillo que se expande y se apaga — la señal de "escuchando" del orbe */
+  @keyframes ring {
+    0% { transform: scale(0.85); opacity: 0.55; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
 }
 
 html {
@@ -82,13 +101,13 @@ html {
 body {
   background: var(--color-void);
   color: var(--color-frost);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: rgba(46, 107, 255, 0.35);
+  background: rgba(26, 77, 255, 0.4);
   color: #fff;
 }
 
@@ -104,11 +123,11 @@ body {
   border: 2px solid var(--color-void);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2e6bff;
+  background: #1a4dff;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-neon);
+  outline: 2px solid var(--color-pulse);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -116,22 +135,35 @@ body {
 @layer components {
   /* Frosted glass surface */
   .glass {
-    background: linear-gradient(135deg, rgba(20, 30, 64, 0.55), rgba(9, 13, 28, 0.65));
+    background: linear-gradient(135deg, rgba(19, 31, 74, 0.55), rgba(5, 10, 31, 0.65));
     backdrop-filter: blur(22px) saturate(140%);
     -webkit-backdrop-filter: blur(22px) saturate(140%);
-    border: 1px solid rgba(148, 170, 255, 0.14);
+    border: 1px solid rgba(148, 178, 252, 0.16);
   }
 
-  /* Electric gradient text */
+  /* Tarjeta azul marino grande (servicios, cuenta, pruebas) */
+  .card-navy {
+    background: linear-gradient(180deg, #0d1739 0%, #1b2a5e 100%);
+    border: 1px solid rgba(148, 178, 252, 0.3);
+  }
+
+  /* Panel azul eléctrico dentro de una tarjeta (mock de producto) */
+  .card-blue {
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(120, 160, 255, 0.35), transparent 55%),
+      linear-gradient(160deg, #2a5cff 0%, #1a4dff 45%, #0f2a9e 100%);
+  }
+
+  /* Texto azul de marca con un leve degradado — titulares "humanos" */
   .text-gradient {
-    background: linear-gradient(100deg, #eef2ff 20%, #7ea6ff 50%, #38d4ff 75%);
+    background: linear-gradient(100deg, #3b6bff 0%, #1a4dff 60%, #4d7dff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
   .text-gradient-dim {
-    background: linear-gradient(100deg, #dbe4ff 0%, #5c78c9 100%);
+    background: linear-gradient(100deg, #dbe4ff 0%, #94b2fc 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -154,29 +186,33 @@ body {
     inset: 0;
     z-index: 90;
     pointer-events: none;
-    opacity: 0.035;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Section eyebrow label — siempre precedido por la firma "//" de la marca */
+  /* Etiqueta de sección — siempre precedida por la firma "//" de la marca.
+     Figma: Montserrat Light, mayúsculas, tracking muy abierto, azul. */
   .eyebrow {
-    font-family: var(--font-display), sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.42em;
+    font-family: var(--font-montserrat), sans-serif;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.34em;
     text-transform: uppercase;
-    color: var(--color-neon);
+    color: var(--color-electric);
   }
   .eyebrow::before {
-    content: "// ";
-    color: var(--color-pulse);
-    letter-spacing: 0.1em;
+    content: "//";
+    letter-spacing: 0.05em;
+    margin-right: 0.1em;
+  }
+  .eyebrow-muted {
+    color: var(--color-mist);
   }
 
   /* Firma tipográfica: texto hueco (solo contorno) para marcas de agua */
   .text-outline {
     color: transparent;
-    -webkit-text-stroke: 1px rgba(148, 170, 255, 0.16);
+    -webkit-text-stroke: 1px rgba(148, 178, 252, 0.16);
   }
 
   /* Borde cónico giratorio — material de la marca para chips/iconos */
@@ -216,12 +252,44 @@ body {
     to { --spin-angle: 360deg; }
   }
 
-  /* Massive display headline */
+  /* Titular de la casa: Montserrat Bold, compacto pero sin apretar */
   .display {
-    font-family: var(--font-display), sans-serif;
+    font-family: var(--font-montserrat), sans-serif;
     font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.98;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+  }
+
+  /* Botón pastilla claro (Figma «Comenzar»): degradado blanco→lavanda, texto tinta */
+  .btn-light {
+    background: linear-gradient(95deg, #ffffff 0%, #d7dcf5 55%, #aeb8e4 100%);
+    color: var(--color-ink);
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  .btn-light:hover {
+    background: linear-gradient(95deg, #ffffff 0%, #e6eaff 55%, #c4cdf3 100%);
+  }
+
+  /* Botón pastilla oscuro con borde azul claro (Figma «Ver demo») */
+  .btn-outline {
+    background: linear-gradient(180deg, #0a1440 0%, #111d58 100%);
+    color: #ffffff;
+    border: 1px solid var(--color-pulse);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 0 0 rgba(148, 178, 252, 0);
+  }
+  .btn-outline:hover {
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 32px -8px rgba(148, 178, 252, 0.55);
+  }
+
+  /* Pastilla azul eléctrico (etiquetas de producto, CTA principal del chat) */
+  .btn-blue {
+    background: linear-gradient(95deg, #2b5dff 0%, #1a4dff 60%, #1440d9 100%);
+    color: #ffffff;
+    box-shadow: 0 14px 34px -16px rgba(26, 77, 255, 0.8);
+  }
+  .btn-blue:hover {
+    background: linear-gradient(95deg, #3a6aff 0%, #2557ff 60%, #1a4dff 100%);
   }
 }
 

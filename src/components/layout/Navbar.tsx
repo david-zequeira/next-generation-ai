@@ -8,19 +8,24 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Languages, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
 
-const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
+const HREFS = ["/#future", "/#services", "/#ecosystem", "/#work", "/#process"];
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Floating glass navigation. Slides away when scrolling down,
- * returns when scrolling up. Includes the ES/EN language switch.
+ * Cabecera del Figma: isotipo a la izquierda, enlaces centrados, y a la
+ * derecha el selector de idioma y una pastilla blanca. Va transparente sobre
+ * el hero y gana fondo al bajar; se esconde al hacer scroll hacia abajo y
+ * vuelve al subir.
  */
-export default function Navbar() {
+export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const light = tone === "light";
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
   const { locale, setLocale, dict } = useLocale();
@@ -29,6 +34,7 @@ export default function Navbar() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const prev = scrollY.getPrevious() ?? 0;
     setHidden(latest > prev && latest > 160 && !open);
+    setScrolled(latest > 24);
   });
 
   const otherLocale = locale === "en" ? "es" : "en";
@@ -38,10 +44,27 @@ export default function Navbar() {
       type="button"
       aria-label={t.ariaLang}
       onClick={() => setLocale(otherLocale)}
-      className="inline-flex h-9 cursor-pointer items-center rounded-full border border-line px-3 font-display text-[11px] font-bold tracking-[0.2em] text-mist transition-all duration-300 hover:border-neon/40 hover:text-frost"
+      className={cn(
+        "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full px-3.5 font-display text-[13px] font-medium transition-all duration-300",
+        light
+          ? "border border-ink/15 bg-white/70 text-ink hover:border-electric/50"
+          : "glass text-frost hover:border-pulse/60"
+      )}
     >
-      {otherLocale.toUpperCase()}
+      <Languages className="h-3.5 w-3.5" strokeWidth={1.8} />
+      {locale === "es" ? "Es" : "En"}
     </button>
+  );
+
+  const linkClass = cn(
+    "group relative rounded-full px-3.5 py-2 font-display text-[14px] font-medium transition-colors duration-200",
+    light ? "text-ink/85 hover:text-electric" : "text-frost/90 hover:text-white"
+  );
+  const underline = (
+    <span
+      aria-hidden
+      className="absolute inset-x-3.5 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-pulse transition-transform duration-300 ease-out group-hover:scale-x-100"
+    />
   );
 
   return (
@@ -50,78 +73,65 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: hidden ? -110 : 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed inset-x-4 top-4 z-50 md:inset-x-8 md:top-6"
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-500",
+          scrolled
+            ? light
+              ? "border-b border-ink/10 bg-paper/80 backdrop-blur-xl"
+              : "border-b border-line bg-void/75 backdrop-blur-xl"
+            : "border-b border-transparent bg-transparent"
+        )}
       >
         <nav
           aria-label="Principal"
-          className="glass mx-auto flex max-w-5xl items-center justify-between rounded-full py-2.5 pl-6 pr-2.5"
+          className="mx-auto flex h-[76px] max-w-[1480px] items-center justify-between px-5 md:px-10"
         >
-          <a href="#top" className="flex items-center">
+          <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
-              alt="Asenix"
-              className="h-7 w-auto"
-            />
-          </a>
+            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-9 w-auto md:h-10" />
+          </Link>
 
-          <ul className="hidden items-center gap-1 md:flex">
+          <ul className="hidden items-center gap-1 lg:flex">
             {t.links.map((label, i) => (
               <li key={HREFS[i]}>
-                <a
-                  href={HREFS[i]}
-                  className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
-                >
+                <a href={HREFS[i]} className={linkClass}>
                   {label}
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
-                  />
+                  {underline}
                 </a>
               </li>
             ))}
             <li>
-              <Link
-                href="/calculadora"
-                className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
-              >
+              <Link href="/calculadora" className={linkClass}>
                 {t.calc}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
-                />
+                {underline}
               </Link>
             </li>
             <li>
-              <Link
-                href="/precios"
-                className="group relative rounded-full px-4 py-2 text-[13px] font-medium text-mist transition-colors duration-200 hover:text-frost"
-              >
+              <Link href="/precios" className={linkClass}>
                 {t.pricing}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-4 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-electric to-neon transition-transform duration-300 ease-out group-hover:scale-x-100"
-                />
+                {underline}
               </Link>
             </li>
           </ul>
 
-          <div className="flex items-center gap-2">
-            <span className="hidden md:inline-flex">{langButton}</span>
+          <div className="flex items-center gap-2.5">
+            <span className="hidden lg:inline-flex">{langButton}</span>
             <Link
               href="/contacto"
               onClick={() => trackEvent("cta_navbar")}
-              className="group hidden cursor-pointer items-center gap-1.5 rounded-full bg-electric px-5 py-2.5 text-[13px] font-semibold text-white shadow-[0_6px_18px_-10px_rgba(0,0,0,0.7),0_0_28px_-8px_rgba(46,107,255,0.9)] transition-all duration-300 hover:bg-[#3d78ff] hover:shadow-[0_8px_22px_-10px_rgba(0,0,0,0.7),0_0_38px_-6px_rgba(46,107,255,1)] active:scale-[0.97] md:inline-flex"
+              className="btn-light hidden h-10 cursor-pointer items-center rounded-full px-5 font-display text-[13px] font-semibold transition-all duration-300 active:scale-[0.97] lg:inline-flex"
             >
               {t.cta}
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
             <button
               type="button"
               aria-label={open ? t.ariaClose : t.ariaOpen}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-frost transition-colors hover:bg-white/5 md:hidden"
+              className={cn(
+                "inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full transition-colors lg:hidden",
+                light ? "text-ink hover:bg-ink/5" : "text-frost hover:bg-white/5"
+              )}
             >
               {open ? (
                 <X className="h-5 w-5" strokeWidth={1.8} />
@@ -140,7 +150,10 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
-            className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-2 bg-void/90 backdrop-blur-2xl md:hidden"
+            className={cn(
+              "fixed inset-0 z-40 flex flex-col items-center justify-center gap-1 backdrop-blur-2xl lg:hidden",
+              light ? "bg-paper/95" : "bg-void/92"
+            )}
           >
             {t.links.map((label, i) => (
               <motion.a
@@ -150,9 +163,7 @@ export default function Navbar() {
                 initial={{ y: 24, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.06 * i, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className={cn(
-                  "display cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
-                )}
+                className={cn("display cursor-pointer py-2.5 text-3xl transition-colors", light ? "text-ink hover:text-electric" : "text-frost hover:text-pulse")}
               >
                 {label}
               </motion.a>
@@ -161,18 +172,19 @@ export default function Navbar() {
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.06 * t.links.length, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center"
             >
               <Link
                 href="/calculadora"
                 onClick={() => setOpen(false)}
-                className="display block cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
+                className={cn("display block cursor-pointer py-2.5 text-3xl transition-colors", light ? "text-ink hover:text-electric" : "text-frost hover:text-pulse")}
               >
                 {t.calc}
               </Link>
               <Link
                 href="/precios"
                 onClick={() => setOpen(false)}
-                className="display block cursor-pointer py-3 text-4xl text-frost transition-colors hover:text-neon"
+                className={cn("display block cursor-pointer py-2.5 text-3xl transition-colors", light ? "text-ink hover:text-electric" : "text-frost hover:text-pulse")}
               >
                 {t.pricing}
               </Link>
@@ -181,7 +193,7 @@ export default function Navbar() {
               initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.32, duration: 0.45 }}
-              className="mt-2"
+              className="mt-4"
             >
               {langButton}
             </motion.div>
@@ -196,7 +208,7 @@ export default function Navbar() {
                   setOpen(false);
                   trackEvent("cta_navbar");
                 }}
-                className="mt-4 block cursor-pointer rounded-full bg-electric px-8 py-4 font-display text-sm font-semibold text-white shadow-[0_0_40px_-8px_rgba(46,107,255,0.9)]"
+                className="btn-light mt-4 block cursor-pointer rounded-full px-8 py-4 font-display text-sm font-semibold"
               >
                 {t.ctaLong}
               </Link>

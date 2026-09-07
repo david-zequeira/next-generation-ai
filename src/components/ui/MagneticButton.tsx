@@ -6,7 +6,12 @@ import { cn } from "@/lib/utils";
 
 type MagneticButtonProps = {
   children: ReactNode;
-  variant?: "primary" | "ghost";
+  /**
+   * `primary`: pastilla clara con texto tinta (Figma «Comenzar»).
+   * `ghost`: pastilla oscura con borde azul claro (Figma «Ver demo»).
+   * `blue`: pastilla azul eléctrico, para CTAs sobre fondo claro.
+   */
+  variant?: "primary" | "ghost" | "blue";
   href?: string;
   className?: string;
   onClick?: () => void;
@@ -14,7 +19,8 @@ type MagneticButtonProps = {
 
 /**
  * A button that leans toward the cursor with a springy magnetic pull.
- * Primary variant carries the signature electric glow.
+ * Los tres acabados salen de globals.css (.btn-light / .btn-outline /
+ * .btn-blue) para que el resto del sitio pueda usarlos sin el imán.
  */
 export default function MagneticButton({
   children,
@@ -42,23 +48,24 @@ export default function MagneticButton({
   };
 
   const baseClasses = cn(
-    "group relative inline-flex min-h-[52px] cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-full px-8 py-3.5 font-display text-sm font-semibold tracking-wide transition-[background-color,box-shadow] duration-300",
-    // Sombra en dos capas: contacto (ambiente oscuro) + emisión (glow) — luz física
-    variant === "primary"
-      ? "bg-electric text-white shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7),0_0_40px_-8px_rgba(46,107,255,0.8)] hover:bg-[#3d78ff] hover:shadow-[0_14px_32px_-14px_rgba(0,0,0,0.7),0_0_60px_-6px_rgba(46,107,255,1)]"
-      : "glass text-frost hover:border-[rgba(148,170,255,0.35)] hover:bg-[rgba(30,44,90,0.5)]",
+    "group relative inline-flex min-h-[54px] cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full px-9 py-3.5 font-display text-[15px] font-semibold transition-[background,box-shadow,border-color] duration-300",
+    variant === "primary" && "btn-light",
+    variant === "ghost" && "btn-outline",
+    variant === "blue" && "btn-blue",
     className
   );
 
   const inner = (
     <>
-      {variant === "primary" && (
-        <span
-          aria-hidden
-          className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
-        />
-      )}
-      <span className="relative z-10 inline-flex items-center gap-2.5">
+      {/* Barrido de luz al pasar — la firma lumínica de la marca */}
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full",
+          variant === "primary" ? "via-white/60" : "via-white/15"
+        )}
+      />
+      <span className="relative z-10 inline-flex items-center gap-3">
         {children}
       </span>
     </>

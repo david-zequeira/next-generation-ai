@@ -117,7 +117,7 @@ export default function ContactPage() {
           <h1 className="mx-auto mt-5 font-display text-[clamp(2.4rem,5.5vw,4.4rem)] font-bold leading-[1.04] tracking-[-0.035em] text-frost">
             {t.titleA}
             <br />
-            <span className="bg-gradient-to-r from-frost via-[#5f8dff] to-neon bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-frost via-[#4d7dff] to-pulse bg-clip-text text-transparent">
               {t.titleB}
             </span>
           </h1>
@@ -227,7 +227,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="mt-1 cursor-pointer rounded-xl bg-gradient-to-r from-electric to-neon py-3.5 text-center font-display text-sm font-semibold text-void shadow-[0_14px_40px_-14px_rgba(56,212,255,0.65)] transition-all duration-300 hover:shadow-[0_20px_52px_-14px_rgba(56,212,255,0.85)] disabled:cursor-wait disabled:opacity-60"
+                  className="mt-1 cursor-pointer rounded-xl bg-gradient-to-r from-electric to-[#4d7dff] py-3.5 text-center font-display text-sm font-semibold text-white shadow-[0_14px_40px_-14px_rgba(56,212,255,0.65)] transition-all duration-300 hover:shadow-[0_20px_52px_-14px_rgba(56,212,255,0.85)] disabled:cursor-wait disabled:opacity-60"
                 >
                   {status === "sending" ? t.sending : t.submit}
                 </button>

@@ -173,6 +173,8 @@ export type CalcDict = {
   };
   assumptions: {
     title: string;
+    /** Las tres hipótesis como cifra grande + etiqueta corta (Figma). */
+    stats: { value: string; label: string }[];
     body: string;
     items: string[];
     math: string;
@@ -180,6 +182,8 @@ export type CalcDict = {
   };
   lead: {
     eyebrow: string;
+    /** Tres promesas cortas bajo el titular de captura (Figma). */
+    tags: string[];
     title: string;
     body: string;
     nameLabel: string;
@@ -253,7 +257,7 @@ const es: CalcDict = {
     step3: "3 · Con qué plan lo comparo",
     planHint: "La cuota mensual es la misma en los dos. Lo que cambia es si además te construimos la web.",
     plans: [
-      { k: "arranque", name: "Arranque", desc: "El asistente sobre la web que ya tienes" },
+      { k: "arranque", name: "Starter", desc: "El asistente sobre la web que ya tienes" },
       { k: "core", name: "Core", desc: "El asistente y la web nueva" },
     ],
     perMonth: "/mes",
@@ -287,6 +291,11 @@ const es: CalcDict = {
   },
   assumptions: {
     title: "De dónde sale cada número",
+    stats: [
+      { value: "2 de 10", label: "Consultas sin responder que habrían comprado" },
+      { value: "40 %", label: "De ese dinero, recuperado" },
+      { value: "−30 %", label: "Plantones, con recordatorios" },
+    ],
     body: "Tú pones cuatro cifras de tu negocio. Nosotros ponemos tres, y son estas — fijas, a la vista y deliberadamente cortas:",
     items: [
       "**2 de cada 10** de las consultas que hoy no se responden habrían acabado comprando. Es el suelo de lo que vemos; muchos dueños nos dicen 4 o 5.",
@@ -298,6 +307,7 @@ const es: CalcDict = {
   },
   lead: {
     eyebrow: "El desglose, por escrito",
+    tags: ["Sin compromiso", "Sin presión", "Con datos"],
     title: "¿Te lo mandamos con tus números dentro?",
     body: "Te enviamos esta misma cuenta desglosada y, si quieres, media hora para revisarla con tus datos reales delante. Sin compromiso y sin llamadas a deshora.",
     nameLabel: "Tu nombre",
@@ -338,7 +348,7 @@ const es: CalcDict = {
       },
       {
         q: "Si me decido, ¿cuánto tarda en funcionar?",
-        a: "El **Arranque** está atendiendo en tu web y tu WhatsApp en **7 días**, porque se monta sobre la web que ya tienes. El **Core** son 4–6 semanas, que es lo que lleva construir la marca y la web nuevas. La cuota mensual es la misma en los dos.",
+        a: "El **Starter** está atendiendo en tu web y tu WhatsApp en **7 días**, porque se monta sobre la web que ya tienes. El **Core** son 4–6 semanas, que es lo que lleva construir la marca y la web nuevas. La cuota mensual es la misma en los dos.",
       },
     ],
   },
@@ -403,7 +413,7 @@ const en: CalcDict = {
     step3: "3 · Which plan am I comparing against",
     planHint: "The monthly fee is the same in both. What changes is whether we also build your website.",
     plans: [
-      { k: "arranque", name: "Arranque", desc: "The assistant on the site you already have" },
+      { k: "arranque", name: "Starter", desc: "The assistant on the site you already have" },
       { k: "core", name: "Core", desc: "The assistant and a new website" },
     ],
     perMonth: "/mo",
@@ -437,6 +447,11 @@ const en: CalcDict = {
   },
   assumptions: {
     title: "Where each number comes from",
+    stats: [
+      { value: "2 in 10", label: "Unanswered enquiries that would have bought" },
+      { value: "40 %", label: "Of that money, recovered" },
+      { value: "−30 %", label: "No-shows, with reminders" },
+    ],
     body: "You provide four figures from your business. We provide three, and here they are — fixed, visible and deliberately low:",
     items: [
       "**2 in 10** of today's unanswered enquiries would have ended up buying. That's the floor of what we see; plenty of owners tell us 4 or 5.",
@@ -448,6 +463,7 @@ const en: CalcDict = {
   },
   lead: {
     eyebrow: "The breakdown, in writing",
+    tags: ["No commitment", "No pressure", "With data"],
     title: "Want it sent over with your numbers in it?",
     body: "We'll email you this same calculation, itemised, and half an hour to go through it with your real data if you want. No commitment, no calls at odd hours.",
     nameLabel: "Your name",
@@ -488,7 +504,7 @@ const en: CalcDict = {
       },
       {
         q: "If I go ahead, how long until it works?",
-        a: "**Arranque** is answering on your website and WhatsApp in **7 days**, because it sits on the site you already have. **Core** takes 4–6 weeks, which is what building the new brand and website takes. The monthly fee is the same either way.",
+        a: "**Starter** is answering on your website and WhatsApp in **7 days**, because it sits on the site you already have. **Core** takes 4–6 weeks, which is what building the new brand and website takes. The monthly fee is the same either way.",
       },
     ],
   },

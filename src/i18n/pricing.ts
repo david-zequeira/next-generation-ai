@@ -26,7 +26,7 @@
  *   presupuestarse tras el Diagnóstico, que es lo que realmente es.
  * - **Plan Signal**: sin WhatsApp ni reservas no produce el resultado que vende
  *   Asenix, y sus límites ni siquiera existían en el código. Su hueco lo ocupa el
- *   **Arranque**, que sí reserva.
+ *   **Starter**, que sí reserva.
  * - **"El más contratado"**: con 0 clientes era prueba social inventada. La
  *   etiqueta de ahora es un hecho comprobable: **funcionando en 7 días**.
  * - **AI Insights** dejó de ser add-on de 99 €/mes: `panel.ts` lo sirve a
@@ -127,7 +127,7 @@ const es: PricingDict = {
   },
   plans: [
     {
-      name: "Arranque",
+      name: "Starter",
       glyph: "◇",
       star: true,
       tag: "Funcionando en 7 días",
@@ -160,12 +160,12 @@ const es: PricingDict = {
       mrrNote: "/mes · servicio gestionado",
       kitline: "En 3 plazos sin recargo · o **0 € de entrada** a 679 €/mes durante 18 meses",
       features: [
-        { text: "Todo lo del **Arranque**, con el asistente ya integrado en la web nueva", inherited: true },
+        { text: "Todo lo del **Starter**, con el asistente ya integrado en la web nueva", inherited: true },
         { text: "**Identidad de marca esencial** — logo, paleta, tipografías y mini-manual" },
         { text: "**Web premium cinematográfica** hasta 12 secciones, bilingüe" },
         { text: "Dominio, hosting, SSL y textos legales RGPD incluidos" },
         { text: "Sesión de marca contigo: textos, fotos y estructura, decididos en una tarde" },
-        { text: "Misma cuota mensual que el Arranque — lo que cambia es lo que se construye" },
+        { text: "Misma cuota mensual que el Starter — lo que cambia es lo que se construye" },
       ],
       quota: ["1.000 conversaciones/mes", "Web bilingüe ES/EN", "Agente en 2 idiomas", "1 sede", "2 h/mes de cambios"],
       cta: "Quiero también la web",
@@ -210,8 +210,8 @@ const es: PricingDict = {
   compare: {
     eyebrow: "Comparativa",
     title: "Qué incluye cada nivel",
-    sub: "El Arranque y Core montan exactamente el mismo asistente y cuestan lo mismo al mes. La diferencia es si además te construimos la marca y la web.",
-    cols: ["Arranque", "Core", "Nexus"],
+    sub: "El Starter y Core montan exactamente el mismo asistente y cuestan lo mismo al mes. La diferencia es si además te construimos la marca y la web.",
+    cols: ["Starter", "Core", "Nexus"],
     rows: [
       { label: "Cuota mensual", cells: ["349 €", "349 €", "desde 1.900 €"], strong: true },
       { label: "Puesta en marcha", cells: ["2.900 €", "5.900 €", "desde 18.000 €"], strong: true },
@@ -242,7 +242,7 @@ const es: PricingDict = {
     titleB: "cuando lo necesites",
     sub: "Cada módulo se enchufa sobre lo que ya tienes funcionando. Sin rehacer nada y sin parar el servicio.",
     items: [
-      { name: "La web, después", desc: "Empezaste por el Arranque y ahora quieres la marca y la web premium. Se añade sin tocar el asistente, y pagas la diferencia exacta con Core.", price: "3.000 €" },
+      { name: "La web, después", desc: "Empezaste por el Starter y ahora quieres la marca y la web premium. Se añade sin tocar el asistente, y pagas la diferencia exacta con Core.", price: "3.000 €" },
       { name: "Conversaciones extra", desc: "Bloque de 500 conversaciones más al mes. Pasarte de la cuota nunca corta tu servicio: te avisamos y lo hablamos.", tail: "99 €/mes" },
       { name: "Conversaciones extra", note: "· solo web", desc: "Bloque de 1.000 conversaciones más al mes para planes sin WhatsApp, donde cada conversación cuesta bastante menos.", tail: "59 €/mes" },
       { name: "Sede adicional", desc: "Otro centro con su propia agenda, su horario, su equipo y sus métricas separadas.", price: "490 €", tail: "+ 49 €/mes" },
@@ -256,7 +256,7 @@ const es: PricingDict = {
     eyebrow: "Formas de pago",
     titleA: "El desembolso inicial no debería ser",
     titleB: "el motivo de no hacerlo",
-    sub: "Cuatro maneras de entrar, sin subvenciones de por medio. Ejemplo sobre el Arranque.",
+    sub: "Cuatro maneras de entrar, sin subvenciones de por medio. Ejemplo sobre el Starter.",
     items: [
       { k: "Al contado", title: "−5 %", body: "Pago único de la puesta en marcha con un 5 % de descuento, más la cuota mensual desde el primer mes. Lo construido es tuyo desde el día uno.", foot: "2.755 € + 349 €/mes" },
       { k: "Fraccionado", title: "3 plazos", body: "40 % al firmar, 30 % cuando el asistente empieza a responder y 30 % cuando lleva una semana reservando. Sin recargo ni intereses.", foot: "1.160 / 870 / 870 €" },
@@ -270,15 +270,15 @@ const es: PricingDict = {
     titleB: "antes de firmar",
     items: [
       { q: "¿Qué estoy pagando exactamente en la cuota mensual?", a: "No es «mantenimiento». Es un servicio gestionado: las conversaciones incluidas, el ajuste continuo del agente con lo que se ve en las conversaciones reales, tu panel de métricas, la infraestructura y la seguridad, los informes y el soporte con SLA. Un asistente humano atendiendo 1.000 conversaciones al mes son unos 1.400 € de nómina; la cuota es una cuarta parte de eso." },
-      { q: "Ya tengo web. ¿Puedo contratar solo el asistente?", a: "Sí, y es exactamente el **Arranque**: 2.900 € de puesta en marcha y 349 €/mes. El asistente se instala sobre la web que ya tienes y sobre tu WhatsApp, sin rehacer nada. Es lo que contrata la mayoría, y está funcionando en **7 días**." },
-      { q: "Empiezo por el Arranque. ¿Y si luego quiero la web?", a: "Se añade cuando quieras por **3.000 €**, que es la diferencia exacta con Core. Lo que ya tienes montado no se rehace: el asistente, tu historial de conversaciones y tus citas siguen igual, y la web se construye alrededor." },
+      { q: "Ya tengo web. ¿Puedo contratar solo el asistente?", a: "Sí, y es exactamente el **Starter**: 2.900 € de puesta en marcha y 349 €/mes. El asistente se instala sobre la web que ya tienes y sobre tu WhatsApp, sin rehacer nada. Es lo que contrata la mayoría, y está funcionando en **7 días**." },
+      { q: "Empiezo por el Starter. ¿Y si luego quiero la web?", a: "Se añade cuando quieras por **3.000 €**, que es la diferencia exacta con Core. Lo que ya tienes montado no se rehace: el asistente, tu historial de conversaciones y tus citas siguen igual, y la web se construye alrededor." },
       { q: "¿Y el agente de voz que coge el teléfono?", a: "Está construido y funcionando en pruebas internas, pero **todavía no lo vendemos**: antes hay que cerrar la telefonía española y firmar los acuerdos de tratamiento de datos con los proveedores de voz. Prometer una fecha antes de tener eso resuelto sería vender humo. Cuando esté disponible, los clientes que ya estén con nosotros entran primero." },
       { q: "¿Con qué agenda funciona?", a: "Con **Google Calendar**, que es lo que usa la mayoría de negocios pequeños y lo que hoy podemos garantizar de verdad. Si llevas la agenda en otro programa, lo miramos antes de firmar nada y te decimos si tiene solución — sin vender integraciones que no existan." },
       { q: "¿Y si la IA se equivoca o se inventa algo?", a: "El agente solo responde con la información que tú apruebas: tus servicios, tus precios, tus horarios, tus FAQs. Lo que no sabe, no se lo inventa — te lo pasa a ti con el contexto de la conversación. Las dos primeras semanas lo supervisamos juntos y lo ajustamos." },
       { q: "¿Qué pasa si me paso de las conversaciones incluidas?", a: "No se corta nada. Te avisamos al 80 % y al 100 % del consumo, sigues atendiendo con normalidad y hablamos de ampliar el bloque. Apagarte el WhatsApp porque has tenido un mes bueno sería lo contrario de lo que te hemos vendido." },
       { q: "¿Hay permanencia? ¿Puedo irme?", a: "Si pagas la puesta en marcha por adelantado, lo construido es tuyo y la cuota tiene 12 meses el primer año; después, mensual y sin ataduras. Si entras con 0 € de entrada, la permanencia es de 18 meses — que es el tiempo en el que se termina de pagar el trabajo. En los dos casos, cuando te vas te descargas todos tus datos —conversaciones, reservas, clientes, leads— en un clic. Sin rehenes." },
       { q: "¿Trabajáis con el Kit Digital?", a: "Hoy no somos agente digitalizador, así que no tramitamos el bono. Si tienes uno concedido y quieres usarlo, te ponemos en contacto con un agente adherido y desarrollamos el proyecto con él. Y si prefieres no depender de una subvención, con 0 € de entrada empezamos esta semana." },
-      { q: "¿Cuánto tarda en estar funcionando?", a: "El Arranque, **7 días** desde que nos pasas los datos de tu negocio. Core tarda 4–6 semanas porque incluye construir la marca y la web. En los dos casos necesitamos unas 2–3 horas de tu tiempo, repartidas en dos sesiones." },
+      { q: "¿Cuánto tarda en estar funcionando?", a: "El Starter, **7 días** desde que nos pasas los datos de tu negocio. Core tarda 4–6 semanas porque incluye construir la marca y la web. En los dos casos necesitamos unas 2–3 horas de tu tiempo, repartidas en dos sesiones." },
       { q: "¿Dónde están mis datos?", a: "En servidores de la Unión Europea, con proveedores de IA con garantías de RGPD. La web avisa de que se habla con una IA y de que la conversación se guarda, como exige el artículo 13 del RGPD. Y tus datos son portables: te los llevas cuando quieras." },
       { q: "¿Trabajáis fuera de España?", a: "Sí. Operamos en España, Reino Unido y el resto de Europa. La tarifa se ajusta al mercado local; escríbenos y te pasamos la de tu país." },
     ],
@@ -307,7 +307,7 @@ const en: PricingDict = {
   },
   plans: [
     {
-      name: "Arranque",
+      name: "Starter",
       glyph: "◇",
       star: true,
       tag: "Live in 7 days",
@@ -340,12 +340,12 @@ const en: PricingDict = {
       mrrNote: "/mo · managed service",
       kitline: "3 instalments, no surcharge · or **€0 upfront** at €679/mo for 18 months",
       features: [
-        { text: "Everything in **Arranque**, with the assistant already built into the new website", inherited: true },
+        { text: "Everything in **Starter**, with the assistant already built into the new website", inherited: true },
         { text: "**Essential brand identity** — logo, palette, typography and mini-guidelines" },
         { text: "**Cinematic premium website**, up to 12 sections, bilingual" },
         { text: "Domain, hosting, SSL and GDPR legal pages included" },
         { text: "A brand session with you: copy, photos and structure, settled in one afternoon" },
-        { text: "Same monthly fee as Arranque — what changes is what gets built" },
+        { text: "Same monthly fee as Starter — what changes is what gets built" },
       ],
       quota: ["1,000 conversations/mo", "Bilingual website EN/ES", "Agent in 2 languages", "1 location", "2 h/mo of changes"],
       cta: "I want the website too",
@@ -390,8 +390,8 @@ const en: PricingDict = {
   compare: {
     eyebrow: "Comparison",
     title: "What each level includes",
-    sub: "Arranque and Core run exactly the same assistant and cost the same per month. The difference is whether we also build your brand and website.",
-    cols: ["Arranque", "Core", "Nexus"],
+    sub: "Starter and Core run exactly the same assistant and cost the same per month. The difference is whether we also build your brand and website.",
+    cols: ["Starter", "Core", "Nexus"],
     rows: [
       { label: "Monthly fee", cells: ["€349", "€349", "from €1,900"], strong: true },
       { label: "Setup", cells: ["€2,900", "€5,900", "from €18,000"], strong: true },
@@ -422,7 +422,7 @@ const en: PricingDict = {
     titleB: "when you need it",
     sub: "Each module plugs into what you already have running. Nothing gets rebuilt and the service never stops.",
     items: [
-      { name: "The website, later", desc: "You started with Arranque and now you want the brand and the premium website. It's added without touching the assistant, and you pay the exact difference with Core.", price: "€3,000" },
+      { name: "The website, later", desc: "You started with Starter and now you want the brand and the premium website. It's added without touching the assistant, and you pay the exact difference with Core.", price: "€3,000" },
       { name: "Extra conversations", desc: "A block of 500 more conversations per month. Going over quota never cuts your service: we tell you and we talk about it.", tail: "€99/mo" },
       { name: "Extra conversations", note: "· web only", desc: "A block of 1,000 more conversations per month for plans without WhatsApp, where each conversation costs considerably less.", tail: "€59/mo" },
       { name: "Additional location", desc: "Another site with its own calendar, hours, team and separate metrics.", price: "€490", tail: "+ €49/mo" },
@@ -436,7 +436,7 @@ const en: PricingDict = {
     eyebrow: "Ways to pay",
     titleA: "The upfront cost shouldn't be",
     titleB: "the reason not to do it",
-    sub: "Four ways in, no subsidies involved. Example based on Arranque.",
+    sub: "Four ways in, no subsidies involved. Example based on Starter.",
     items: [
       { k: "In full", title: "−5%", body: "One-off payment of the setup with a 5% discount, plus the monthly fee from month one. What we build is yours from day one.", foot: "€2,755 + €349/mo" },
       { k: "Instalments", title: "3 payments", body: "40% on signing, 30% when the assistant starts answering and 30% once it's been booking for a week. No surcharge, no interest.", foot: "€1,160 / €870 / €870" },
@@ -450,15 +450,15 @@ const en: PricingDict = {
     titleB: "before signing",
     items: [
       { q: "What exactly am I paying for in the monthly fee?", a: "It's not \"maintenance\". It's a managed service: the conversations included, continuous tuning of the agent based on what real conversations show, your metrics dashboard, infrastructure and security, the reports and SLA-backed support. A human assistant handling 1,000 conversations a month is about €1,400 in payroll; the fee is a quarter of that." },
-      { q: "I already have a website. Can I get just the assistant?", a: "Yes, and that's exactly **Arranque**: €2,900 setup and €349/mo. The assistant installs on the website you already have and on your WhatsApp, with nothing rebuilt. It's what most clients take, and it's running in **7 days**." },
-      { q: "I start with Arranque. What if I want the website later?", a: "It can be added whenever you like for **€3,000**, the exact difference with Core. What's already running doesn't get rebuilt: the assistant, your conversation history and your bookings stay as they are, and the website gets built around them." },
+      { q: "I already have a website. Can I get just the assistant?", a: "Yes, and that's exactly **Starter**: €2,900 setup and €349/mo. The assistant installs on the website you already have and on your WhatsApp, with nothing rebuilt. It's what most clients take, and it's running in **7 days**." },
+      { q: "I start with Starter. What if I want the website later?", a: "It can be added whenever you like for **€3,000**, the exact difference with Core. What's already running doesn't get rebuilt: the assistant, your conversation history and your bookings stay as they are, and the website gets built around them." },
       { q: "What about the voice agent that answers the phone?", a: "It's built and running in internal testing, but **we're not selling it yet**: first we need Spanish telephony in place and the data processing agreements signed with the voice providers. Promising a date before that is settled would be selling smoke. When it's available, clients already with us go first." },
       { q: "Which calendar does it work with?", a: "**Google Calendar**, which is what most small businesses use and what we can genuinely guarantee today. If you keep your calendar in another system, we look at it before signing anything and tell you whether it has a solution — without selling integrations that don't exist." },
       { q: "What if the AI gets something wrong or makes things up?", a: "The agent only answers with information you approve: your services, your prices, your hours, your FAQs. What it doesn't know, it doesn't invent — it hands it to you with the context of the conversation. For the first two weeks we supervise it together and tune it." },
       { q: "What happens if I go over the included conversations?", a: "Nothing gets cut. We alert you at 80% and 100% of usage, you keep serving clients as normal and we talk about expanding the block. Switching off your WhatsApp because you had a good month would be the opposite of what we sold you." },
       { q: "Is there a lock-in? Can I leave?", a: "If you pay the setup upfront, what we build is yours and the fee has a 12-month term the first year; after that, monthly and no strings. If you start with €0 upfront, the commitment is 18 months — the time it takes to finish paying for the work. Either way, when you leave you download all your data — conversations, bookings, clients, leads — in one click. No hostages." },
       { q: "Do you work with Spain's Kit Digital?", a: "We're not a registered digitalisation agent today, so we don't process the grant. If you have one approved and want to use it, we'll connect you with a registered agent and build the project with them. And if you'd rather not depend on a subsidy, with €0 upfront we can start this week." },
-      { q: "How long until it's up and running?", a: "Arranque, **7 days** from the moment you send us your business's details. Core takes 4–6 weeks because it includes building the brand and the website. Either way we need about 2–3 hours of your time, split into two sessions." },
+      { q: "How long until it's up and running?", a: "Starter, **7 days** from the moment you send us your business's details. Core takes 4–6 weeks because it includes building the brand and the website. Either way we need about 2–3 hours of your time, split into two sessions." },
       { q: "Where is my data?", a: "On European Union servers, with AI providers under GDPR guarantees. The website discloses that visitors are talking to an AI and that the conversation is stored, as Article 13 of the GDPR requires. And your data is portable: take it with you whenever you want." },
       { q: "Do you work outside Spain?", a: "Yes. We operate in Spain, the United Kingdom and the rest of Europe. Pricing adjusts to the local market; write to us and we'll send you your country's rates." },
     ],

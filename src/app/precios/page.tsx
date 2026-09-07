@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Planes y precios · Plans & pricing — Asenix",
   description:
-    "Arranque, Core y Nexus: un asistente que atiende en tu web y tu WhatsApp, responde con la información real de tu negocio y cierra la cita en tu agenda. 349 €/mes, funcionando en 7 días.",
+    "Starter, Core y Nexus: un asistente que atiende en tu web y tu WhatsApp, responde con la información real de tu negocio y cierra la cita en tu agenda. 349 €/mes, funcionando en 7 días.",
   robots: { index: true, follow: true },
 };
 

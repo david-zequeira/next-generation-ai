@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useDict } from "@/i18n/LocaleContext";
 
-const ANCHORS = ["#top", "#future", "#services", "#ecosystem", "#work", "#process", "#contact"];
+/** Orden de la página; la etiqueta de cada ancla sale del menú principal. */
+const ANCHORS = ["#top", "#future", "#services", "#ecosystem", "#process", "#work", "#contact"];
+const NAV_HREFS = ["/#future", "/#services", "/#ecosystem", "/#work", "/#process"];
 
 /**
  * Raíl de capítulos — la columna vertebral narrativa del sitio.
@@ -13,7 +15,11 @@ const ANCHORS = ["#top", "#future", "#services", "#ecosystem", "#work", "#proces
  */
 export default function SectionRail() {
   const dict = useDict();
-  const labels = ["ASENIX", ...dict.nav.links, dict.footer.contact];
+  const labels = ANCHORS.map((a) => {
+    if (a === "#top") return "ASENIX";
+    if (a === "#contact") return dict.footer.contact;
+    return dict.nav.links[NAV_HREFS.indexOf(`/${a}`)];
+  });
   const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24 });
@@ -49,7 +55,7 @@ export default function SectionRail() {
         <div className="absolute inset-y-2 left-1/2 w-px -translate-x-1/2 bg-white/[0.07]" />
         <motion.div
           style={{ scaleY: progress }}
-          className="absolute inset-y-2 left-1/2 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-electric to-neon"
+          className="absolute inset-y-2 left-1/2 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-electric to-pulse"
         />
         {ANCHORS.map((href, i) => (
           <a
@@ -62,7 +68,7 @@ export default function SectionRail() {
             <span
               className={`h-1.5 w-1.5 rounded-full transition-all duration-400 ${
                 active === i
-                  ? "scale-[1.8] bg-neon shadow-[0_0_10px_2px_rgba(56,212,255,0.45)]"
+                  ? "scale-[1.8] bg-neon shadow-[0_0_10px_2px_rgba(184,242,30,0.45)]"
                   : "bg-mist/40 group-hover:scale-150 group-hover:bg-frost/70"
               }`}
             />
