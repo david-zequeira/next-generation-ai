@@ -98,6 +98,22 @@ html {
   color-scheme: dark;
 }
 
+/*
+ * Nada puede ensanchar la página a lo ancho. Las brumas de color de las
+ * secciones son más anchas que un móvil a propósito, y basta con que una se
+ * escape de su sección para que la pantalla se pueda arrastrar a la derecha.
+ *
+ * Va en `main` y no en la raíz ni en `body`: en la raíz se lleva por delante
+ * `position: sticky` (la sección que se ancla al hacer scroll deja de
+ * anclarse), y en `body` no hace nada, porque su overflow se propaga al
+ * viewport en lugar de recortar. `clip` y no `hidden` para no crear un
+ * contenedor de scroll. Las tablas anchas siguen desplazándose porque su
+ * propio contenedor tiene overflow-x: auto.
+ */
+main {
+  overflow-x: clip;
+}
+
 body {
   background: var(--color-void);
   color: var(--color-frost);

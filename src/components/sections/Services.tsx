@@ -99,7 +99,7 @@ export default function Services() {
   const current = t.tabs[tab];
 
   return (
-    <section id="services" className="relative bg-void pb-28 pt-8 md:pb-40">
+    <section id="services" className="relative overflow-hidden bg-void pb-28 pt-8 md:pb-40">
       {/* Bruma azul detrás de la tarjeta — el brillo del Figma */}
       <div
         aria-hidden
