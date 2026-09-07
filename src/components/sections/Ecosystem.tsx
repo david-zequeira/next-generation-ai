@@ -1,263 +1,219 @@
 "use client";
 
 import { motion } from "framer-motion";
-import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
 
-/** Posiciones de los nodos — las etiquetas viven en el diccionario, por índice. */
-const NODE_POS = [
-  { x: 170, y: 130 },
-  { x: 720, y: 105 },
-  { x: 110, y: 420 },
-  { x: 760, y: 440 },
-  { x: 300, y: 555 },
-  { x: 590, y: 560 },
-];
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-const CENTER = { x: 450, y: 310 };
+/** Trayectoria elíptica del punto de luz — la misma que dibuja la órbita. */
+const ORBIT_PATH = "M 20 160 A 220 120 0 1 1 460 160 A 220 120 0 1 1 20 160";
 
-function pathTo(n: { x: number; y: number }): string {
-  const mx = (CENTER.x + n.x) / 2 + (n.y < CENTER.y ? -30 : 30);
-  const my = (CENTER.y + n.y) / 2 + (n.x < CENTER.x ? 24 : -24);
-  return `M ${CENTER.x} ${CENTER.y} Q ${mx} ${my} ${n.x} ${n.y}`;
+function Step({
+  n,
+  title,
+  desc,
+  align = "left",
+  accent = false,
+  delay = 0,
+}: {
+  n: number;
+  title: string;
+  desc: string;
+  align?: "left" | "right";
+  accent?: boolean;
+  delay?: number;
+}) {
+  return (
+    <motion.li
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      className="group w-full max-w-[250px]"
+    >
+      <div className="flex items-center justify-between gap-4 border-b border-pulse/25 pb-2.5">
+        <span
+          className={`font-display text-[15px] font-medium transition-colors duration-300 ${
+            accent ? "text-neon" : "text-white group-hover:text-pulse"
+          }`}
+        >
+          {title}
+        </span>
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[11px] font-bold ${
+            accent ? "bg-white text-ink" : "bg-[#0d1a4d] text-white ring-1 ring-pulse/40"
+          }`}
+        >
+          {n}
+        </span>
+      </div>
+      <p className={`mt-3 text-[13px] leading-relaxed text-mist ${align === "right" ? "" : ""}`}>{desc}</p>
+    </motion.li>
+  );
 }
 
 /**
- * Section 4 — The AI Ecosystem.
- * A living network: intelligent agents orbit the core, lines carry
- * pulses of work between them, and a holographic console narrates
- * what the swarm is doing.
+ * Sección 4 — «Cómo trabajamos» (Figma): el método como sistema en órbita.
+ * El isotipo late en el centro, un punto de luz recorre la órbita y los
+ * seis pasos se reparten alrededor; a los lados, las dos frases que
+ * resumen la idea. En móvil los pasos se apilan en lista.
  */
 export default function Ecosystem() {
   const { locale, dict } = useLocale();
-  const t = dict.ecosystem;
+  const t = dict.howWeWork;
+  const s = t.steps;
 
   return (
     <section
       id="ecosystem"
-      className="relative overflow-hidden bg-abyss py-32 md:py-44"
+      className="relative overflow-hidden border-y border-line bg-[#02040f] py-28 md:py-36"
     >
-      {/* Atmosphere shift: this world is deeper blue */}
+      {/* Cielo estrellado */}
+      <div aria-hidden className="absolute inset-0">
+        {Array.from({ length: 90 }).map((_, i) => (
+          <span
+            key={i}
+            className="animate-twinkle absolute rounded-full bg-frost"
+            style={{
+              width: i % 7 === 0 ? 2 : 1,
+              height: i % 7 === 0 ? 2 : 1,
+              left: `${(i * 137.5) % 100}%`,
+              top: `${(i * 73.3) % 100}%`,
+              opacity: 0.2 + ((i * 7) % 10) / 20,
+              animationDelay: `${(i % 11) * 0.4}s`,
+            }}
+          />
+        ))}
+      </div>
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(20,40,110,0.35),transparent_70%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-void to-transparent"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-void to-transparent"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric/[0.12] blur-[120px]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-3xl text-center" key={locale}>
-          <p className="eyebrow mb-6">{t.eyebrow}</p>
-          <TextReveal
-            text={t.title}
-            className="text-[clamp(2.2rem,5.5vw,4.75rem)] text-frost"
-          />
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.3 }}
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mist md:text-lg text-pretty"
-          >
-            {t.sub}
-          </motion.p>
+      <div className="relative mx-auto max-w-7xl px-6" key={locale}>
+        <p className="eyebrow text-center">{t.eyebrow}</p>
+
+        {/* Escritorio: rejilla orbital */}
+        <div className="mt-20 hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-8">
+          {/* Izquierda */}
+          <div className="flex flex-col items-end gap-10">
+            <ul className="flex w-full flex-col items-end gap-10">
+              <Step n={6} title={s[5].title} desc={s[5].desc} delay={0.5} />
+            </ul>
+            <motion.h3
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="display w-full text-right text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold text-white"
+            >
+              {t.left}
+            </motion.h3>
+            <ul className="flex w-full flex-col items-end gap-10">
+              <Step n={5} title={s[4].title} desc={s[4].desc} accent delay={0.4} />
+            </ul>
+          </div>
+
+          {/* Centro: paso 1, órbita, paso 4 */}
+          <div className="flex flex-col items-center gap-6">
+            <ul className="flex justify-center">
+              <Step n={1} title={s[0].title} desc={s[0].desc} />
+            </ul>
+            <Orbit ariaLabel={t.svgAria} />
+            <ul className="flex justify-center">
+              <Step n={4} title={s[3].title} desc={s[3].desc} delay={0.3} />
+            </ul>
+          </div>
+
+          {/* Derecha */}
+          <div className="flex flex-col items-start gap-10">
+            <ul className="flex w-full flex-col items-start gap-10">
+              <Step n={2} title={s[1].title} desc={s[1].desc} delay={0.1} />
+            </ul>
+            <motion.h3
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="display w-full text-left text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold text-white"
+            >
+              {t.right}
+            </motion.h3>
+            <ul className="flex w-full flex-col items-start gap-10">
+              <Step n={3} title={s[2].title} desc={s[2].desc} delay={0.2} />
+            </ul>
+          </div>
         </div>
 
-        <div className="relative mt-10 md:mt-16">
-          <motion.svg
-            viewBox="0 0 900 640"
-            className="mx-auto w-full max-w-4xl"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.35 }}
-            role="img"
-            aria-label={t.svgAria}
-          >
-            <defs>
-              <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#2e6bff" stopOpacity="0.55" />
-                <stop offset="55%" stopColor="#2e6bff" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#2e6bff" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#5f8dff" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#38d4ff" stopOpacity="0.5" />
-              </linearGradient>
-            </defs>
-
-            {/* Connections */}
-            {NODE_POS.map((n, i) => (
-              <g key={i}>
-                <motion.path
-                  d={pathTo(n)}
-                  fill="none"
-                  stroke="url(#lineGrad)"
-                  strokeWidth="1.4"
-                  strokeDasharray="6 6"
-                  className="animate-dash"
-                  variants={{
-                    hidden: { pathLength: 0, opacity: 0 },
-                    visible: {
-                      pathLength: 1,
-                      opacity: 1,
-                      transition: {
-                        duration: 1.4,
-                        delay: 0.35 + i * 0.14,
-                        ease: "easeInOut",
-                      },
-                    },
-                  }}
-                />
-                {/* Pulse travelling along the line */}
-                <circle r="3" fill="#38d4ff" opacity="0.9">
-                  <animateMotion
-                    dur={`${3.2 + i * 0.55}s`}
-                    repeatCount="indefinite"
-                    path={pathTo(n)}
-                    begin={`${i * 0.6}s`}
-                  />
-                </circle>
-              </g>
+        {/* Móvil y tablet: órbita arriba, pasos en lista */}
+        <div className="mt-14 lg:hidden">
+          <h3 className="display text-center text-2xl font-semibold text-white">
+            {t.left} <span className="text-pulse">·</span> {t.right}
+          </h3>
+          <div className="mx-auto mt-8 max-w-sm">
+            <Orbit ariaLabel={t.svgAria} />
+          </div>
+          <ul className="mx-auto mt-10 grid max-w-2xl gap-8 sm:grid-cols-2">
+            {s.map((step, i) => (
+              <Step key={step.title} n={i + 1} title={step.title} desc={step.desc} accent={i === 4} delay={i * 0.06} />
             ))}
-
-            {/* Core */}
-            <circle cx={CENTER.x} cy={CENTER.y} r="130" fill="url(#coreGlow)" />
-            <motion.g
-              variants={{
-                hidden: { scale: 0, opacity: 0 },
-                visible: {
-                  scale: 1,
-                  opacity: 1,
-                  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
-                },
-              }}
-              style={{ transformOrigin: `${CENTER.x}px ${CENTER.y}px` }}
-            >
-              <circle
-                cx={CENTER.x}
-                cy={CENTER.y}
-                r="46"
-                fill="#0b1226"
-                stroke="#2e6bff"
-                strokeOpacity="0.7"
-              />
-              <circle
-                cx={CENTER.x}
-                cy={CENTER.y}
-                r="58"
-                fill="none"
-                stroke="#38d4ff"
-                strokeOpacity="0.3"
-                strokeDasharray="3 7"
-                className="animate-dash"
-              />
-              <text
-                x={CENTER.x}
-                y={CENTER.y - 4}
-                textAnchor="middle"
-                className="fill-frost font-display"
-                fontSize="13"
-                fontWeight="700"
-                letterSpacing="2"
-              >
-                ASENIX
-              </text>
-              <text
-                x={CENTER.x}
-                y={CENTER.y + 14}
-                textAnchor="middle"
-                fill="#38d4ff"
-                fontSize="9"
-                letterSpacing="3"
-              >
-                {t.core}
-              </text>
-            </motion.g>
-
-            {/* Agent nodes */}
-            {NODE_POS.map((n, i) => (
-              <motion.g
-                key={`node-${i}`}
-                variants={{
-                  hidden: { scale: 0, opacity: 0 },
-                  visible: {
-                    scale: 1,
-                    opacity: 1,
-                    transition: {
-                      duration: 0.7,
-                      delay: 0.55 + i * 0.14,
-                      ease: [0.16, 1, 0.3, 1],
-                    },
-                  },
-                }}
-                style={{ transformOrigin: `${n.x}px ${n.y}px` }}
-              >
-                <circle
-                  cx={n.x}
-                  cy={n.y}
-                  r="26"
-                  fill="#0d1530"
-                  stroke="#94aaff"
-                  strokeOpacity="0.35"
-                />
-                <circle
-                  cx={n.x}
-                  cy={n.y}
-                  r="5"
-                  fill="#38d4ff"
-                  className="animate-pulse-glow"
-                />
-                <text
-                  x={n.x}
-                  y={n.y + 48}
-                  textAnchor="middle"
-                  fill="#9aa5c0"
-                  fontSize="12"
-                  letterSpacing="1"
-                >
-                  {t.nodes[i]}
-                </text>
-              </motion.g>
-            ))}
-          </motion.svg>
-
-          {/* Floating holographic console */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="glass animate-float-slow mx-auto mt-8 w-full max-w-md rounded-2xl p-5 md:absolute md:bottom-4 md:right-0 md:mt-0"
-          >
-            <div className="mb-3 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-neon animate-pulse-glow" />
-              <span className="font-display text-[11px] font-semibold uppercase tracking-[0.25em] text-mist">
-                {t.liveTitle}
-              </span>
-            </div>
-            <div className="space-y-2 font-mono text-[11px] leading-relaxed text-mist/90">
-              {t.logs.map((line, i) => (
-                <motion.p
-                  key={line}
-                  initial={{ opacity: 0, x: -8 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 + i * 0.18, duration: 0.5 }}
-                  className="truncate"
-                >
-                  <span className="text-neon/80">▸</span> {line}
-                </motion.p>
-              ))}
-            </div>
-          </motion.div>
+          </ul>
         </div>
       </div>
     </section>
+  );
+}
+
+/** El núcleo: isotipo dentro de un disco blanco que respira, con su órbita y su punto de luz. */
+function Orbit({ ariaLabel }: { ariaLabel: string }) {
+  return (
+    <motion.svg
+      viewBox="0 0 480 320"
+      role="img"
+      aria-label={ariaLabel}
+      className="w-full max-w-[480px]"
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <defs>
+        <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+          <stop offset="45%" stopColor="#94b2fc" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#1a4dff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="orbitLine" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#94b2fc" stopOpacity="0.9" />
+          <stop offset="60%" stopColor="#1a4dff" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#94b2fc" stopOpacity="0.15" />
+        </linearGradient>
+      </defs>
+
+      {/* Halo */}
+      <circle cx="240" cy="160" r="150" fill="url(#coreGlow)" />
+
+      {/* Órbita inclinada */}
+      <g transform="rotate(-18 240 160)">
+        <path d={ORBIT_PATH} fill="none" stroke="url(#orbitLine)" strokeWidth="1.2" />
+        <circle r="4" fill="#b8f21e">
+          <animateMotion dur="9s" repeatCount="indefinite" path={ORBIT_PATH} />
+        </circle>
+        <circle r="9" fill="#b8f21e" opacity="0.25">
+          <animateMotion dur="9s" repeatCount="indefinite" path={ORBIT_PATH} />
+        </circle>
+      </g>
+
+      {/* Disco blanco que respira */}
+      <motion.g
+        animate={{ scale: [1, 1.04, 1] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "240px 160px" }}
+      >
+        <circle cx="240" cy="160" r="78" fill="#ffffff" opacity="0.08" />
+        <circle cx="240" cy="160" r="66" fill="#f4f6ff" />
+        <image href={`${BASE}/isotipo.png`} x="200" y="120" width="80" height="80" />
+      </motion.g>
+    </motion.svg>
   );
 }

@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import FinalCTA from "@/components/sections/FinalCTA";
 import ChatWidget from "@/components/ui/ChatWidget";
 import VoiceWidget from "@/components/ui/VoiceWidget";
 import { cn } from "@/lib/utils";
@@ -11,7 +14,6 @@ import { COMPANY } from "@/lib/company";
 import { getSessionId } from "@/lib/session";
 import { trackEvent } from "@/lib/track";
 import { useLocale } from "@/i18n/LocaleContext";
-import { LEGAL_SLUGS, legalLinkLabels } from "@/i18n/legal";
 import {
   CALC_PLANS,
   calcDicts,
@@ -21,6 +23,8 @@ import {
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 const EMAIL = COMPANY.email;
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Los campos viven como texto: un input vacío no es un 0, y 0 miente. */
 type Fields = { ticket: string; visits: string; missed: string; noShows: string };
@@ -35,7 +39,7 @@ const toNumber = (v: string): number => {
 };
 
 /** `**negrita**` del diccionario → <strong>. Mismo contrato que en /precios. */
-function Rich({ text, strongClass = "font-semibold text-frost" }: { text: string; strongClass?: string }) {
+function Rich({ text, strongClass = "font-semibold text-white" }: { text: string; strongClass?: string }) {
   return (
     <>
       {text.split("**").map((part, i) =>
@@ -57,7 +61,7 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
       initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-8%" }}
-      transition={{ duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.85, delay, ease: EASE }}
       className={className}
     >
       {children}
@@ -65,68 +69,63 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
   );
 }
 
+/** Título de paso dentro de la tarjeta azul marino: "1. Tu negocio" en azul. */
 function StepHead({ n, hint }: { n: string; hint?: string }) {
   return (
     <div className="mb-5">
-      <h2 className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-neon">{n}</h2>
-      {hint && <p className="mt-2 max-w-[52ch] text-[13px] font-light leading-relaxed text-mist">{hint}</p>}
+      <h2 className="font-display text-[19px] font-semibold text-[#4d7dff]">{n.replace(" · ", ". ")}</h2>
+      {hint && <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-pulse/80">{hint}</p>}
     </div>
   );
 }
 
+/** Campo claro sobre la tarjeta oscura, con el sufijo en azul, como en el Figma. */
 function Field({
   label,
   hint,
   value,
   onChange,
   suffix,
-  autoFocus,
 }: {
   label: string;
   hint: string;
   value: string;
   onChange: (v: string) => void;
   suffix: string;
-  autoFocus?: boolean;
 }) {
   return (
     <label className="grid gap-2">
-      <span className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-frost/85">{label}</span>
+      <span className="font-display text-[13px] font-semibold text-white">{label}</span>
       <span className="relative flex items-center">
         <input
           type="text"
           inputMode="decimal"
           autoComplete="off"
-          autoFocus={autoFocus}
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/[^\d.,]/g, ""))}
-          placeholder="—"
-          className="w-full rounded-xl border border-line bg-space/55 px-4 py-3 pr-16 font-display text-lg font-semibold text-frost outline-none transition-colors duration-200 placeholder:font-light placeholder:text-mist/30 focus:border-neon/50"
+          placeholder="…"
+          className="w-full rounded-xl bg-[#e9edff] px-4 py-3.5 pr-20 font-display text-base font-semibold text-ink outline-none ring-2 ring-transparent transition-shadow duration-200 placeholder:font-normal placeholder:text-ink/40 focus:ring-pulse"
         />
-        <span className="pointer-events-none absolute right-4 font-display text-xs font-medium uppercase tracking-[0.12em] text-mist/60">
-          {suffix}
-        </span>
+        <span className="pointer-events-none absolute right-4 text-[13px] font-medium text-electric">{suffix}</span>
       </span>
-      <span className="text-xs font-light leading-relaxed text-mist/70">{hint}</span>
+      <span className="text-[12px] leading-relaxed text-pulse/75">{hint}</span>
     </label>
   );
 }
 
 /**
- * /calculadora — la versión pública de la cuenta de retorno.
+ * /calculadora — la versión pública de la cuenta de retorno, en el tema del
+ * Figma «Asenix Desktop»: el porqué arriba, el formulario en una tarjeta azul
+ * marino a la izquierda y el resultado en tarjetas claras a la derecha.
  *
  * Deliberadamente distinta de la que se usa en la llamada: cuatro preguntas en
  * vez de doce, hipótesis fijas y visibles en vez de deslizadores, tarifa pública
  * en vez de la de fundador, y ningún guion de venta. El resultado puede ser que
- * no compense, y eso se dice en pantalla.
- *
- * El motor de cálculo vive en `src/i18n/calculadora.ts` para poder probarlo
- * aparte y para que la exportación a Figma pinte cifras reales.
+ * no compense, y eso se dice en pantalla. El motor vive en `src/i18n/calculadora.ts`.
  */
 export default function CalculatorPage() {
-  const { locale, setLocale } = useLocale();
+  const { locale } = useLocale();
   const t = calcDicts[locale];
-  const otherLocale = locale === "en" ? "es" : "en";
 
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [sector, setSector] = useState<string>("");
@@ -153,8 +152,7 @@ export default function CalculatorPage() {
   const hasData = r.leak > 0 || r.noShowGain > 0;
   const worksOut = hasData && Number.isFinite(r.payback);
 
-  // Un solo evento la primera vez que la calculadora produce una cifra: mide
-  // cuánta gente la usa de verdad, sin convertir cada tecla en una petición.
+  // Un solo evento la primera vez que la calculadora produce una cifra.
   const tracked = useRef(false);
   useEffect(() => {
     if (hasData && !tracked.current) {
@@ -170,19 +168,13 @@ export default function CalculatorPage() {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0,
-        // es-ES no agrupa 4 cifras por defecto: sin esto la puesta en marcha se
-        // escribía "2900 €" aquí y "2.900 €" en /precios. Un precio publicado no
-        // puede tener dos grafías.
         useGrouping: true,
       }),
     [locale]
   );
   const eur = (n: number) => cf.format(Math.round(n));
   const months = (n: number) =>
-    n.toLocaleString(locale === "es" ? "es-ES" : "en-GB", {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    });
+    n.toLocaleString(locale === "es" ? "es-ES" : "en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
   const set = (k: keyof Fields) => (v: string) => setFields((f) => ({ ...f, [k]: v }));
 
@@ -266,322 +258,251 @@ export default function CalculatorPage() {
     { k: "net", label: t.result.rows.net.label, note: t.result.rows.net.note, value: `${r.net < 0 ? "−" : ""}${eur(Math.abs(r.net))}`, tone: "net" },
   ];
 
+  const inputCls =
+    "w-full rounded-xl border border-white/40 bg-white/15 px-4 py-3.5 text-sm text-white outline-none transition-colors duration-200 placeholder:text-white/60 focus:border-white";
+
   return (
     <div className="relative min-h-screen overflow-x-clip bg-void">
-      <div aria-hidden className="pointer-events-none fixed inset-0">
-        <div className="absolute -left-44 -top-40 h-[620px] w-[620px] rounded-full bg-electric/10 blur-[130px]" />
-        <div className="absolute -right-52 top-[38%] h-[520px] w-[520px] rounded-full bg-neon/[0.06] blur-[130px]" />
-        <div className="absolute -bottom-52 left-[30%] h-[560px] w-[560px] rounded-full bg-pulse/[0.07] blur-[130px]" />
-      </div>
+      <Navbar />
 
       <main className="relative">
-        {/* ——— Barra propia ——— */}
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 pt-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-mist transition-colors duration-200 hover:text-frost"
-          >
-            <ArrowLeft className="h-4 w-4" strokeWidth={1.8} />
-            {t.back}
-          </Link>
-          <Link href="/" className="hidden sm:block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
-              alt="Asenix"
-              className="h-7 w-auto"
-            />
-          </Link>
-          <button
-            type="button"
-            aria-label={otherLocale === "es" ? "Cambiar a español" : "Switch to English"}
-            onClick={() => setLocale(otherLocale)}
-            className="inline-flex h-9 cursor-pointer items-center rounded-full border border-line px-3 font-display text-[11px] font-bold tracking-[0.2em] text-mist transition-all duration-300 hover:border-neon/40 hover:text-frost"
-          >
-            {otherLocale.toUpperCase()}
-          </button>
-        </div>
+        {/* ——— El porqué, como apertura: dónde se pierde el dinero ——— */}
+        <section className="relative overflow-hidden border-b border-line bg-[#040816] pb-20 pt-36 md:pt-44">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[420px] bg-[radial-gradient(70%_80%_at_50%_100%,rgba(26,77,255,0.35),transparent_70%)]"
+          />
+          <div className="relative mx-auto max-w-6xl px-6">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <h1 className="font-display text-[clamp(2rem,4.6vw,3.4rem)] font-bold leading-[1.1] tracking-[-0.02em] text-white">
+                {t.why.title}
+              </h1>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mist md:text-lg">{t.why.body}</p>
+            </Reveal>
 
-        {/* ——— Cabecera ——— */}
-        <header className="mx-auto max-w-3xl px-6 pb-12 pt-14 text-center md:pt-20">
-          <p className="eyebrow">{t.header.eyebrow}</p>
-          <h1 className="mx-auto mt-5 font-display text-[clamp(2.2rem,5vw,4rem)] font-bold leading-[1.05] tracking-[-0.035em] text-frost">
-            {t.header.titleA}
-            <br />
-            <span className="bg-gradient-to-r from-frost via-[#5f8dff] to-neon bg-clip-text text-transparent">
-              {t.header.titleB}
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl font-light leading-relaxed text-mist">{t.header.lede}</p>
-        </header>
-
-        {/* ——— Por qué se pierde dinero: el porqué antes de pedir cifras ———
-            Va ANTES del formulario a propósito. A un dueño que entra frío por
-            Google, cuatro casillas en blanco no le dicen nada; lo que le hace
-            rellenarlas es reconocerse en el goteo. */}
-        <section className="mx-auto max-w-7xl px-6 pb-16">
-          <Reveal className="max-w-3xl">
-            <p className="eyebrow">{t.why.eyebrow}</p>
-            <h2 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.1rem)] font-semibold leading-[1.15] tracking-tight text-frost">
-              {t.why.title}
-            </h2>
-            <p className="mt-4 font-light leading-relaxed text-mist">{t.why.body}</p>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {t.why.items.map((item, i) => (
-              <Reveal key={item.title} delay={0.06 * i}>
-                <div className="h-full rounded-2xl border border-line bg-panel/25 p-6">
-                  <span
-                    aria-hidden
-                    className="font-display text-[11px] font-bold tracking-[0.2em] text-neon"
-                  >
-                    {String(i + 1).padStart(2, "0")}
+            <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
+              {t.why.items.map((item, i) => (
+                <Reveal key={item.title} delay={0.08 * i} className="flex gap-4">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-electric font-display text-xl font-medium text-neon">
+                    {i + 1}
                   </span>
-                  <h3 className="mt-3 font-display text-base font-semibold leading-snug text-frost">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-[13px] font-light leading-relaxed text-mist">{item.body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+                  <div>
+                    <h3 className="font-display text-[17px] font-semibold leading-snug text-[#4d7dff]">{item.title}</h3>
+                    <p className="mt-3 text-[13px] leading-relaxed text-mist">{item.body}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
 
-          <Reveal delay={0.2}>
-            <p className="mt-8 max-w-[60ch] text-sm font-light leading-relaxed text-mist/80">
-              {t.why.foot}
-            </p>
-          </Reveal>
+            {/* El isotipo en su orbe — el detalle del Figma a la derecha */}
+            <div aria-hidden className="pointer-events-none absolute -right-24 bottom-4 hidden 2xl:block">
+              <span className="relative flex h-40 w-40 items-center justify-center rounded-full bg-electric/25">
+                <span className="animate-float flex h-28 w-28 items-center justify-center rounded-full bg-electric shadow-[0_0_60px_-10px_rgba(26,77,255,0.9)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`${BASE}/isotipo.png`} alt="" className="h-12 w-12 brightness-0 invert" />
+                </span>
+              </span>
+            </div>
+          </div>
         </section>
 
-        {/* ——— Formulario + resultado ——— */}
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-[1fr_minmax(360px,420px)] lg:items-start">
-          {/* — columna izquierda: las preguntas — */}
-          <div className="grid gap-6">
-            <Reveal className="rounded-[22px] border border-line bg-panel/30 p-6 md:p-8">
-              <StepHead n={t.form.step1} />
+        {/* ——— Cabecera de la calculadora ——— */}
+        <header className="mx-auto max-w-3xl px-6 pb-14 pt-24 text-center md:pt-28">
+          <Reveal>
+            <p className="eyebrow">{t.header.eyebrow}</p>
+            <h2 className="mx-auto mt-5 font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-light leading-[1.2] text-white">
+              {t.header.titleA} {t.header.titleB}
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mist">{t.header.lede}</p>
+          </Reveal>
+        </header>
 
-              <p className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-frost/85">
-                {t.form.sectorLabel}
+        {/* ——— Formulario + resultado ——— */}
+        <div className="mx-auto grid max-w-6xl gap-8 px-6 lg:grid-cols-[1fr_minmax(320px,380px)] lg:items-start">
+          {/* — columna izquierda: la tarjeta azul marino — */}
+          <Reveal className="rounded-[26px] border border-pulse/30 bg-gradient-to-b from-[#0e2a8c] via-[#0c1d5e] to-[#0a1440] p-6 shadow-[0_50px_100px_-50px_rgba(26,77,255,0.7)] md:p-9">
+            <StepHead n={t.form.step1} />
+            <p className="font-display text-[13px] font-semibold text-white">{t.form.sectorLabel}</p>
+            <p className="mt-1 text-[12px] text-pulse/75">{t.form.sectorHint}</p>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              {t.form.sectors.map((s) => (
+                <button
+                  key={s.k}
+                  type="button"
+                  aria-pressed={sector === s.k}
+                  onClick={() => pickSector(s.k, s.visits)}
+                  className={cn(
+                    "cursor-pointer rounded-full px-4 py-2 text-[13px] font-medium transition-all duration-200",
+                    sector === s.k ? "bg-electric text-white shadow-[0_10px_24px_-12px_rgba(26,77,255,1)]" : "bg-[#dfe6ff] text-ink hover:bg-white"
+                  )}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              <Field label={t.form.ticketLabel} hint={t.form.ticketHint} value={fields.ticket} onChange={set("ticket")} suffix="€" />
+              <Field
+                label={t.form.visitsLabel}
+                hint={t.form.visitsHint}
+                value={fields.visits}
+                onChange={set("visits")}
+                suffix={locale === "es" ? "Al año" : "A year"}
+              />
+            </div>
+            {r.clientValue > 0 && (
+              <p className="mt-5 rounded-xl bg-white/[0.08] px-4 py-3 text-sm text-pulse">
+                {t.result.clientValueLabel}{" "}
+                <strong className="font-display font-semibold text-neon">{eur(r.clientValue)}</strong>
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {t.form.sectors.map((s) => (
+            )}
+
+            <div className="my-10 h-px bg-pulse/25" />
+
+            <StepHead n={t.form.step2} hint={t.form.step2Hint} />
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Field
+                label={t.form.missedLabel}
+                hint={t.form.missedHint}
+                value={fields.missed}
+                onChange={set("missed")}
+                suffix={locale === "es" ? "/ Sem" : "/ wk"}
+              />
+              <Field
+                label={t.form.noShowsLabel}
+                hint={t.form.noShowsHint}
+                value={fields.noShows}
+                onChange={set("noShows")}
+                suffix={locale === "es" ? "/ Mes" : "/ mo"}
+              />
+            </div>
+
+            <div className="my-10 h-px bg-pulse/25" />
+
+            <StepHead n={t.form.step3} hint={t.form.planHint} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              {t.form.plans.map((p) => {
+                const data = CALC_PLANS.find((c) => c.k === p.k) ?? CALC_PLANS[0];
+                const active = planKey === p.k;
+                return (
                   <button
-                    key={s.k}
+                    key={p.k}
                     type="button"
-                    aria-pressed={sector === s.k}
-                    onClick={() => pickSector(s.k, s.visits)}
+                    aria-pressed={active}
+                    onClick={() => setPlanKey(p.k)}
                     className={cn(
-                      "cursor-pointer rounded-full border px-4 py-2 text-[13px] transition-all duration-200",
-                      sector === s.k
-                        ? "border-neon/50 bg-neon/10 text-frost"
-                        : "border-line text-mist hover:border-[rgba(94,140,255,0.4)] hover:text-frost"
+                      "cursor-pointer rounded-2xl p-5 text-left transition-all duration-300",
+                      active
+                        ? "card-blue text-white shadow-[0_20px_50px_-20px_rgba(26,77,255,0.9)] ring-2 ring-pulse"
+                        : "bg-[#e9edff] text-ink hover:bg-white"
                     )}
                   >
-                    {s.label}
+                    <p className="font-display text-lg font-semibold">{p.name}</p>
+                    <p className={cn("mt-1 text-[12.5px] leading-relaxed", active ? "text-white/85" : "text-ink/70")}>{p.desc}</p>
+                    <p className={cn("mt-4 font-display text-[17px] font-semibold", active ? "text-white" : "text-electric")}>
+                      {eur(data.mrr)}
+                      {t.form.perMonth}
+                    </p>
+                    <p className={cn("text-[12px]", active ? "text-white/80" : "text-ink/70")}>
+                      + {eur(data.setup)} {t.form.setupNote}
+                    </p>
                   </button>
-                ))}
-              </div>
-              <p className="mt-3 text-xs font-light text-mist/70">{t.form.sectorHint}</p>
+                );
+              })}
+            </div>
 
-              <div className="mt-7 grid gap-5 sm:grid-cols-2">
-                <Field
-                  label={t.form.ticketLabel}
-                  hint={t.form.ticketHint}
-                  value={fields.ticket}
-                  onChange={set("ticket")}
-                  suffix="€"
-                />
-                <Field
-                  label={t.form.visitsLabel}
-                  hint={t.form.visitsHint}
-                  value={fields.visits}
-                  onChange={set("visits")}
-                  suffix={locale === "es" ? "al año" : "a year"}
-                />
-              </div>
-
-              {r.clientValue > 0 && (
-                <p className="mt-6 rounded-xl border border-line bg-space/40 px-4 py-3 text-sm text-mist">
-                  {t.result.clientValueLabel}{" "}
-                  <strong className="font-display font-semibold text-neon">{eur(r.clientValue)}</strong>
-                </p>
-              )}
-            </Reveal>
-
-            <Reveal delay={0.05} className="rounded-[22px] border border-line bg-panel/30 p-6 md:p-8">
-              <StepHead n={t.form.step2} hint={t.form.step2Hint} />
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field
-                  label={t.form.missedLabel}
-                  hint={t.form.missedHint}
-                  value={fields.missed}
-                  onChange={set("missed")}
-                  suffix={locale === "es" ? "/sem" : "/wk"}
-                />
-                <Field
-                  label={t.form.noShowsLabel}
-                  hint={t.form.noShowsHint}
-                  value={fields.noShows}
-                  onChange={set("noShows")}
-                  suffix={t.form.perMonth}
-                />
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.1} className="rounded-[22px] border border-line bg-panel/30 p-6 md:p-8">
-              <StepHead n={t.form.step3} hint={t.form.planHint} />
-              <div className="grid gap-3 sm:grid-cols-2">
-                {t.form.plans.map((p) => {
-                  const data = CALC_PLANS.find((c) => c.k === p.k) ?? CALC_PLANS[0];
-                  const active = planKey === p.k;
-                  return (
-                    <button
-                      key={p.k}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => setPlanKey(p.k)}
-                      className={cn(
-                        "cursor-pointer rounded-2xl border p-5 text-left transition-all duration-200",
-                        active
-                          ? "border-neon/45 bg-gradient-to-br from-[rgba(20,34,78,0.6)] to-[rgba(9,14,30,0.4)]"
-                          : "border-line bg-space/30 hover:border-[rgba(94,140,255,0.4)]"
-                      )}
-                    >
-                      <p className="font-display text-lg font-semibold text-frost">{p.name}</p>
-                      <p className="mt-1 text-[13px] font-light leading-relaxed text-mist">{p.desc}</p>
-                      <p className="mt-4 font-display text-sm font-semibold text-neon">
-                        {eur(data.mrr)}
-                        {t.form.perMonth}
-                      </p>
-                      <p className="text-xs text-mist/70">
-                        + {eur(data.setup)} {t.form.setupNote}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFields(EXAMPLE);
-                    setSector("belleza");
-                  }}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-line px-4 py-2.5 text-[13px] text-mist transition-colors duration-200 hover:border-neon/40 hover:text-frost"
-                >
-                  <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
-                  {t.form.example}
-                </button>
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-line px-4 py-2.5 text-[13px] text-mist transition-colors duration-200 hover:border-neon/40 hover:text-frost"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.8} />
-                  {t.form.reset}
-                </button>
-              </div>
-            </Reveal>
-          </div>
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setFields(EXAMPLE);
+                  setSector("belleza");
+                }}
+                className="btn-blue inline-flex cursor-pointer items-center rounded-full px-8 py-3 font-display text-sm font-semibold"
+              >
+                {t.form.example}
+              </button>
+              <button
+                type="button"
+                onClick={reset}
+                className="inline-flex cursor-pointer items-center rounded-full border border-pulse/60 px-8 py-3 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10"
+              >
+                {t.form.reset}
+              </button>
+            </div>
+          </Reveal>
 
           {/* — columna derecha: el resultado, pegado arriba — */}
-          <div className="lg:sticky lg:top-8">
-            <div
-              className={cn(
-                "rounded-[22px] border p-6 md:p-8",
-                hasData && !worksOut
-                  ? "border-pulse/35 bg-[radial-gradient(ellipse_80%_100%_at_50%_0%,rgba(124,92,255,0.14),transparent_70%)]"
-                  : "border-line bg-[radial-gradient(ellipse_80%_100%_at_50%_0%,rgba(46,107,255,0.16),transparent_70%)]"
-              )}
-            >
+          <div className="grid gap-6 lg:sticky lg:top-24">
+            <Reveal delay={0.1} className="rounded-[26px] bg-[#eef1fe] p-7 text-ink">
               <p className="eyebrow">{t.result.eyebrow}</p>
-
               {!hasData && (
                 <>
-                  <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight text-frost">
-                    {t.result.idleTitle}
-                  </h2>
-                  <p className="mt-3 text-sm font-light leading-relaxed text-mist">{t.result.idleBody}</p>
+                  <h2 className="mt-4 font-display text-[22px] font-bold tracking-tight text-ink">{t.result.idleTitle}</h2>
+                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.idleBody}</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFields(EXAMPLE);
+                      setSector("belleza");
+                    }}
+                    className="btn-blue mt-6 w-full cursor-pointer rounded-full py-3.5 font-display text-sm font-semibold"
+                  >
+                    {t.form.example}
+                  </button>
                 </>
               )}
 
               {hasData && !worksOut && (
                 <>
-                  <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight text-frost">
-                    {t.result.negTitle}
-                  </h2>
-                  <p className="mt-3 text-sm font-light leading-relaxed text-mist">{t.result.negBody}</p>
+                  <h2 className="mt-4 font-display text-[22px] font-bold tracking-tight text-ink">{t.result.negTitle}</h2>
+                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.negBody}</p>
                 </>
               )}
 
               {worksOut && (
                 <>
-                  <p className="mt-4 font-display text-xs font-semibold uppercase tracking-[0.16em] text-mist">
-                    {t.result.paybackLabel}
-                  </p>
-                  <p className="mt-1 font-display text-[clamp(2.6rem,6vw,3.6rem)] font-bold leading-none tracking-[-0.04em] text-frost">
+                  <p className="mt-4 font-display text-[13px] font-semibold text-ink">{t.result.paybackLabel}</p>
+                  <p className="mt-1 font-display text-[clamp(2.4rem,5vw,3rem)] font-bold leading-none tracking-[-0.03em] text-ink">
                     {months(r.payback)}
-                    <span className="ml-2 font-display text-base font-medium tracking-normal text-neon">
-                      {t.result.months}
-                    </span>
+                    <span className="ml-2 font-display text-xl font-semibold tracking-normal">{t.result.months}</span>
                   </p>
-                  <p className="mt-3 text-sm font-light leading-relaxed text-mist">{t.result.paybackBody}</p>
+                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.paybackBody}</p>
 
                   {/* Barra: cuánto de la fuga se recupera y cuánto no */}
-                  <div className="mt-7">
-                    <div className="flex h-2.5 overflow-hidden rounded-full bg-space/70">
-                      <div
-                        className="h-full bg-gradient-to-r from-electric to-neon transition-[width] duration-500"
-                        style={{ width: `${gainPct}%` }}
-                      />
-                      <div className="h-full flex-1 bg-pulse/25" />
+                  <div className="mt-6">
+                    <div className="flex h-2 overflow-hidden rounded-full bg-[#d5dae9]">
+                      <div className="h-full bg-electric transition-[width] duration-500" style={{ width: `${gainPct}%` }} />
                     </div>
-                    <div className="mt-2.5 flex justify-between text-xs text-mist">
+                    <div className="mt-2 flex justify-between text-[11px] text-ink/65">
                       <span>
-                        {t.result.barGain} · <strong className="font-semibold text-neon">{eur(r.recovered)}</strong>
+                        {t.result.barGain} · <strong className="font-semibold text-electric">{eur(r.recovered)}</strong>
                       </span>
                       <span>
-                        {t.result.barLeak} ·{" "}
-                        <strong className="font-semibold text-frost/80">{eur(r.leak - r.recovered)}</strong>
+                        {t.result.barLeak} · <strong className="font-semibold text-ink">{eur(r.leak - r.recovered)}</strong>
                       </span>
                     </div>
                   </div>
                 </>
               )}
 
-              {/* Desglose: siempre visible, para que el titular no vaya solo */}
               {hasData && (
-                <dl className="mt-7 grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
+                <dl className="mt-7 grid gap-3.5 rounded-2xl bg-[#e2e7fb] p-5">
                   {rows.map((row) => (
-                    <div
-                      key={row.k}
-                      className={cn(
-                        "flex items-baseline justify-between gap-4 px-4 py-3.5",
-                        row.tone === "net" ? "bg-space/80" : "bg-abyss/80"
-                      )}
-                    >
+                    <div key={row.k} className="flex items-start justify-between gap-4">
                       <dt className="min-w-0">
-                        <span
-                          className={cn(
-                            "block text-[13px]",
-                            row.tone === "net" ? "font-display font-semibold text-frost" : "text-frost/85"
-                          )}
-                        >
+                        <span className={cn("block font-display text-[12.5px] font-semibold", row.tone === "net" ? "text-ink" : "text-ink")}>
                           {row.label}
                         </span>
-                        <span className="mt-0.5 block text-[11px] font-light leading-snug text-mist/65">
-                          {row.note}
-                        </span>
+                        <span className="mt-0.5 block text-[11px] leading-snug text-ink/60">{row.note}</span>
                       </dt>
                       <dd
                         className={cn(
-                          "shrink-0 font-display text-sm font-semibold tabular-nums",
-                          row.tone === "gain" && "text-neon",
-                          row.tone === "cost" && "text-mist",
-                          row.tone === "net" && (r.net < 0 ? "text-[#ff9bb5] text-lg" : "text-lg text-neon"),
-                          !row.tone && "text-frost"
+                          "shrink-0 font-display text-[13px] font-semibold tabular-nums",
+                          row.tone === "cost" && "text-ink/70",
+                          row.tone === "net" && (r.net < 0 ? "text-[#d0325f]" : "text-electric"),
+                          (!row.tone || row.tone === "gain") && "text-ink"
                         )}
                       >
                         {row.value}
@@ -592,73 +513,75 @@ export default function CalculatorPage() {
               )}
 
               {worksOut && (
-                <div className="mt-5 flex items-baseline justify-between gap-4 rounded-xl border border-line bg-space/40 px-4 py-3">
-                  <span className="text-[13px] text-frost/85">
+                <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-[#c9d0e6] px-5 py-4">
+                  <span className="text-[12.5px] font-semibold text-ink">
                     {t.result.roiLabel}
-                    <span className="mt-0.5 block text-[11px] font-light text-mist/65">{t.result.roiNote}</span>
+                    <span className="mt-0.5 block text-[11px] font-normal text-ink/65">{t.result.roiNote}</span>
                   </span>
-                  <span className="font-display text-lg font-bold tabular-nums text-neon">
-                    {nf.format(Math.round(r.roi))} %
-                  </span>
+                  <span className="font-display text-[15px] font-bold tabular-nums text-ink">{nf.format(Math.round(r.roi))} %</span>
                 </div>
               )}
 
-              {hasData && (
-                <p className="mt-5 text-[11px] font-light leading-relaxed text-mist/60">{t.assumptions.warning}</p>
-              )}
+              {hasData && <p className="mt-5 text-[12px] leading-relaxed text-ink/70">{t.assumptions.warning}</p>}
 
-              <a
-                href="#desglose"
-                className="mt-6 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-electric to-neon py-3.5 text-center font-display text-sm font-semibold text-void shadow-[0_14px_40px_-14px_rgba(56,212,255,0.65)] transition-all duration-300 hover:shadow-[0_20px_52px_-14px_rgba(56,212,255,0.85)]"
-              >
-                {hasData && !worksOut ? t.result.negCta : t.lead.submit}
-                <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
-              </a>
-            </div>
+              {hasData && (
+                <a href="#desglose" className="btn-blue mt-6 flex w-full cursor-pointer items-center justify-center rounded-full py-3.5 font-display text-sm font-semibold">
+                  {!worksOut ? t.result.negCta : t.lead.submit}
+                </a>
+              )}
+            </Reveal>
           </div>
         </div>
 
-        {/* ——— Las hipótesis, escritas ——— */}
-        <section className="mx-auto mt-20 max-w-7xl px-6">
-          <Reveal className="rounded-[22px] border border-line bg-panel/25 p-7 md:p-10">
-            <h2 className="font-display text-[clamp(1.5rem,3vw,2.1rem)] font-semibold tracking-tight text-frost">
+        {/* ——— Cómo hacemos los cálculos ——— */}
+        <section className="mx-auto max-w-4xl px-6 pt-28 text-center md:pt-36">
+          <Reveal>
+            <p className="eyebrow">{locale === "es" ? "Cómo hacemos los cálculos" : "How we do the maths"}</p>
+            <h2 className="mt-5 font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white">
               {t.assumptions.title}
             </h2>
-            <p className="mt-4 max-w-[62ch] font-light leading-relaxed text-mist">{t.assumptions.body}</p>
-            <ul className="mt-6 grid gap-4 md:grid-cols-3">
-              {t.assumptions.items.map((item, i) => (
-                <li key={i} className="rounded-2xl border border-line bg-space/35 p-5 text-sm font-light leading-relaxed text-mist">
-                  <Rich text={item} />
-                </li>
-              ))}
-            </ul>
-            <p className="mt-7 max-w-[80ch] text-[13px] font-light leading-relaxed text-mist/80">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-mist">{t.assumptions.body}</p>
+          </Reveal>
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            {t.assumptions.stats.map((s, i) => (
+              <Reveal key={s.label} delay={0.08 * i}>
+                <p className="font-display text-[clamp(2.4rem,4.5vw,3.2rem)] font-bold leading-none text-electric">{s.value}</p>
+                <p className="mt-2 text-[13px] text-frost/85">{s.label}</p>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={0.2} className="mt-12 grid gap-4 text-left md:grid-cols-3">
+            {t.assumptions.items.map((item, i) => (
+              <div key={i} className="rounded-2xl border border-pulse/25 bg-[#070f2c] p-5 text-[13px] leading-relaxed text-mist">
+                <Rich text={item} />
+              </div>
+            ))}
+          </Reveal>
+          <Reveal delay={0.25}>
+            <p className="mx-auto mt-6 max-w-[80ch] text-[12.5px] leading-relaxed text-mist/80">
               <Rich text={t.assumptions.math} strongClass="font-semibold text-frost/90" />
             </p>
           </Reveal>
         </section>
 
-        {/* ——— Preguntas: las objeciones de la llamada, ya respondidas ——— */}
-        <section className="mx-auto mt-20 max-w-7xl px-6">
-          <Reveal className="max-w-3xl">
+        {/* ——— Preguntas ——— */}
+        <section className="mx-auto max-w-3xl px-6 pt-28 md:pt-36">
+          <Reveal className="text-center">
             <p className="eyebrow">{t.faq.eyebrow}</p>
-            <h2 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.1rem)] font-semibold leading-tight tracking-tight text-frost">
+            <h2 className="mt-5 font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold leading-tight tracking-[-0.02em] text-white">
               {t.faq.title}
             </h2>
           </Reveal>
-          <Reveal delay={0.1} className="mt-8 max-w-3xl">
-            {t.faq.items.map((item, i) => (
-              <details key={item.q} open={i === 0} className="group/faq border-b border-line py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display text-base font-medium text-frost transition-colors hover:text-neon [&::-webkit-details-marker]:hidden">
+          <Reveal delay={0.1} className="mt-10 space-y-3">
+            {t.faq.items.map((item) => (
+              <details key={item.q} className="group/faq rounded-[22px] border border-pulse/30 bg-[#0b1435]/70 px-6 py-4 transition-colors open:bg-[#0e1a44]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-[13px] font-medium text-white [&::-webkit-details-marker]:hidden">
                   {item.q}
-                  <span
-                    aria-hidden
-                    className="shrink-0 text-xl font-light text-neon transition-transform duration-300 group-open/faq:rotate-45"
-                  >
+                  <span aria-hidden className="shrink-0 text-xl font-medium leading-none text-[#4d7dff] transition-transform duration-300 group-open/faq:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-3 max-w-[70ch] text-sm font-light leading-relaxed text-mist">
+                <p className="mt-3 max-w-[70ch] text-sm leading-relaxed text-mist">
                   <Rich text={item.a} />
                 </p>
               </details>
@@ -667,64 +590,47 @@ export default function CalculatorPage() {
         </section>
 
         {/* ——— Captura: el desglose por escrito ——— */}
-        <section id="desglose" className="mx-auto mt-16 max-w-7xl scroll-mt-8 px-6">
-          <Reveal className="grid gap-8 rounded-[26px] border border-line bg-[radial-gradient(ellipse_70%_100%_at_20%_0%,rgba(46,107,255,0.14),transparent_68%)] p-7 md:grid-cols-2 md:p-10">
-            <div>
-              <p className="eyebrow">{t.lead.eyebrow}</p>
-              <h2 className="mt-4 font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-semibold leading-tight tracking-tight text-frost">
-                {t.lead.title}
-              </h2>
-              <p className="mt-4 max-w-[46ch] font-light leading-relaxed text-mist">{t.lead.body}</p>
+        <section id="desglose" className="mx-auto mt-28 max-w-5xl scroll-mt-24 px-6 md:mt-36">
+          <Reveal className="grid overflow-hidden rounded-[26px] border border-pulse/40 md:grid-cols-2">
+            <div className="bg-[#070f2c] p-8 md:p-10">
+              <h2 className="font-display text-[clamp(1.6rem,3vw,2.1rem)] font-semibold leading-tight text-white">{t.lead.title}</h2>
+              <p className="mt-4 text-[13.5px] leading-relaxed text-mist">{t.lead.body}</p>
+              <p className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#4d7dff]">
+                {t.lead.tags.map((tag, i) => (
+                  <span key={tag} className="inline-flex items-center gap-2">
+                    {tag}
+                    {i < t.lead.tags.length - 1 && <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.6} />}
+                  </span>
+                ))}
+              </p>
 
-              <div className="mt-8 rounded-2xl border border-line bg-space/40 p-5">
-                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-neon">
-                  {t.diag.badge}
-                </p>
-                <p className="mt-3 text-[13px] font-light leading-relaxed text-mist">
+              <div className="mt-8 rounded-2xl border border-pulse/40 bg-[#0e1a44]/60 p-5">
+                <p className="font-display text-[17px] font-medium text-white">{t.diag.badge}</p>
+                <p className="mt-2 text-[13px] leading-relaxed text-mist">
                   <Rich text={t.diag.body} />
                 </p>
-                <Link
-                  href="/precios"
-                  className="mt-4 inline-flex items-center gap-1.5 font-display text-[13px] font-semibold text-frost transition-colors duration-200 hover:text-neon"
-                >
-                  {t.diag.cta}
-                  <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-                </Link>
               </div>
+              <Link href="/precios" className="group mt-8 inline-flex items-center gap-1.5 font-display text-sm font-medium text-mint transition-colors hover:text-white">
+                {t.diag.cta}
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
+              </Link>
             </div>
 
-            {status === "ok" ? (
-              <div className="flex flex-col justify-center rounded-[22px] border border-neon/30 bg-panel/40 p-7 text-center">
-                <p className="font-display text-2xl font-semibold text-frost">{t.lead.okTitle}</p>
-                <p className="mt-3 text-sm font-light leading-relaxed text-mist">{t.lead.okBody}</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="rounded-[22px] border border-line bg-panel/40 p-6 md:p-7">
-                <div className="grid gap-5">
+            <div className="card-blue p-8 text-white md:p-10">
+              {status === "ok" ? (
+                <div className="flex h-full flex-col justify-center text-center">
+                  <p className="font-display text-2xl font-semibold">{t.lead.okTitle}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-white/85">{t.lead.okBody}</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="grid gap-5">
                   <label className="grid gap-2">
-                    <span className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-mist">
-                      {t.lead.nameLabel}
-                    </span>
-                    <input
-                      name="name"
-                      required
-                      maxLength={120}
-                      placeholder={t.lead.namePh}
-                      className="rounded-xl border border-line bg-space/55 px-4 py-3 text-sm text-frost outline-none transition-colors duration-200 placeholder:text-mist/40 focus:border-neon/50"
-                    />
+                    <span className="font-display text-[13px] font-semibold">{t.lead.nameLabel}</span>
+                    <input name="name" required maxLength={120} placeholder={t.lead.namePh} className={inputCls} />
                   </label>
-
                   <label className="grid gap-2">
-                    <span className="font-display text-xs font-semibold uppercase tracking-[0.14em] text-mist">
-                      {t.lead.contactLabel}
-                    </span>
-                    <input
-                      name="contact"
-                      required
-                      maxLength={160}
-                      placeholder={t.lead.contactPh}
-                      className="rounded-xl border border-line bg-space/55 px-4 py-3 text-sm text-frost outline-none transition-colors duration-200 placeholder:text-mist/40 focus:border-neon/50"
-                    />
+                    <span className="font-display text-[13px] font-semibold">{t.lead.contactLabel}</span>
+                    <input name="contact" required maxLength={160} placeholder={t.lead.contactPh} className={inputCls} />
                   </label>
 
                   {/* Honeypot anti-bots: fuera de pantalla y fuera del tab order */}
@@ -736,7 +642,7 @@ export default function CalculatorPage() {
                   </div>
 
                   {status === "error" && (
-                    <p className="rounded-xl border border-pulse/40 bg-pulse/[0.08] px-4 py-3 text-sm text-[#ffd7e0]">
+                    <p className="rounded-xl bg-white/15 px-4 py-3 text-sm">
                       {t.lead.errorText}{" "}
                       <a href={`mailto:${EMAIL}`} className="font-semibold underline">
                         {EMAIL}
@@ -747,35 +653,33 @@ export default function CalculatorPage() {
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="mt-1 cursor-pointer rounded-xl bg-gradient-to-r from-electric to-neon py-3.5 text-center font-display text-sm font-semibold text-void shadow-[0_14px_40px_-14px_rgba(56,212,255,0.65)] transition-all duration-300 hover:shadow-[0_20px_52px_-14px_rgba(56,212,255,0.85)] disabled:cursor-wait disabled:opacity-60"
+                    className="mx-auto mt-2 cursor-pointer rounded-full bg-white px-9 py-3.5 font-display text-sm font-semibold text-ink shadow-[0_14px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
                   >
                     {status === "sending" ? t.lead.sending : t.lead.submit}
                   </button>
+                  <p className="text-center text-[11px] leading-relaxed text-white/75">{t.lead.privacyNote}</p>
+                </form>
+              )}
+            </div>
+          </Reveal>
 
-                  <p className="text-center text-xs leading-relaxed text-mist/60">{t.lead.privacyNote}</p>
-                </div>
-              </form>
-            )}
+          <Reveal delay={0.1} className="mt-10 text-center">
+            <Link href="/precios" className="group inline-flex items-center gap-1.5 font-display text-[15px] font-medium text-mint transition-colors hover:text-white">
+              {t.toPricing}
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </Link>
           </Reveal>
         </section>
 
         {/* ——— Resumen fijo en móvil ———
-            El hueco de la derecha (pr-[9.75rem]) no es decorativo: ahí aterrizan
-            los dos botones flotantes de chat y voz, que van en z-60 y taparían
-            la cifra. La barra les cede el sitio en vez de pelearse con ellos. */}
+            El hueco de la derecha no es decorativo: ahí aterrizan los dos
+            botones flotantes de chat y voz, que taparían la cifra. */}
         {hasData && (
-          <div className="sticky bottom-0 z-40 mt-12 border-t border-line bg-abyss/90 px-6 py-3 backdrop-blur-xl lg:hidden">
+          <div className="sticky bottom-0 z-40 mt-16 border-t border-line bg-abyss/90 px-6 py-3 backdrop-blur-xl lg:hidden">
             <div className="pr-[9.25rem]">
-              <p className="truncate text-[10px] uppercase tracking-[0.16em] text-mist/70">
-                {t.result.rows.net.label}
-              </p>
+              <p className="truncate text-[10px] uppercase tracking-[0.16em] text-mist/70">{t.result.rows.net.label}</p>
               <p className="flex items-baseline gap-2 leading-tight">
-                <span
-                  className={cn(
-                    "font-display text-lg font-bold",
-                    r.net < 0 ? "text-[#ff9bb5]" : "text-neon"
-                  )}
-                >
+                <span className={cn("font-display text-lg font-bold", r.net < 0 ? "text-[#ff9bb5]" : "text-neon")}>
                   {r.net < 0 ? "−" : ""}
                   {eur(Math.abs(r.net))}
                   {t.form.perMonth}
@@ -790,27 +694,11 @@ export default function CalculatorPage() {
           </div>
         )}
 
-        {/* ——— Pie compacto ——— */}
-        <footer className="mt-16 border-t border-line py-14 text-center">
-          <Link href="/precios" className="font-display text-sm font-semibold text-frost transition-colors hover:text-neon">
-            {t.toPricing}
-          </Link>
-          <nav
-            aria-label={locale === "es" ? "Páginas legales" : "Legal pages"}
-            className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2"
-          >
-            {LEGAL_SLUGS.map((slug) => (
-              <Link
-                key={slug}
-                href={`/legal/${slug}`}
-                className="text-xs text-mist transition-colors duration-200 hover:text-frost"
-              >
-                {legalLinkLabels[locale][slug]}
-              </Link>
-            ))}
-          </nav>
-        </footer>
+        <div className="mt-28 md:mt-36">
+          <FinalCTA />
+        </div>
       </main>
+      <Footer />
 
       <ChatWidget />
       <VoiceWidget />

@@ -3,16 +3,15 @@ import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/ui/ChatWidget";
 import VoiceWidget from "@/components/ui/VoiceWidget";
 import SectionRail from "@/components/ui/SectionRail";
-import Bridge from "@/components/ui/Bridge";
 import Hero from "@/components/sections/Hero";
 import Evolution from "@/components/sections/Evolution";
 import Services from "@/components/sections/Services";
 import Ecosystem from "@/components/sections/Ecosystem";
-import CaseStudies from "@/components/sections/CaseStudies";
-import Transformation from "@/components/sections/Transformation";
 import Process from "@/components/sections/Process";
 import Technology from "@/components/sections/Technology";
+import CaseStudies from "@/components/sections/CaseStudies";
 import Roi from "@/components/sections/Roi";
+import Plans from "@/components/sections/Plans";
 import FinalCTA from "@/components/sections/FinalCTA";
 
 import { SITE_URL } from "@/lib/site";
@@ -44,6 +43,11 @@ const jsonLd = {
   ],
 };
 
+/**
+ * Orden de la home según el Figma «Asenix Web» (frame Asenix Desktop):
+ * hero → el futuro (viaje de scroll) → servicios → cómo trabajamos →
+ * la capa de IA → tecnología → pruebas → la cuenta → planes → hablemos.
+ */
 export default function Home() {
   return (
     <>
@@ -56,16 +60,13 @@ export default function Home() {
       <main>
         <Hero />
         <Evolution />
-        <Bridge id="era" />
         <Services />
         <Ecosystem />
-        <Bridge id="proof" />
-        <CaseStudies />
-        <Transformation />
-        <Bridge id="leap" />
         <Process />
         <Technology />
+        <CaseStudies />
         <Roi />
+        <Plans />
         {/* Testimonials: retirado hasta tener testimonios reales (ver dictionaries.ts) */}
         <FinalCTA />
       </main>

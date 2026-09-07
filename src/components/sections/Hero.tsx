@@ -9,7 +9,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Mic } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
@@ -22,10 +22,10 @@ const AICore = dynamic(() => import("@/components/three/AICore"), {
 });
 
 /**
- * Hero cinematográfico: el mundo llega desde el desenfoque, un barrido de
- * luz firma la apertura, y el titular flota en parallax OPUESTO al núcleo
- * 3D — dos capas de profundidad que responden al ratón en direcciones
- * contrarias, como una cámara con foco.
+ * Hero del Figma: titular centrado en Montserrat Bold, subtítulo y dos
+ * pastillas (clara + contorno). Debajo siguen viviendo el vídeo, el barrido
+ * de luz y el núcleo 3D que se disuelve al avanzar: el diseño deja ese hueco
+ * entre el titular y los botones a propósito.
  */
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,8 +46,6 @@ export default function Hero() {
   const [showCore, setShowCore] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Si el vídeo ya estaba cargado antes de hidratar (caché), el evento
-  // loadeddata nunca llega a React: comprobamos el estado al montar.
   useEffect(() => {
     if ((videoRef.current?.readyState ?? 0) >= 2) setVideoReady(true);
   }, []);
@@ -63,14 +61,8 @@ export default function Hero() {
   // Parallax del titular: se mueve suavemente al contrario que el núcleo
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const headX = useSpring(useTransform(mx, [-1, 1], [10, -10]), {
-    stiffness: 50,
-    damping: 20,
-  });
-  const headY = useSpring(useTransform(my, [-1, 1], [6, -6]), {
-    stiffness: 50,
-    damping: 20,
-  });
+  const headX = useSpring(useTransform(mx, [-1, 1], [8, -8]), { stiffness: 50, damping: 20 });
+  const headY = useSpring(useTransform(my, [-1, 1], [5, -5]), { stiffness: 50, damping: 20 });
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
@@ -88,7 +80,7 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-svh items-center justify-center overflow-hidden"
     >
-      {/* Video: llega desde el desenfoque, como una cámara enfocando */}
+      {/* Vídeo: llega desde el desenfoque, como una cámara enfocando */}
       <motion.div
         style={{ scale: videoScale }}
         initial={{ opacity: 0, filter: "blur(24px) brightness(0.4)", scale: 1.12 }}
@@ -96,13 +88,12 @@ export default function Hero() {
         transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
         className="absolute inset-0"
       >
-        {/* Póster: primer frame como imagen — LCP instantáneo mientras llega el vídeo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero-poster.jpg`}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover opacity-55"
+          className="h-full w-full object-cover opacity-40"
         />
         <video
           ref={videoRef}
@@ -114,19 +105,16 @@ export default function Hero() {
           aria-hidden
           onLoadedData={() => setVideoReady(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-            videoReady ? "opacity-55" : "opacity-0"
+            videoReady ? "opacity-40" : "opacity-0"
           }`}
         >
-          <source
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero.mp4`}
-            type="video/mp4"
-          />
+          <source src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero.mp4`} type="video/mp4" />
         </video>
       </motion.div>
 
-      {/* Etalonaje cinematográfico */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(4,5,10,0.55)_70%,#04050a_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-void/70 via-transparent to-void" />
+      {/* Etalonaje: el vídeo se funde con el azul noche del Figma */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(3,6,23,0.6)_65%,#030617_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/20 to-void" />
 
       {/* Barrido de luz de apertura — la firma lumínica de la marca */}
       <motion.div
@@ -137,12 +125,12 @@ export default function Hero() {
         className="pointer-events-none absolute inset-y-0 left-0 z-10 w-1/3 -skew-x-12"
         style={{
           background:
-            "linear-gradient(90deg, transparent, rgba(126,166,255,0.13) 45%, rgba(56,212,255,0.18) 50%, rgba(126,166,255,0.13) 55%, transparent)",
+            "linear-gradient(90deg, transparent, rgba(148,178,252,0.12) 45%, rgba(26,77,255,0.2) 50%, rgba(148,178,252,0.12) 55%, transparent)",
         }}
       />
 
       {/* Núcleo 3D — se disuelve en partículas conforme el visitante avanza */}
-      {showCore && <AICore className="z-10 opacity-90" dissolve={scrollYProgress} />}
+      {showCore && <AICore className="z-10 opacity-80" dissolve={scrollYProgress} />}
 
       {/* Marcas de esquina — detalle de composición propio */}
       <motion.div
@@ -150,7 +138,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 1.4 }}
-        className="pointer-events-none absolute inset-x-6 top-24 z-20 hidden items-start justify-between font-display text-[10px] tracking-[0.35em] text-mist/45 md:flex lg:inset-x-10"
+        className="pointer-events-none absolute inset-x-6 top-28 z-20 hidden items-start justify-between font-display text-[10px] font-light tracking-[0.35em] text-mist/50 md:flex lg:inset-x-10"
       >
         <span>{"//"} 40.4168°N</span>
         <span>3.7038°W {"//"}</span>
@@ -159,17 +147,8 @@ export default function Hero() {
       {/* Contenido */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-20 mx-auto flex max-w-6xl flex-col items-center px-6 text-center"
+        className="relative z-20 mx-auto flex max-w-5xl flex-col items-center px-6 pt-16 text-center"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="eyebrow mb-8"
-        >
-          {t.eyebrow}
-        </motion.p>
-
         <h1 className="sr-only">
           ASENIX — {t.titleA} {t.titleB}
         </h1>
@@ -179,22 +158,21 @@ export default function Hero() {
             as="span"
             text={t.titleA}
             delay={0.45}
-            className="block text-[clamp(3rem,9.5vw,8.75rem)] text-frost"
+            className="block text-[clamp(2.3rem,5.4vw,4.3rem)] text-white"
           />
           <TextReveal
             as="span"
             text={t.titleB}
-            delay={0.75}
-            className="-mt-[0.08em] block text-[clamp(3rem,9.5vw,8.75rem)]"
-            wordClassName="text-gradient"
+            delay={0.7}
+            className="block text-[clamp(2.3rem,5.4vw,4.3rem)] text-white"
           />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.35, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 max-w-xl text-balance text-base leading-relaxed text-mist md:text-lg"
+          transition={{ duration: 1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-7 max-w-2xl text-balance text-base leading-relaxed text-frost/85 md:text-[1.2rem] md:leading-[1.55]"
         >
           {t.sub}
         </motion.p>
@@ -202,29 +180,27 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-12 flex flex-col items-center gap-4 sm:flex-row"
+          transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-14 flex flex-col items-center gap-4 sm:flex-row md:mt-24"
         >
-          <MagneticButton href="#contact">
+          <MagneticButton href="/contacto">
             {t.ctaPrimary}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight
+              className="h-5 w-5 text-electric transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={2}
+            />
           </MagneticButton>
-          {/* La "demo" ya no es un vídeo: es hablar con el agente. El CTA
-              desaparece si no hay backend de agente, como el resto de
-              entradas a la IA del sitio.
-
-              El span envuelve al MagneticButton en vez de pasarle props
-              nuevas porque `onFocus` en React burbujea (focusin), así que
-              calienta igual llegando con Tab, y MagneticButton se queda como
-              está para el resto del sitio. */}
+          {/* La "demo" no es un vídeo: es hablar con el agente. El CTA
+              desaparece si no hay backend de agente. El span calienta el SDK
+              al acercarse (onFocus burbujea, así que Tab también cuenta). */}
           {AGENT_URL && (
             <span onPointerEnter={warmUpVoice} onFocus={warmUpVoice}>
               <MagneticButton
                 variant="ghost"
                 onClick={() => window.dispatchEvent(new CustomEvent("ng:open-voice"))}
               >
-                <Mic className="h-4 w-4 text-neon" />
                 {t.ctaSecondary}
+                <Play className="h-4 w-4 fill-electric text-electric" strokeWidth={1.5} />
               </MagneticButton>
             </span>
           )}
@@ -238,14 +214,14 @@ export default function Hero() {
         transition={{ delay: 2.4, duration: 1.2 }}
         className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3"
       >
-        <span className="text-[11px] uppercase tracking-[0.35em] text-mist">
+        <span className="font-display text-[11px] font-light uppercase tracking-[0.35em] text-mist">
           {t.scroll}
         </span>
         <div className="h-12 w-px overflow-hidden bg-white/10">
           <motion.div
             animate={{ y: ["-100%", "100%"] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            className="h-1/2 w-full bg-gradient-to-b from-transparent via-neon to-transparent"
+            className="h-1/2 w-full bg-gradient-to-b from-transparent via-pulse to-transparent"
           />
         </div>
       </motion.div>

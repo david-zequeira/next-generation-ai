@@ -31,7 +31,8 @@ function GitHubIcon({ className }: IconProps) {
   );
 }
 
-const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
+const HREFS = ["/#future", "/#services", "/#ecosystem", "/#work", "/#process"];
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
  * Sin perfiles sociales reales todavía: la lista queda vacía a propósito (tres
@@ -39,102 +40,97 @@ const HREFS = ["#future", "#services", "#ecosystem", "#work", "#process"];
  * que no tenerlos). Al crear los perfiles, añadir aquí las URL completas.
  */
 const SOCIALS: { label: string; href: string; icon: (p: IconProps) => React.JSX.Element }[] = [];
+void XIcon;
+void LinkedInIcon;
+void GitHubIcon;
 
-export default function Footer() {
+/**
+ * Pie del Figma: sobre el mismo lavanda claro del cierre, el isotipo en
+ * negro, la promesa de la marca, y a la derecha el copyright y los legales.
+ */
+export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) {
+  const dark = tone === "dark";
   const dict = useDict();
   const { locale } = useLocale();
   const t = dict.footer;
-  const links = [...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })), { label: t.contact, href: "/contacto" }];
+  const links = [
+    ...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })),
+    { label: dict.nav.calc, href: "/calculadora" },
+    { label: dict.nav.pricing, href: "/precios" },
+    { label: t.contact, href: "/contacto" },
+  ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-line bg-void">
-      {/* Marca de agua monumental — el nombre como arquitectura */}
-      <div
-        aria-hidden
-        className="text-outline pointer-events-none absolute inset-x-0 -bottom-6 select-none whitespace-nowrap text-center font-display text-[clamp(4rem,13vw,11rem)] font-bold leading-none tracking-tight"
-      >
-        ASENIX
-      </div>
-      <div className="relative mx-auto max-w-7xl px-6 py-16">
-        <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
-          <div>
+    <footer className={dark ? "relative bg-[#060e29] text-white" : "relative bg-paper text-ink"}>
+      <div className="mx-auto max-w-7xl px-6 pb-12 pt-6 md:pb-16">
+        <div className={`flex flex-col gap-10 border-t pt-10 md:flex-row md:items-end md:justify-between ${dark ? "border-white/10" : "border-ink/10"}`}>
+          <div className="flex items-start gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-lockup.png`}
+              src={`${BASE}/isotipo.png`}
               alt="Asenix"
-              className="h-10 w-auto"
+              className={`h-12 w-auto brightness-0 md:h-14 ${dark ? "invert" : ""}`}
             />
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-mist">{t.tagline}</p>
+            <div>
+              <p className={`font-display text-[15px] font-bold ${dark ? "text-white" : "text-ink"}`}>{t.tagline}</p>
+              <p className={`mt-1 max-w-sm text-sm leading-relaxed ${dark ? "text-white/65" : "text-ink/65"}`}>{t.sub}</p>
+            </div>
           </div>
 
-          <nav aria-label={t.navAria}>
-            <ul className="flex flex-wrap gap-x-7 gap-y-3">
-              {links.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-mist transition-colors duration-200 hover:text-frost"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/calculadora"
-                  className="text-sm text-mist transition-colors duration-200 hover:text-frost"
-                >
-                  {dict.nav.calc}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/precios"
-                  className="text-sm text-mist transition-colors duration-200 hover:text-frost"
-                >
-                  {dict.nav.pricing}
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <div className="flex flex-col items-start gap-5 md:items-end">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+              <p className={`font-display text-[12px] font-semibold ${dark ? "text-white" : "text-ink"}`}>
+                © {new Date().getFullYear()} Asenix
+              </p>
+              {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
+              <ul className={`flex flex-wrap gap-x-3 font-display text-[12px] font-semibold uppercase tracking-[0.1em] ${dark ? "text-white" : "text-ink"}`}>
+                {LEGAL_SLUGS.map((slug, i) => (
+                  <li key={slug} className="flex gap-3">
+                    {i > 0 && <span aria-hidden>/</span>}
+                    <Link href={`/legal/${slug}`} className="transition-colors duration-200 hover:text-electric">
+                      {legalLinkLabels[locale][slug]}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {SOCIALS.length > 0 && (
+                <div className="flex gap-2">
+                  {SOCIALS.map(({ label, href, icon: Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      aria-label={label}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-paper transition-transform duration-300 hover:-translate-y-0.5"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          <div className="flex gap-2">
-            {SOCIALS.map(({ label, href, icon: Icon }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-mist transition-all duration-300 hover:border-neon/40 hover:text-frost hover:shadow-[0_0_20px_-4px_rgba(56,212,255,0.5)]"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
+            <nav aria-label={t.navAria}>
+              <ul className={`flex flex-wrap gap-x-5 gap-y-2 text-xs ${dark ? "text-white/55" : "text-ink/55"}`}>
+                {links.map((item) => (
+                  <li key={item.href}>
+                    {item.href.startsWith("/#") ? (
+                      <a href={item.href} className="transition-colors duration-200 hover:text-electric">
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link href={item.href} className="transition-colors duration-200 hover:text-electric">
+                        {item.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
-
-        <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-8 text-xs text-mist/60 md:flex-row md:items-center">
-          <p>
-            © {new Date().getFullYear()} Asenix. {t.rights}
-          </p>
-
-          {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            {LEGAL_SLUGS.map((slug) => (
-              <li key={slug}>
-                <Link
-                  href={`/legal/${slug}`}
-                  className="transition-colors duration-200 hover:text-frost"
-                >
-                  {legalLinkLabels[locale][slug]}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <p className="font-display tracking-[0.3em]">{t.built}</p>
-        </div>
+        <p className={`mt-8 text-[11px] ${dark ? "text-white/40" : "text-ink/40"}`}>{t.rights}</p>
       </div>
     </footer>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import Analytics from "@/components/ui/Analytics";
@@ -7,15 +7,10 @@ import CursorGlow from "@/components/ui/CursorGlow";
 import { LocaleProvider } from "@/i18n/LocaleContext";
 import { SITE_URL } from "@/lib/site";
 
-const spaceGrotesk = Space_Grotesk({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -53,8 +48,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
+      {/* suppressHydrationWarning: extensiones como Bitdefender o ColorZilla
+          añaden atributos al <body> antes de que React hidrate; no es un fallo
+          del sitio y no debe ensuciar la consola de quien las tenga. */}
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} noise bg-void font-sans text-frost antialiased`}
+        suppressHydrationWarning
+        className={`${montserrat.variable} noise bg-void font-sans text-frost antialiased`}
       >
         <LocaleProvider>
           <Analytics />

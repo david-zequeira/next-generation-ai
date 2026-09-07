@@ -4,53 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight } from "lucide-react";
 import { useLocale } from "@/i18n/LocaleContext";
 
-/** Datos estructurales (números y color) — los textos viven en el diccionario, por índice. */
-const STRUCTURE = [
-  {
-    accent: "#2e6bff",
-    metrics: [
-      { value: 87, suffix: "%" },
-      { value: 24, suffix: "/7" },
-      { value: 32, suffix: "%" },
-    ],
-  },
-  {
-    accent: "#38d4ff",
-    metrics: [
-      { value: 40, suffix: "h" },
-      { value: 99.2, suffix: "%", decimals: 1 },
-      { value: 11, suffix: "×" },
-    ],
-  },
-  {
-    accent: "#7c5cff",
-    metrics: [
-      { value: 3.4, suffix: "×", decimals: 1 },
-      { value: 61, suffix: "%" },
-      { value: 92, suffix: "%" },
-    ],
-  },
-  {
-    accent: "#5f8dff",
-    metrics: [
-      { value: 12, suffix: "k" },
-      { value: 4, suffix: "" },
-      { value: 28, suffix: "%" },
-    ],
-  },
+/** Cifras de cada tarjeta — los textos viven en el diccionario, por índice. */
+const STATS = [
+  { prefix: "+", value: 40, suffix: "%" },
+  { prefix: "", value: 40, suffix: "h" },
+  { prefix: "", value: 3, suffix: "×" },
+  { prefix: "", value: 100, suffix: "%" },
 ];
 
-function Counter({
-  value,
-  suffix,
-  decimals = 0,
-}: {
-  value: number;
-  suffix: string;
-  decimals?: number;
-}) {
+function Counter({ prefix, value, suffix }: { prefix: string; value: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15% 0px -15% 0px" });
   const [display, setDisplay] = useState("0");
@@ -58,73 +23,43 @@ function Counter({
   useEffect(() => {
     if (!inView) return;
     const controls = animate(0, value, {
-      duration: 2.2,
+      duration: 2,
       ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setDisplay(v.toFixed(decimals)),
+      onUpdate: (v) => setDisplay(v.toFixed(0)),
     });
     return () => controls.stop();
-  }, [inView, value, decimals]);
+  }, [inView, value]);
 
   return (
     <span ref={ref} className="tabular-nums">
+      {prefix}
       {display}
       {suffix}
     </span>
   );
 }
 
-/** Stylised product screenshot built in CSS — no external images. */
-function ScreenMock({ accent }: { accent: string }) {
+/** Silueta de persona en verde menta — la figura del Figma, en SVG. */
+function Person() {
   return (
-    <div className="glass overflow-hidden rounded-xl">
-      <div className="flex items-center gap-1.5 border-b border-line px-4 py-2.5">
-        <span className="h-2 w-2 rounded-full bg-white/15" />
-        <span className="h-2 w-2 rounded-full bg-white/15" />
-        <span className="h-2 w-2 rounded-full bg-white/15" />
-        <span className="ml-3 h-2 w-24 rounded-full bg-white/10" />
-      </div>
-      <div className="grid grid-cols-3 gap-3 p-4">
-        <div className="col-span-2 space-y-3">
-          <div
-            className="h-20 rounded-lg"
-            style={{
-              background: `linear-gradient(120deg, ${accent}33, transparent 70%)`,
-              border: "1px solid rgba(148,170,255,0.12)",
-            }}
-          >
-            <div className="flex h-full items-end gap-1.5 px-3 pb-2">
-              {[38, 62, 45, 78, 56, 90, 70, 96].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-full rounded-sm"
-                  style={{
-                    height: `${h}%`,
-                    background: `linear-gradient(to top, ${accent}cc, ${accent}44)`,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="h-2 w-3/4 rounded-full bg-white/10" />
-          <div className="h-2 w-1/2 rounded-full bg-white/[0.07]" />
-        </div>
-        <div className="space-y-3">
-          <div className="h-10 rounded-lg border border-line bg-white/[0.04]" />
-          <div className="h-10 rounded-lg border border-line bg-white/[0.04]" />
-          <div
-            className="h-10 rounded-lg"
-            style={{ background: `${accent}22`, border: `1px solid ${accent}55` }}
-          />
-        </div>
-      </div>
-    </div>
+    <svg viewBox="0 0 120 130" className="h-full w-auto" aria-hidden>
+      <defs>
+        <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#7de3c3" />
+          <stop offset="100%" stopColor="#4fb6a0" />
+        </linearGradient>
+      </defs>
+      <circle cx="60" cy="40" r="30" fill="url(#personGrad)" />
+      <path d="M 8 130 A 52 52 0 0 1 112 130 Z" fill="url(#personGrad)" />
+      <path d="M 22 130 A 38 38 0 0 1 98 130 Z" fill="#1a4dff" opacity="0.9" />
+    </svg>
   );
 }
 
 /**
- * Section 5 — Case studies as a horizontal cinematic track.
- * The page pins and the journey continues sideways; numbers count up
- * as each story enters the frame.
+ * Sección 7 — «Pruebas, no promesas» (Figma). La página se fija y el viaje
+ * sigue de lado: cada tarjeta trae un resultado (+ Clientes, + Tiempo…) con
+ * su panel azul y su cifra, que cuenta hacia arriba al entrar en escena.
  */
 export default function CaseStudies() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -136,29 +71,26 @@ export default function CaseStudies() {
     gsap.registerPlugin(ScrollTrigger);
     const mm = gsap.matchMedia();
 
-    mm.add(
-      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-      () => {
-        const track = trackRef.current;
-        const section = sectionRef.current;
-        if (!track || !section) return;
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const track = trackRef.current;
+      const section = sectionRef.current;
+      if (!track || !section) return;
 
-        const amount = () => track.scrollWidth - window.innerWidth;
-        gsap.to(track, {
-          x: () => -amount(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: () => `+=${amount()}`,
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-    );
+      const amount = () => track.scrollWidth - window.innerWidth;
+      gsap.to(track, {
+        x: () => -amount(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${amount()}`,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
 
     return () => mm.revert();
   }, []);
@@ -168,81 +100,73 @@ export default function CaseStudies() {
       <div className="flex min-h-svh items-center">
         <div
           ref={trackRef}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 py-24 [scrollbar-width:none] md:snap-none md:gap-10 md:overflow-x-visible md:px-[12vw] [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 py-24 [scrollbar-width:none] md:snap-none md:gap-8 md:overflow-x-visible md:px-[10vw] [&::-webkit-scrollbar]:hidden"
         >
-          {/* Intro panel */}
-          <div className="flex w-[82vw] shrink-0 snap-center flex-col justify-center md:w-[36vw]">
-            <p className="eyebrow mb-6">{t.eyebrow}</p>
-            <h2 className="display text-[clamp(2.4rem,5.5vw,5rem)] text-frost">
-              {t.titleA}
-              <br />
-              <span className="text-gradient-dim">{t.titleB}</span>
-            </h2>
-            <p className="mt-6 max-w-sm text-base leading-relaxed text-mist">{t.sub}</p>
+          {/* Panel de introducción */}
+          <div className="flex w-[82vw] shrink-0 snap-center flex-col justify-center md:w-[30vw]" key={locale}>
+            <h2 className="display text-[clamp(2.2rem,4.2vw,3.2rem)] text-white">{t.title}</h2>
+            <p className="mt-5 max-w-sm text-base leading-relaxed text-frost/85 md:text-lg">{t.sub}</p>
+            <a
+              href="#roi"
+              className="group mt-8 inline-flex items-center gap-2 font-display text-sm font-medium text-neon transition-colors hover:text-white"
+            >
+              {t.link}
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
+            <p className="mt-10 text-[11px] text-mist/70">{t.disclaimer}</p>
           </div>
 
-          {STRUCTURE.map((s, i) => {
+          {STATS.map((s, i) => {
             const study = t.studies[i];
             return (
               <article
-                key={`${study.client}-${locale}`}
-                className="group relative w-[86vw] shrink-0 snap-center overflow-hidden rounded-3xl border border-line bg-panel/30 p-7 transition-colors duration-500 hover:border-[rgba(94,140,255,0.35)] md:w-[58vw] md:p-12"
+                key={`${study.headline}-${locale}`}
+                className="card-navy group relative w-[86vw] shrink-0 snap-center overflow-hidden rounded-[26px] p-6 transition-shadow duration-500 hover:shadow-[0_0_120px_-30px_rgba(125,227,195,0.35)] md:w-[46vw] md:p-9"
               >
+                {/* Halo menta que se enciende al acercarse — el brillo del Figma */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-25 blur-3xl transition-opacity duration-700 group-hover:opacity-45"
-                  style={{ background: s.accent }}
+                  className="pointer-events-none absolute -left-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-mint/20 opacity-30 blur-3xl transition-opacity duration-700 group-hover:opacity-70"
                 />
-                <div className="relative grid gap-8 md:grid-cols-2 md:gap-10">
-                  <div className="flex flex-col justify-between">
-                    <div>
-                      <div className="mb-8 flex items-center gap-3">
-                        <span
-                          className="h-2 w-2 rounded-full"
-                          style={{ background: s.accent }}
-                        />
-                        <span className="font-display text-sm font-semibold text-frost">
-                          {study.client}
-                        </span>
-                        <span className="text-xs uppercase tracking-[0.2em] text-mist/60">
-                          {study.sector}
-                        </span>
-                      </div>
-                      <h3 className="display text-3xl text-frost md:text-4xl">
-                        {study.headline}
-                      </h3>
-                      <p className="mt-5 max-w-md text-sm leading-relaxed text-mist">
-                        {study.story}
-                      </p>
-                    </div>
-                    <div className="mt-10 grid grid-cols-3 gap-4">
-                      {s.metrics.map((m, j) => (
-                        <div key={j}>
-                          <p
-                            className="font-display text-2xl font-bold tracking-tight md:text-4xl"
-                            style={{ color: s.accent }}
-                          >
-                            <Counter
-                              value={m.value}
-                              suffix={m.suffix}
-                              decimals={"decimals" in m ? m.decimals : 0}
-                            />
-                          </p>
-                          <p className="mt-1.5 text-[11px] leading-snug text-mist/80">
-                            {study.metricLabels[j]}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                <div className="relative grid gap-8 md:grid-cols-[1fr_1.15fr] md:items-center">
+                  <div>
+                    <h3 className="font-display text-[clamp(1.8rem,2.8vw,2.3rem)] font-semibold text-neon">
+                      <span className="mr-2">+</span>
+                      {study.headline}
+                    </h3>
+                    <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist">{study.story}</p>
                   </div>
+
                   <motion.div
-                    initial={{ opacity: 0, y: 30, rotate: 1.5 }}
+                    initial={{ opacity: 0, y: 24, rotate: 1.5 }}
                     whileInView={{ opacity: 1, y: 0, rotate: 0 }}
                     viewport={{ once: true, amount: 0.4 }}
                     transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="self-center"
+                    className="card-blue relative flex min-h-[220px] items-end justify-between overflow-hidden rounded-2xl p-5"
                   >
-                    <ScreenMock accent={s.accent} />
+                    <div className="absolute left-5 top-5 flex flex-col items-start gap-2">
+                      {study.chips.map((c, j) => (
+                        <motion.span
+                          key={c}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.6, delay: 0.4 + j * 0.2 }}
+                          className="rounded-full bg-[#0b1435]/85 px-3.5 py-1.5 text-[11px] font-medium text-white ring-1 ring-white/15"
+                        >
+                          {c}
+                        </motion.span>
+                      ))}
+                    </div>
+                    <div className="relative z-10">
+                      <p className="font-display text-[clamp(2rem,3.2vw,2.6rem)] font-medium leading-none text-white">
+                        <Counter prefix={s.prefix} value={s.value} suffix={s.suffix} />
+                      </p>
+                      <p className="mt-1.5 text-sm text-neon">{study.statLabel}</p>
+                    </div>
+                    <div className="absolute -bottom-2 right-4 h-[150px]">
+                      <Person />
+                    </div>
                   </motion.div>
                 </div>
               </article>
