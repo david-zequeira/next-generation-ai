@@ -10,6 +10,10 @@ type Brand = { name: string; file: string };
 /**
  * Los logos son los originales del Figma («Asenix Desktop» › frame 557:3001),
  * exportados a SVG en public/logos. Dos filas, como en el diseño.
+ *
+ * Twilio es la excepción: en el Figma su pastilla queda fuera del marco y la
+ * exportación la recorta, así que su marca viene de Simple Icons, que publica
+ * los logotipos oficiales, en el rojo de marca #F22F46.
  */
 const ROW_A: Brand[] = [
   { name: "LangChain", file: "langchain" },
@@ -24,6 +28,7 @@ const ROW_A: Brand[] = [
   { name: "GitHub", file: "github" },
 ];
 const ROW_B: Brand[] = [
+  { name: "Twilio", file: "twilio" },
   { name: "Redis", file: "redis" },
   { name: "Python", file: "python" },
   { name: "Docker", file: "docker" },
