@@ -52,6 +52,10 @@ function LogoPill({ brand }: { brand: Brand }) {
           height={40}
           className="h-10 w-10"
           draggable={false}
+          // Carga inmediata a propósito: son 19 SVG de 1–2 KB dentro de una
+          // cinta que no para de moverse. Con la carga diferida de next/image
+          // los discos se quedaban en blanco.
+          loading="eager"
         />
       </span>
       {brand.name}
