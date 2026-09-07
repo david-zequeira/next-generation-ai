@@ -37,5 +37,5 @@ export const COMPANY = {
    */
   site: SITE_URL,
   /** Fecha de última revisión de los textos legales */
-  updated: "2026-08-18",
+  updated: "2026-09-07",
 } as const;

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useDict, useLocale } from "@/i18n/LocaleContext";
 import { LEGAL_SLUGS, legalLinkLabels } from "@/i18n/legal";
+import { openCookiePreferences } from "@/lib/consent";
 
 type IconProps = { className?: string };
 
@@ -92,6 +93,17 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
                     </Link>
                   </li>
                 ))}
+                <li className="flex gap-3">
+                  <span aria-hidden>/</span>
+                  {/* Retirar el consentimiento tiene que ser tan fácil como darlo */}
+                  <button
+                    type="button"
+                    onClick={openCookiePreferences}
+                    className="cursor-pointer uppercase tracking-[0.1em] transition-colors duration-200 hover:text-electric"
+                  >
+                    {dict.cookies.footerLink}
+                  </button>
+                </li>
               </ul>
               {SOCIALS.length > 0 && (
                 <div className="flex gap-2">
