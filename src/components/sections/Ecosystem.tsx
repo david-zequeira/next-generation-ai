@@ -92,7 +92,14 @@ function Step({
           </span>
         </span>
       </div>
-      <p className="mt-3 text-[13px] leading-relaxed text-mist">{desc}</p>
+      <p
+        className={cn(
+          "mt-3 text-[13px] leading-relaxed transition-colors duration-700",
+          active ? "text-neon/85" : "text-mist"
+        )}
+      >
+        {desc}
+      </p>
     </motion.li>
   );
 }
@@ -220,6 +227,12 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
   const uid = useId();
   const glowId = `core-glow-${uid}`;
   const lineId = `orbit-line-${uid}`;
+  const sphereId = `sphere-${uid}`;
+  const shadeId = `shade-${uid}`;
+  const atmoId = `atmo-${uid}`;
+  const sweepId = `sweep-${uid}`;
+  const blurId = `blur-${uid}`;
+  const waveRefs = useRef<(SVGCircleElement | null)[]>([]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -230,6 +243,8 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
     let visible = false;
     let last = -1;
     let flashAt = -Infinity;
+    let wave = 0;
+    const waveAt = [-Infinity, -Infinity];
 
     const place = (el: SVGCircleElement | null, p: { x: number; y: number }) => {
       if (!el) return;
@@ -248,8 +263,23 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
       if (step !== last) {
         last = step;
         flashAt = now;
+        // Cada paso alimenta el núcleo: sale una onda hacia fuera
+        waveAt[wave] = now;
+        wave = (wave + 1) % waveAt.length;
         onStep(step);
       }
+      waveAt.forEach((t0, i) => {
+        const el = waveRefs.current[i];
+        if (!el) return;
+        const q = (now - t0) / 1400;
+        if (q < 0 || q > 1) {
+          el.setAttribute("opacity", "0");
+          return;
+        }
+        const e = 1 - Math.pow(1 - q, 3);
+        el.setAttribute("r", (80 + 95 * e).toFixed(2));
+        el.setAttribute("opacity", (0.55 * (1 - e)).toFixed(3));
+      });
       // Al cambiar de paso, la luz «respira»: el halo crece y se apaga en medio segundo
       const k = Math.max(0, 1 - (now - flashAt) / 600);
       glowRef.current?.setAttribute("r", (9 + 10 * k).toFixed(2));
@@ -304,6 +334,28 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           <stop offset="60%" stopColor="#1a4dff" stopOpacity="0.5" />
           <stop offset="100%" stopColor="#94b2fc" stopOpacity="0.15" />
         </linearGradient>
+        <radialGradient id={sphereId} cx="38%" cy="30%" r="75%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#f4f6ff" />
+          <stop offset="100%" stopColor="#c9d4ff" />
+        </radialGradient>
+        <radialGradient id={shadeId} cx="50%" cy="50%" r="50%">
+          <stop offset="70%" stopColor="#1a4dff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#1a4dff" stopOpacity="0.28" />
+        </radialGradient>
+        <radialGradient id={atmoId} cx="50%" cy="50%" r="50%">
+          <stop offset="76%" stopColor="#94b2fc" stopOpacity="0" />
+          <stop offset="88%" stopColor="#94b2fc" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#1a4dff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id={sweepId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#b8f21e" stopOpacity="0" />
+          <stop offset="60%" stopColor="#b8f21e" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+        </linearGradient>
+        <filter id={blurId} x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
       </defs>
 
       {/* Halo */}
@@ -314,14 +366,50 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
         <path d={ORBIT_PATH} fill="none" stroke={`url(#${lineId})`} strokeWidth="1.2" />
       </g>
 
-      {/* Disco blanco que respira */}
+      {/* Ondas que salen del núcleo cada vez que la órbita pasa por un paso */}
+      {[0, 1].map((i) => (
+        <circle
+          key={i}
+          ref={(el) => {
+            waveRefs.current[i] = el;
+          }}
+          cx={CX}
+          cy={CY}
+          r="80"
+          fill="none"
+          stroke="#b8f21e"
+          strokeWidth="1.2"
+          opacity="0"
+        />
+      ))}
+
+      {/* Planeta: atmósfera, esfera con volumen, haz de luz en el borde e isotipo */}
       <motion.g
-        animate={{ scale: [1, 1.04, 1] }}
+        animate={{ scale: [1, 1.035, 1] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         style={{ transformOrigin: `${CX}px ${CY}px` }}
       >
-        <circle cx={CX} cy={CY} r="78" fill="#ffffff" opacity="0.08" />
-        <circle cx={CX} cy={CY} r="66" fill="#f4f6ff" />
+        <circle cx={CX} cy={CY} r="84" fill={`url(#${atmoId})`} />
+        <circle cx={CX} cy={CY} r="74" fill="none" stroke="#94b2fc" strokeWidth="5" opacity="0.35" filter={`url(#${blurId})`} />
+        <circle cx={CX} cy={CY} r="66" fill={`url(#${sphereId})`} />
+        <circle cx={CX} cy={CY} r="66" fill={`url(#${shadeId})`} />
+        {/* Haz que recorre el borde del planeta */}
+        <motion.g
+          animate={{ rotate: 360 }}
+          transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: `${CX}px ${CY}px` }}
+        >
+          <circle
+            cx={CX}
+            cy={CY}
+            r="67.5"
+            fill="none"
+            stroke={`url(#${sweepId})`}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray="150 274"
+          />
+        </motion.g>
         <image href={`${BASE}/isotipo.png`} x={CX - 40} y={CY - 40} width="80" height="80" />
       </motion.g>
 
@@ -355,9 +443,32 @@ type Star = {
   base: number;
   phase: number;
   speed: number;
-  /** 0 = blanco escarcha, 1 = azul pulso. */
-  tint: number;
+  /** 0 = blanco escarcha, 1 = azul pulso, 2 = lima (muy raras). */
+  tint: 0 | 1 | 2;
+  /** Las más brillantes llevan destello en cruz. */
+  sparkle: boolean;
 };
+
+type Cloud = {
+  r: number;
+  a: number;
+  /** Radio del manchón como fracción del radio de la galaxia. */
+  size: number;
+  alpha: number;
+  color: string;
+};
+
+type Meteor = {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  len: number;
+  t0: number;
+  dur: number;
+};
+
+const TINTS = ["236,239,255", "148,178,252", "184,242,30"] as const;
 
 /** Generador determinista: mismas estrellas en cada visita, sin sorpresas. */
 function mulberry32(seed: number) {
@@ -370,33 +481,35 @@ function mulberry32(seed: number) {
   };
 }
 
-function makeStars(): Star[] {
+const ARMS = 3;
+/** Cuánto se enrosca cada brazo de dentro a fuera. */
+const WIND = Math.PI * 1.7;
+
+function makeGalaxy() {
   const rnd = mulberry32(20260907);
   // Dos tiradas sumadas: la dispersión se concentra en el eje del brazo
   const bell = () => (rnd() + rnd() - 1) * 0.5;
-  const stars: Star[] = [];
-  const ARMS = 3;
-  const WIND = Math.PI * 1.7; // cuánto se enrosca cada brazo de dentro a fuera
+  const armAngle = (arm: number, r: number, spread: number) => (arm * Math.PI * 2) / ARMS + r * WIND + spread;
 
+  const stars: Star[] = [];
   // Brazos en espiral, más densos hacia el centro
-  for (let i = 0; i < 520; i++) {
-    const arm = i % ARMS;
+  for (let i = 0; i < 560; i++) {
     const r = 0.13 + 0.87 * Math.pow(rnd(), 0.75);
-    const spread = bell() * (0.28 + 0.55 * r); // los brazos se abren hacia fuera
-    const a = (arm * Math.PI * 2) / ARMS + r * WIND + spread;
     const bright = rnd() < 0.1;
+    const tintRoll = rnd();
     stars.push({
       r,
-      a,
-      size: bright ? 1.5 + rnd() * 0.9 : 0.6 + rnd() * 0.8,
+      a: armAngle(i % ARMS, r, bell() * (0.28 + 0.55 * r)),
+      size: bright ? 1.5 + rnd() * 1 : 0.6 + rnd() * 0.8,
       base: bright ? 0.7 + rnd() * 0.3 : 0.35 + rnd() * 0.55,
       phase: rnd() * Math.PI * 2,
       speed: 0.4 + rnd() * 1.1,
-      tint: rnd() < 0.3 ? 1 : 0,
+      tint: tintRoll < 0.04 ? 2 : tintRoll < 0.34 ? 1 : 0,
+      sparkle: bright && rnd() < 0.5,
     });
   }
   // Polvo de fondo, repartido sin patrón
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < 180; i++) {
     stars.push({
       r: 0.16 + 0.84 * Math.sqrt(rnd()),
       a: rnd() * Math.PI * 2,
@@ -405,9 +518,24 @@ function makeStars(): Star[] {
       phase: rnd() * Math.PI * 2,
       speed: 0.3 + rnd() * 0.8,
       tint: rnd() < 0.5 ? 1 : 0,
+      sparkle: false,
     });
   }
-  return stars;
+
+  // Nebulosas: manchones de color que siguen los brazos
+  const clouds: Cloud[] = [];
+  for (let i = 0; i < 18; i++) {
+    const r = 0.18 + 0.7 * rnd();
+    const roll = rnd();
+    clouds.push({
+      r,
+      a: armAngle(i % ARMS, r, bell() * 0.3),
+      size: 0.1 + rnd() * 0.16,
+      alpha: 0.05 + rnd() * 0.07,
+      color: roll < 0.55 ? "26,77,255" : roll < 0.9 ? "148,178,252" : "125,227,195",
+    });
+  }
+  return { stars, clouds };
 }
 
 /** Una vuelta completa de la galaxia. Casi imperceptible: se nota, no se ve. */
@@ -416,10 +544,12 @@ const GALAXY_PERIOD_MS = 240_000;
 /**
  * Cielo de fondo dibujado en canvas: una galaxia espiral que gira muy despacio
  * alrededor del núcleo de Asenix (se mide la posición real del SVG de la
- * órbita para que el centro coincida). Las estrellas del interior giran algo
+ * órbita para que el centro coincida). Nebulosas de color en los brazos,
+ * estrellas con halo y destello, alguna estrella fugaz cada pocos segundos y
+ * un poco de paralaje con el scroll. Las estrellas del interior giran algo
  * más deprisa que las del borde, como en una galaxia de verdad. Se para
  * cuando la sección no está en pantalla y con prefers-reduced-motion queda
- * como un fotograma fijo.
+ * como un fotograma fijo, sin fugaces.
  */
 function Galaxy({ sectionRef }: { sectionRef: React.RefObject<HTMLElement | null> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -432,7 +562,7 @@ function Galaxy({ sectionRef }: { sectionRef: React.RefObject<HTMLElement | null
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const stars = makeStars();
+    const { stars, clouds } = makeGalaxy();
     let w = 0;
     let h = 0;
     let cx = 0;
@@ -441,6 +571,8 @@ function Galaxy({ sectionRef }: { sectionRef: React.RefObject<HTMLElement | null
     let dpr = 1;
     let raf = 0;
     let visible = false;
+    let meteor: Meteor | null = null;
+    let nextMeteor = performance.now() + 2500;
 
     const measure = () => {
       const rect = section.getBoundingClientRect();
@@ -464,32 +596,113 @@ function Galaxy({ sectionRef }: { sectionRef: React.RefObject<HTMLElement | null
       radius = Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy));
     };
 
+    const spawnMeteor = (now: number) => {
+      const fromLeft = Math.random() < 0.5;
+      const speed = 0.9 + Math.random() * 0.5; // px por ms
+      const angle = (Math.random() * 0.35 + 0.35) * (fromLeft ? 1 : -1); // en diagonal, hacia abajo
+      meteor = {
+        x: fromLeft ? Math.random() * w * 0.5 : w * 0.5 + Math.random() * w * 0.5,
+        y: Math.random() * h * 0.4,
+        dx: Math.cos(angle) * speed * (fromLeft ? 1 : -1),
+        dy: Math.abs(Math.sin(angle)) * speed,
+        len: 120 + Math.random() * 120,
+        t0: now,
+        dur: 550 + Math.random() * 350,
+      };
+      nextMeteor = now + 3500 + Math.random() * 5500;
+    };
+
     const draw = (now: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
       const spin = (now / GALAXY_PERIOD_MS) * Math.PI * 2;
       const t = now / 1000;
+      // Paralaje: el cielo se desplaza un poco menos que la página
+      const py = reduced ? 0 : -section.getBoundingClientRect().top * 0.06;
+
+      // Nebulosas, sumadas en luz para que se fundan entre sí
+      ctx.globalCompositeOperation = "lighter";
+      for (const c of clouds) {
+        const a = c.a + spin * (1.5 - 0.8 * c.r);
+        const d = c.r * radius;
+        const x = cx + Math.cos(a) * d;
+        const y = cy + Math.sin(a) * d + py * 0.5;
+        const rad = c.size * radius;
+        const breathe = 0.85 + 0.15 * Math.sin(t * 0.25 + c.a);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+        g.addColorStop(0, `rgba(${c.color},${c.alpha * breathe})`);
+        g.addColorStop(1, `rgba(${c.color},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+      }
+      ctx.globalCompositeOperation = "source-over";
+
       for (const s of stars) {
         // Rotación diferencial: dentro más rápido, fuera más lento
         const a = s.a + spin * (1.5 - 0.8 * s.r);
         const d = s.r * radius;
         const x = cx + Math.cos(a) * d;
-        const y = cy + Math.sin(a) * d;
-        if (x < -4 || y < -4 || x > w + 4 || y > h + 4) continue;
+        const y = cy + Math.sin(a) * d + py * (0.6 + 0.8 * s.r);
+        if (x < -6 || y < -6 || x > w + 6 || y > h + 6) continue;
         const tw = 0.6 + 0.4 * Math.sin(t * s.speed + s.phase);
         const alpha = s.base * tw;
-        ctx.fillStyle = s.tint ? `rgba(148,178,252,${alpha})` : `rgba(236,239,255,${alpha})`;
+        const rgb = TINTS[s.tint];
+        ctx.fillStyle = `rgba(${rgb},${alpha})`;
         if (s.size > 1.2) {
           ctx.beginPath();
           ctx.arc(x, y, s.size, 0, Math.PI * 2);
           ctx.fill();
           // Halo tenue: las estrellas grandes «brillan» sin usar shadowBlur (caro)
-          ctx.fillStyle = s.tint ? `rgba(148,178,252,${alpha * 0.18})` : `rgba(236,239,255,${alpha * 0.18})`;
+          ctx.fillStyle = `rgba(${rgb},${alpha * 0.18})`;
           ctx.beginPath();
-          ctx.arc(x, y, s.size * 3, 0, Math.PI * 2);
+          ctx.arc(x, y, s.size * 3.2, 0, Math.PI * 2);
           ctx.fill();
+          if (s.sparkle) {
+            // Destello en cruz que crece y se apaga con el parpadeo
+            const L = s.size * (3 + 5 * tw);
+            ctx.strokeStyle = `rgba(${rgb},${alpha * 0.5})`;
+            ctx.lineWidth = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(x - L, y);
+            ctx.lineTo(x + L, y);
+            ctx.moveTo(x, y - L);
+            ctx.lineTo(x, y + L);
+            ctx.stroke();
+          }
         } else {
           ctx.fillRect(x - s.size / 2, y - s.size / 2, s.size, s.size);
+        }
+      }
+
+      // Estrella fugaz
+      if (!reduced) {
+        if (!meteor && now >= nextMeteor) spawnMeteor(now);
+        if (meteor) {
+          const q = (now - meteor.t0) / meteor.dur;
+          if (q >= 1) {
+            meteor = null;
+          } else {
+            const hx = meteor.x + meteor.dx * (now - meteor.t0);
+            const hy = meteor.y + meteor.dy * (now - meteor.t0);
+            const norm = Math.hypot(meteor.dx, meteor.dy);
+            const tx = hx - (meteor.dx / norm) * meteor.len;
+            const ty = hy - (meteor.dy / norm) * meteor.len;
+            const fade = Math.sin(q * Math.PI); // entra y sale suave
+            const g = ctx.createLinearGradient(tx, ty, hx, hy);
+            g.addColorStop(0, "rgba(236,239,255,0)");
+            g.addColorStop(1, `rgba(236,239,255,${0.9 * fade})`);
+            ctx.strokeStyle = g;
+            ctx.lineWidth = 1.4;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(hx, hy);
+            ctx.stroke();
+            ctx.fillStyle = `rgba(255,255,255,${fade})`;
+            ctx.beginPath();
+            ctx.arc(hx, hy, 1.6, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
     };
@@ -500,9 +713,7 @@ function Galaxy({ sectionRef }: { sectionRef: React.RefObject<HTMLElement | null
     };
 
     measure();
-    if (reduced) {
-      draw(0);
-    }
+    if (reduced) draw(0);
 
     const ro = new ResizeObserver(() => {
       measure();
