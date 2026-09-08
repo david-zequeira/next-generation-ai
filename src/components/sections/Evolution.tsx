@@ -12,16 +12,15 @@ import { useDict } from "@/i18n/LocaleContext";
 /**
  * Sección 2 — «El futuro de los negocios».
  * Viaje de scroll fijado: la cámara avanza por el espacio digital mientras
- * cada era del negocio entra en foco y se disuelve en la siguiente. El viaje
- * termina en la frase del Figma («Diseñamos la experiencia.») en azul, que es
- * lo que queda en pantalla cuando el visitante suelta el scroll.
+ * cada una de las tres frases del Figma («Diseñamos la experiencia»,
+ * «Automatizamos el sistema», «Construimos la inteligencia») entra en foco en
+ * azul de marca y se disuelve en la siguiente.
  */
 export default function Evolution() {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const t = useDict().evolution;
-  // Las etapas + el cierre comparten el mismo carrusel de scroll
-  const total = t.stages.length + 1;
+  const total = t.stages.length;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -48,7 +47,7 @@ export default function Evolution() {
   };
 
   return (
-    <section ref={ref} id="future" className="relative h-[500vh] bg-void">
+    <section ref={ref} id="future" className="relative h-[400vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         {/* Espacio digital: estrellas en parallax */}
         <motion.div
@@ -88,7 +87,7 @@ export default function Evolution() {
 
         {/* Etiqueta de sección, fija arriba */}
         <div className="absolute left-1/2 top-[12vh] w-full -translate-x-1/2 text-center">
-          <p className="eyebrow eyebrow-muted">{t.eyebrow}</p>
+          <p className="eyebrow">{t.eyebrow}</p>
         </div>
 
         {/* Etapas: la activa enfoca; el resto se disuelve */}
@@ -101,32 +100,13 @@ export default function Evolution() {
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
             >
-              {/* La etapa "IA" rompe la escala: dos letras del tamaño del mundo */}
-              <h3
-                className={`display text-white ${
-                  i === 2 ? "text-[clamp(6rem,24vw,20rem)]" : "text-[clamp(2.4rem,6.5vw,5.5rem)]"
-                }`}
-              >
+              {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
+              <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
                 {s.label}
               </h3>
-              <p className="mt-6 max-w-md text-base font-light text-mist md:text-lg">{s.sub}</p>
+              <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">{s.sub}</p>
             </motion.div>
           ))}
-
-          {/* Cierre — la frase del Figma, en el azul de la marca */}
-          <motion.div
-            initial={false}
-            animate={stageState(total - 1)}
-            transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <h2 className="display text-gradient text-[clamp(2.4rem,6.5vw,5.6rem)] font-semibold tracking-[-0.03em]">
-              {t.finalTitle}
-            </h2>
-            <p className="mt-7 max-w-xl text-balance text-base leading-relaxed text-frost/85 md:text-lg">
-              {t.finalSub}
-            </p>
-          </motion.div>
         </div>
 
         {/* Raíl de progreso */}
