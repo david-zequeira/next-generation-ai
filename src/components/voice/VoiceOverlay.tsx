@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Mic, MicOff, MessageCircle, PhoneOff, Send, X } from "lucide-react";
+import { Mic, MicOff, MessageCircle, PhoneOff, Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
 import EdgeGlow from "./EdgeGlow";
 import VoiceOrb from "./VoiceOrb";
@@ -84,9 +84,9 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
 
       const root = rootRef.current;
       if (!root) return;
-      const items = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => el.offsetParent !== null
-      );
+      const items = Array.from(
+        root.querySelectorAll<HTMLElement>(FOCUSABLE),
+      ).filter((el) => el.offsetParent !== null);
       if (items.length === 0) return;
       const first = items[0];
       const last = items[items.length - 1];
@@ -198,76 +198,100 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
         )}
       </header>
 
-      {/* Cuerpo: orbe + estado + subtítulo, centrados */}
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
-        <VoiceOrb state={state} level={level} />
+      {/* Cuerpo: orbe + estado + subtítulo, centrados. `min-h-0 overflow-y-auto`
+          y el centrado con `m-auto` (no `justify-center`): cuando el campo del
+          correo abre y el móvil se queda sin alto, el cuerpo hace scroll y el
+          pie con "Colgar" sigue a la vista. En la llamada real del 08/09/2026
+          una clienta reservó y se quedó cinco minutos sin encontrar el botón:
+          el pie se había salido de la pantalla. */}
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto px-6 text-center">
+        <div className="m-auto flex w-full flex-col items-center gap-8 py-4">
+          <VoiceOrb state={state} level={level} />
 
-        {/* aria-live: quien no ve el orbe se entera igual de que el agente
+          {/* aria-live: quien no ve el orbe se entera igual de que el agente
             está pensando o consultando la agenda. */}
-        <p
-          aria-live="polite"
-          className="font-display text-lg font-medium tracking-tight text-frost md:text-xl"
-        >
-          {status}
-        </p>
+          <p
+            aria-live="polite"
+            className="font-display text-lg font-medium tracking-tight text-frost md:text-xl"
+          >
+            {status}
+          </p>
 
-        {/* Subtítulo: SOLO la última intervención del agente. Sin historial:
+          {/* Subtítulo: SOLO la última intervención del agente. Sin historial:
             esto no es un chat. */}
-        <p
-          aria-live="polite"
-          className="min-h-[3.5rem] max-w-xl text-balance text-sm leading-relaxed text-mist md:text-base"
-        >
-          {state === "speaking" ? transcript : null}
-        </p>
+          <p
+            aria-live="polite"
+            className="min-h-[3.5rem] max-w-xl text-balance text-sm leading-relaxed text-mist md:text-base"
+          >
+            {state === "speaking" ? transcript : null}
+          </p>
 
-        {/* Campo de correo en pantalla (07/09/2026): lo abre el agente con la
+          {/* Campo de correo en pantalla (07/09/2026): lo abre el agente con la
             herramienta pedir_contacto_en_pantalla y se queda abierto mientras
             el visitante escribe, aunque el agente siga hablando. Escribirlo es
             más fiable que dictarlo: un correo dictado se transcribe mal. */}
-        {contactForm !== "closed" && !finished && (
-          <form
-            className="mt-2 flex w-full max-w-sm flex-col items-stretch gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (contactForm === "sending" || contactForm === "sent") return;
-              void call.submitContact(email);
-            }}
-          >
-            <label htmlFor="voice-contact-email" className="text-xs text-mist">
-              {t.contactLabel}
-            </label>
-            <div className="flex items-stretch gap-2">
-              <input
-                ref={emailRef}
-                id="voice-contact-email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t.contactPlaceholder}
-                disabled={contactForm === "sending" || contactForm === "sent"}
-                aria-invalid={contactForm === "failed"}
-                className="h-12 min-w-0 flex-1 rounded-full border border-line bg-space/70 px-4 text-sm text-frost placeholder:text-mist/50 focus:border-neon/60 focus:outline-none disabled:opacity-60"
-              />
-              <button
-                type="submit"
-                disabled={contactForm === "sending" || contactForm === "sent"}
-                aria-label={t.contactSend}
-                className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon transition-colors hover:bg-neon/20 disabled:cursor-default disabled:opacity-60"
-              >
-                {contactForm === "sent" ? <Check className="h-5 w-5" strokeWidth={2} /> : <Send className="h-4 w-4" strokeWidth={1.8} />}
-              </button>
-            </div>
-            <p aria-live="polite" className={`min-h-[1.25rem] text-xs ${contactForm === "failed" ? "text-red-200" : "text-mist"}`}>
-              {contactForm === "sending" ? t.contactSending : contactForm === "sent" ? t.contactSent : contactForm === "failed" ? t.contactFailed : null}
+          {/* Enviado: el campo se pliega a una línea para devolverle el alto al
+            orbe y a los controles (y en el móvil, cerrar el teclado). */}
+          {contactForm === "sent" && !finished && (
+            <p aria-live="polite" className="mt-2 text-xs text-mist">
+              {t.contactSent}
             </p>
-          </form>
-        )}
+          )}
+          {contactForm !== "closed" && contactForm !== "sent" && !finished && (
+            <form
+              className="mt-2 flex w-full max-w-sm flex-col items-stretch gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (contactForm === "sending") return;
+                void call.submitContact(email);
+              }}
+            >
+              <label
+                htmlFor="voice-contact-email"
+                className="text-xs text-mist"
+              >
+                {t.contactLabel}
+              </label>
+              <div className="flex items-stretch gap-2">
+                <input
+                  ref={emailRef}
+                  id="voice-contact-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t.contactPlaceholder}
+                  disabled={contactForm === "sending"}
+                  aria-invalid={contactForm === "failed"}
+                  className="h-12 min-w-0 flex-1 rounded-full border border-line bg-space/70 px-4 text-sm text-frost placeholder:text-mist/50 focus:border-neon/60 focus:outline-none disabled:opacity-60"
+                />
+                <button
+                  type="submit"
+                  disabled={contactForm === "sending"}
+                  aria-label={t.contactSend}
+                  className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border border-neon/40 bg-neon/10 text-neon transition-colors hover:bg-neon/20 disabled:cursor-default disabled:opacity-60"
+                >
+                  <Send className="h-4 w-4" strokeWidth={1.8} />
+                </button>
+              </div>
+              <p
+                aria-live="polite"
+                className={`min-h-[1.25rem] text-xs ${contactForm === "failed" ? "text-red-200" : "text-mist"}`}
+              >
+                {contactForm === "sending"
+                  ? t.contactSending
+                  : contactForm === "failed"
+                    ? t.contactFailed
+                    : null}
+              </p>
+            </form>
+          )}
+        </div>
       </div>
 
-      {/* Controles */}
-      <footer className="relative z-10 flex flex-col items-center gap-5 px-4 pb-2">
+      {/* Controles: `shrink-0` para que nunca los empuje fuera el cuerpo. */}
+      <footer className="relative z-10 flex shrink-0 flex-col items-center gap-5 px-4 pb-2">
         <div className="flex items-center gap-4">
           {!finished && (
             <button
