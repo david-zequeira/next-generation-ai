@@ -248,57 +248,88 @@ function VoiceMock({ t }: { t: { chips: string[]; sectors: string[] } }) {
 
 const NODE_ICONS: LucideIcon[] = [Users, Receipt, CalendarDays, Repeat];
 
+/**
+ * Coordenadas del Figma dentro de la tarjeta de 524×573 (en %): el cliente
+ * arriba, el orbe de marca, la facturación debajo, CRM y agenda a los lados
+ * una fila más abajo, y el seguimiento al pie. Las líneas blancas unen todo.
+ */
+const BOOK = {
+  client: { x: 50, y: 9 },
+  orb: { x: 50, y: 33.5, size: 25.6 },
+  billing: { x: 50, y: 49.6 },
+  crm: { x: 32.6, y: 62.8 },
+  calendar: { x: 79.6, y: 62.8 },
+  followup: { x: 50, y: 80.6 },
+};
+// Trazos en el viewBox 524×573 (mismas coordenadas que el Figma)
+const BOOK_PATHS = [
+  "M 262 100 L 262 137", // cliente → orbe
+  "M 262 245 L 262 284", // orbe → facturación
+  "M 220 312 L 171 359", // facturación → CRM
+  "M 304 312 L 355 359", // facturación → agenda
+  "M 171 385 L 355 385", // CRM — agenda
+  "M 262 385 L 262 462", // → seguimiento
+];
+
 function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
-  // Trayectorias que dibujan los pulsos (coordenadas del viewBox 400×340)
-  const paths = [
-    "M 200 58 L 200 128",
-    "M 200 200 C 200 240, 80 220, 80 262",
-    "M 200 200 L 200 262",
-    "M 200 200 C 200 240, 320 220, 320 262",
-    "M 200 262 L 200 312",
-  ];
+  const at = (p: { x: number; y: number }) => ({ left: `${p.x}%`, top: `${p.y}%` });
   return (
     <motion.div
       {...reveal(0.15)}
       style={ringStyle(180)}
-      // Figma: 524×573, radio 30, degradado #1a4dff→#0a1540, orbe de marca de 134 px
-      className="ring-conic relative mx-auto w-full max-w-u-524 overflow-hidden rounded-u-30 bg-[linear-gradient(180deg,#1a4dff_0%,#0a1540_100%)] p-u-45 shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
+      // Figma: 524×573, radio 30, degradado #1a4dff→#0a1540
+      className="ring-conic relative mx-auto aspect-[524/573] w-full max-w-u-524 overflow-hidden rounded-u-30 bg-[linear-gradient(180deg,#1a4dff_0%,#0a1540_100%)] shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
     >
-      <svg viewBox="0 0 400 340" className="w-full" aria-hidden>
-        {paths.map((d, i) => (
+      <svg viewBox="0 0 524 573" className="absolute inset-0 h-full w-full" aria-hidden>
+        {BOOK_PATHS.map((d, i) => (
           <g key={i}>
             <path d={d} fill="none" stroke="#ffffff" strokeWidth="1" />
             <circle r="3.5" fill="#b8f21e">
-              <animateMotion dur={`${2.2 + i * 0.4}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
+              <animateMotion dur={`${1.8 + i * 0.3}s`} repeatCount="indefinite" path={d} begin={`${i * 0.35}s`} />
             </circle>
           </g>
         ))}
-        {/* Orbe de marca: la imagen del Figma */}
-        <image href={`${BASE}/orb.png`} x="140" y="104" width="120" height="120" />
       </svg>
 
-      {/* Chips en HTML por encima del SVG, para tipografía real */}
-      <div className="pointer-events-none absolute inset-u-45">
-        <Chip icon={UserRound} light className="left-1/2 top-[6%] -translate-x-1/2">
-          {t.client}
-        </Chip>
-        <Chip icon={NODE_ICONS[0]} className="left-[3%] top-[70%]">{t.nodes[0]}</Chip>
-        <Chip icon={NODE_ICONS[1]} className="left-1/2 top-[70%] -translate-x-1/2">{t.nodes[1]}</Chip>
-        <Chip icon={NODE_ICONS[2]} className="right-[3%] top-[70%]">{t.nodes[2]}</Chip>
-        <Chip icon={NODE_ICONS[3]} className="left-1/2 top-[88%] -translate-x-1/2">{t.nodes[3]}</Chip>
-      </div>
+      {/* Orbe de marca: la imagen del Figma, 134 px */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`${BASE}/orb.png`}
+        alt=""
+        style={{ ...at(BOOK.orb), width: `${BOOK.orb.size}%` }}
+        className="absolute aspect-square -translate-x-1/2 -translate-y-1/2"
+      />
+
+      {/* Nodos en HTML por encima del SVG, para tipografía real */}
+      <Chip icon={UserRound} light style={at(BOOK.client)}>
+        {t.client}
+      </Chip>
+      <Chip icon={NODE_ICONS[1]} style={at(BOOK.billing)}>{t.nodes[1]}</Chip>
+      <Chip icon={NODE_ICONS[0]} style={at(BOOK.crm)}>{t.nodes[0]}</Chip>
+      <Chip icon={NODE_ICONS[2]} style={at(BOOK.calendar)}>{t.nodes[2]}</Chip>
+      <Chip icon={NODE_ICONS[3]} style={at(BOOK.followup)}>{t.nodes[3]}</Chip>
     </motion.div>
   );
 }
 
 /** Nodo del flujo — Figma: 55 px de alto, radio 25, azul con texto #ecefff (el cliente, claro con texto #294296). */
-function Chip({ icon: Icon, className, light = false, children }: { icon: LucideIcon; className: string; light?: boolean; children: string }) {
+function Chip({
+  icon: Icon,
+  style,
+  light = false,
+  children,
+}: {
+  icon: LucideIcon;
+  style: React.CSSProperties;
+  light?: boolean;
+  children: string;
+}) {
   return (
     <span
+      style={style}
       className={cn(
-        "absolute flex h-u-55 -translate-y-1/2 items-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-20 font-display fs-u-18 font-medium",
-        light ? "bg-frost text-[#294296]" : "bg-electric text-frost",
-        className
+        "absolute flex h-u-55 -translate-x-1/2 -translate-y-1/2 items-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-20 font-display fs-u-18 font-medium",
+        light ? "bg-frost text-[#294296]" : "bg-electric text-frost"
       )}
     >
       <Icon className="size-u-22" strokeWidth={1.8} />

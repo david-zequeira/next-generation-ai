@@ -51,15 +51,16 @@ function LogoPill({ brand }: { brand: Brand }) {
   return (
     <span
       style={{ ["--ring-bg" as string]: "linear-gradient(90deg, #94b2fc, #586a96)", ["--ring-w" as string]: "0.5px" }}
-      className="ring-conic group/pill mx-u-6 inline-flex h-u-70 shrink-0 cursor-default items-center gap-u-14 rounded-full bg-white/10 pl-u-11 pr-u-28 font-display fs-u-18 font-medium text-frost backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
+      // Suelos más altos que el resto (58 / 44 / 32 / 15 px): a 1440 la escala 0,75 las dejaba diminutas
+      className="ring-conic group/pill mx-u-6 inline-flex h-[max(58px,70*var(--u))] shrink-0 cursor-default items-center gap-[max(12px,14*var(--u))] rounded-full bg-white/10 pl-[max(8px,11*var(--u))] pr-[max(22px,28*var(--u))] font-display text-[max(15px,18*var(--u))] font-medium text-frost backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
     >
-      <span className="flex size-u-48 items-center justify-center rounded-full bg-frost transition-transform duration-300 group-hover/pill:scale-105">
+      <span className="flex size-[max(44px,48*var(--u))] items-center justify-center rounded-full bg-frost transition-transform duration-300 group-hover/pill:scale-105">
         <Image
           src={`${BASE}/logos/${brand.file}.svg`}
           alt=""
           width={36}
           height={36}
-          className="size-u-36"
+          className="size-[max(32px,36*var(--u))]"
           draggable={false}
           // Carga inmediata a propósito: son 19 SVG de 1–2 KB dentro de una
           // cinta que no para de moverse. Con la carga diferida de next/image

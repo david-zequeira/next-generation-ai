@@ -145,6 +145,18 @@ html {
 @utility py-u-* {
   padding-block: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
+@utility pl-u-* {
+  padding-left: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility pr-u-* {
+  padding-right: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility ml-u-* {
+  margin-left: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility mr-u-* {
+  margin-right: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
 @utility pt-u-* {
   padding-top: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }

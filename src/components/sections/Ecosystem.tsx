@@ -132,7 +132,9 @@ export default function Ecosystem() {
   // Las letras del eslogan se encienden cuando la bolita de la órbita pasa a su lado
   const lettersRef = useRef<HTMLSpanElement[]>([]);
   const onPoint = useCallback((x: number, y: number) => {
+    // El array tiene huecos (las dos mitades del eslogan van a índices separados)
     for (const el of lettersRef.current) {
+      if (!el) continue;
       const r = el.getBoundingClientRect();
       if (!r.width) continue;
       const dx = Math.abs(r.left + r.width / 2 - x);
@@ -171,7 +173,7 @@ export default function Ecosystem() {
 
         {/* Escritorio: rejilla orbital. El eslogan va en una sola fila, centrado en la altura
             del planeta, sobre una banda oscura (Figma: 1349×59, #04071a) */}
-        <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-stretch lg:gap-x-u-30">
+        <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[1fr_max(300px,464*var(--u))_1fr] lg:items-stretch lg:gap-x-u-30">
           <div aria-hidden className="absolute inset-x-0 top-1/2 z-0 h-u-59 -translate-y-1/2 bg-[#04071a]" />
 
           {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
