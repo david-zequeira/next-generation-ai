@@ -13,18 +13,21 @@
 @theme {
   /* ——— Paleta (Figma «Asenix Web», frame Asenix Desktop) ——— */
   --color-void: #030617;      /* fondo de página */
-  --color-abyss: #050a1f;     /* secciones ligeramente elevadas */
-  --color-space: #0b1435;     /* base de tarjetas */
-  --color-panel: #131f4a;     /* tarjetas azul marino */
+  --color-abyss: #050b21;     /* fondo de pills y tarjetas oscuras (extremo oscuro) */
+  --color-space: #101a3e;     /* base de tarjetas y badges */
+  --color-navy: #101837;      /* tarjetas oscuras (extremo claro del degradado) */
+  --color-panel: #0a1540;     /* tarjetas de producto (chat, reservas) */
   --color-electric: #1a4dff;  /* azul de marca */
   --color-neon: #b8f21e;      /* lima: acento de éxito y de "vivo" */
   --color-pulse: #94b2fc;     /* azul claro: bordes y detalles */
-  --color-mint: #7de3c3;      /* verde menta del orbe de voz */
+  --color-cloud: #c7d7ff;     /* texto secundario y botón principal */
+  --color-mint: #1cfcb9;      /* verde de los enlaces «→» y del orbe de voz */
+  --color-cyan: #38d4ff;      /* cian de los degradados verde→cian */
   --color-frost: #eceFFF;     /* texto principal */
-  --color-mist: #9aa5c0;      /* texto secundario */
+  --color-mist: #a7b2d1;      /* texto secundario apagado */
   --color-paper: #f1f3fe;     /* cierre claro: contacto y pie */
   --color-ink: #0b1226;       /* texto sobre fondos claros */
-  --color-line: rgba(148, 178, 252, 0.18);
+  --color-line: rgba(105, 148, 255, 0.5); /* línea de 0,5 px entre secciones */
 
   /* ——— Motion ——— */
   --animate-marquee: marquee 48s linear infinite;
@@ -99,6 +102,79 @@ html {
 }
 
 /*
+ * Unidad del Figma. El diseño «Asenix Web» está a 1920 px de ancho; una
+ * medida de N px en el Figma se escribe `N*var(--u)`: exacta a 1920 y
+ * proporcional por debajo (0,75 a 1440). Las utilidades `*-u-N` de abajo la
+ * usan con un suelo para que nada desaparezca en móvil.
+ */
+:root {
+  --u: min(1px, calc(100vw / 1920));
+}
+
+/* Tamaño de letra del Figma. Se llaman fs-u-N y lh-u-N porque «text-u-» y «leading-u-»
+   chocan con las utilidades nativas de Tailwind. Suelo: 12 px o el 62 % del valor. */
+@utility fs-u-* {
+  font-size: max(12px, calc(--value(integer) * 0.62px), calc(--value(integer) * var(--u)));
+}
+@utility lh-u-* {
+  line-height: max(calc(--value(integer) * 0.62px), calc(--value(integer) * var(--u)));
+}
+/* Medidas (altos, anchos, márgenes, radios): suelo del 60 % */
+@utility h-u-* {
+  height: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility min-h-u-* {
+  min-height: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility w-u-* {
+  width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility max-w-u-* {
+  max-width: calc(--value(integer) * var(--u));
+}
+@utility size-u-* {
+  width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+  height: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility p-u-* {
+  padding: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility px-u-* {
+  padding-inline: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility py-u-* {
+  padding-block: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility pt-u-* {
+  padding-top: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility pb-u-* {
+  padding-bottom: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility mt-u-* {
+  margin-top: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility mb-u-* {
+  margin-bottom: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility gap-u-* {
+  gap: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility gap-x-u-* {
+  column-gap: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility gap-y-u-* {
+  row-gap: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility rounded-u-* {
+  border-radius: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility rounded-t-u-* {
+  border-top-left-radius: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+  border-top-right-radius: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+
+/*
  * Nada puede ensanchar la página a lo ancho. Las brumas de color de las
  * secciones son más anchas que un móvil a propósito, y basta con que una se
  * escape de su sección para que la pantalla se pueda arrastrar a la derecha.
@@ -157,10 +233,52 @@ body {
     border: 1px solid rgba(148, 178, 252, 0.16);
   }
 
-  /* Tarjeta azul marino grande (servicios, cuenta, pruebas) */
+  /* Tarjeta oscura del Figma (pruebas, tags): degradado navy→abyss en diagonal.
+     El borde cónico va aparte, en .ring-conic, porque un borde con degradado y
+     esquinas redondeadas necesita un pseudoelemento. */
   .card-navy {
-    background: linear-gradient(180deg, #0d1739 0%, #1b2a5e 100%);
-    border: 1px solid rgba(148, 178, 252, 0.3);
+    background: linear-gradient(247deg, #101837 0%, #050b21 100%);
+  }
+
+  /* Borde de 1 px con degradado cónico azul (Figma: #6994ff → #1a4dff → #6994ff).
+     Grosor con --ring-w. Hereda el radio del elemento. */
+  .ring-conic {
+    position: relative;
+  }
+  .ring-conic::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--ring-w, 1px);
+    background: conic-gradient(#6994ff 26%, #1a4dff 50%, #6994ff 74%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Brillo azul difuminado dentro de un contenedor recortado (Figma: vector
+     radial #1a4dff → rgba(46,107,255,.12) 81 % → 0 con blur 7). Posición con
+     --gx/--gy (centro del brillo) y tamaño con --gr. */
+  .glow-inset {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .glow-inset::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--gx, 50%) - var(--gr, 50%));
+    top: calc(var(--gy, 0%) - var(--gr, 50%));
+    width: calc(var(--gr, 50%) * 2);
+    height: calc(var(--gr, 50%) * 2);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #1a4dff 0%, rgba(46, 107, 255, 0.12) 81%, rgba(46, 107, 255, 0) 100%);
+    filter: blur(7px);
+    opacity: var(--go, 0.6);
+    pointer-events: none;
+    z-index: -1;
   }
 
   /* Panel azul eléctrico dentro de una tarjeta (mock de producto) */
@@ -207,22 +325,70 @@ body {
   }
 
   /* Etiqueta de sección — siempre precedida por la firma "//" de la marca.
-     Figma: Montserrat Light, mayúsculas, tracking muy abierto, azul. */
+     Figma: pastilla de 35 px con borde azul y un brillo azul tenue dentro;
+     Montserrat Bold 14 px, mayúsculas, tracking 0,25 em, azul. */
   .eyebrow {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: max(26px, 35 * var(--u));
+    padding-inline: max(12px, 20 * var(--u));
+    border-radius: 999px;
+    border: 1px solid var(--color-electric);
+    overflow: hidden;
+    isolation: isolate;
     font-family: var(--font-montserrat), sans-serif;
-    font-size: 0.78rem;
-    font-weight: 400;
-    letter-spacing: 0.34em;
+    font-size: max(11px, 14 * var(--u));
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--color-electric);
+    white-space: nowrap;
   }
   .eyebrow::before {
     content: "//";
     letter-spacing: 0.05em;
-    margin-right: 0.1em;
+    margin-right: 0.15em;
+  }
+  .eyebrow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(70% 220% at 50% -80%, rgba(26, 77, 255, 0.55), rgba(46, 107, 255, 0.08) 70%, transparent 100%);
+    filter: blur(7px);
+    pointer-events: none;
+  }
+  /* Variante con borde en degradado (tecnología, calculadora, planes) */
+  .eyebrow-gradient {
+    border-color: transparent;
+    background:
+      linear-gradient(var(--color-void), var(--color-void)) padding-box,
+      linear-gradient(128deg, #1a4dff 0%, #102e99 100%) border-box;
   }
   .eyebrow-muted {
     color: var(--color-mist);
+    border-color: var(--color-mist);
+  }
+
+  /* Titular de sección (Figma: Montserrat Bold 52/54, sin tracking, centrado) */
+  .h2-section {
+    font-family: var(--font-montserrat), sans-serif;
+    font-weight: 700;
+    font-size: max(28px, 52 * var(--u));
+    line-height: 1.04;
+    letter-spacing: 0;
+    color: #ffffff;
+    text-wrap: balance;
+  }
+  /* Subtítulo de sección (Figma: Montserrat Regular 20/28, #c7d7ff, ≤ 952 px) */
+  .sub-section {
+    font-size: max(15px, 20 * var(--u));
+    line-height: 1.4;
+    color: var(--color-cloud);
+    max-width: max(36rem, 952 * var(--u));
+    text-wrap: pretty;
   }
 
   /* Firma tipográfica: texto hueco (solo contorno) para marcas de agua */
@@ -268,34 +434,74 @@ body {
     to { --spin-angle: 360deg; }
   }
 
-  /* Titular de la casa: Montserrat Bold, compacto pero sin apretar */
+  /* Titular de la casa: Montserrat Bold. El Figma no aprieta el tracking
+     (0) salvo en dos titulares grandes, que lo ajustan en su sitio. */
   .display {
     font-family: var(--font-montserrat), sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.06;
+    letter-spacing: 0;
+    line-height: 1.04;
   }
 
-  /* Botón pastilla claro (Figma «Comenzar»): degradado blanco→lavanda, texto tinta */
+  /* Botón principal (Figma «Comenzar», «Contactar»): pastilla #c7d7ff lisa,
+     texto casi negro, 72 px de alto a 1920. */
   .btn-light {
-    background: linear-gradient(95deg, #ffffff 0%, #d7dcf5 55%, #aeb8e4 100%);
-    color: var(--color-ink);
-    border: 1px solid rgba(0, 0, 0, 0.35);
-    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    background: var(--color-cloud);
+    color: #010104;
+    border: 1px solid transparent;
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9);
   }
   .btn-light:hover {
-    background: linear-gradient(95deg, #ffffff 0%, #e6eaff 55%, #c4cdf3 100%);
+    background: #d9e4ff;
+  }
+  /* La misma pastilla sobre fondo claro (Figma «Contactar» del cierre): #d5dae9 */
+  .btn-light-paper {
+    background: #d5dae9;
+  }
+  .btn-light-paper:hover {
+    background: #c9d0e4;
+  }
+  /* Botón pequeño (Figma «Cotizar proyecto»): radio 16, sombra corta */
+  .btn-light-sm {
+    background: var(--color-cloud);
+    color: var(--color-void);
+    box-shadow: 0 4px 4px rgba(16, 26, 62, 0.25);
+  }
+  .btn-light-sm:hover {
+    background: #d9e4ff;
   }
 
-  /* Botón pastilla oscuro con borde azul claro (Figma «Ver demo») */
-  .btn-outline {
-    background: linear-gradient(180deg, #0a1440 0%, #111d58 100%);
-    color: #ffffff;
-    border: 1px solid var(--color-pulse);
-    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 0 0 rgba(148, 178, 252, 0);
+  /* Botón secundario y etiqueta de producto (Figma «Ver demo», «AI Concierge»):
+     degradado navy→abyss, borde azul de marca y un brillo azul que entra por
+     la izquierda (vector con blur en el Figma). */
+  .btn-outline,
+  .tag-pill {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(180deg, #101837 0%, #050b21 61%);
+    color: var(--color-frost);
+    border: 1px solid var(--color-electric);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9);
+  }
+  .btn-outline::after,
+  .tag-pill::after {
+    content: "";
+    position: absolute;
+    inset: -40% 30% -40% -20%;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(26, 77, 255, 0.7) 0%, rgba(46, 107, 255, 0.1) 70%, rgba(46, 107, 255, 0) 100%);
+    filter: blur(12px);
+    opacity: 0.8;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .btn-outline:hover::after,
+  .tag-pill:hover::after {
+    opacity: 1;
   }
   .btn-outline:hover {
-    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 32px -8px rgba(148, 178, 252, 0.55);
+    box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 32px -8px rgba(26, 77, 255, 0.55);
   }
 
   /* Pastilla azul eléctrico (etiquetas de producto, CTA principal del chat) */

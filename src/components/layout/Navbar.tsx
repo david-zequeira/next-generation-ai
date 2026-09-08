@@ -44,21 +44,23 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
       type="button"
       aria-label={t.ariaLang}
       onClick={() => setLocale(otherLocale)}
+      // Figma: 98×46, radio 20, degradado #182557→#050b21, texto Montserrat 500 20 + globo
       className={cn(
-        "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full px-3.5 font-display text-[13px] font-medium transition-all duration-300",
+        "inline-flex h-u-46 cursor-pointer items-center gap-u-8 rounded-u-20 px-u-16 font-display fs-u-20 font-medium transition-all duration-300",
         light
           ? "border border-ink/15 bg-white/70 text-ink hover:border-electric/50"
-          : "glass text-frost hover:border-pulse/60"
+          : "border border-transparent bg-gradient-to-b from-[#182557] to-abyss text-white hover:border-electric/60"
       )}
     >
-      <Languages className="h-3.5 w-3.5" strokeWidth={1.8} />
+      <Languages className="size-u-18" strokeWidth={1.8} />
       {locale === "es" ? "Es" : "En"}
     </button>
   );
 
+  // Figma: enlaces Montserrat SemiBold 15, blancos, centrados en la página
   const linkClass = cn(
-    "group relative rounded-full px-3.5 py-2 font-display text-[14px] font-medium transition-colors duration-200",
-    light ? "text-ink/85 hover:text-electric" : "text-frost/90 hover:text-white"
+    "group relative rounded-full px-u-14 py-2 font-display fs-u-15 font-semibold transition-colors duration-200",
+    light ? "text-ink/85 hover:text-electric" : "text-white hover:text-cloud"
   );
   const underline = (
     <span
@@ -84,14 +86,16 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
       >
         <nav
           aria-label="Principal"
-          className="mx-auto flex h-[76px] max-w-[1480px] items-center justify-between px-5 md:px-10"
+          // Figma: barra de 116 px, imago de 55 px a 240 px del borde (12,5 % del ancho)
+          className="relative mx-auto flex h-u-116 max-w-[1920px] items-center justify-between px-5 md:px-10 xl:px-[12.5%]"
         >
           <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-9 w-auto md:h-10" />
+            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-55 w-auto" />
           </Link>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          {/* Centrado absoluto: el Figma centra el menú en la página, no entre el logo y los botones */}
+          <ul className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-u-22 lg:flex">
             {t.links.map((label, i) => (
               <li key={HREFS[i]}>
                 <a href={HREFS[i]} className={linkClass}>
@@ -114,12 +118,16 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
             </li>
           </ul>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-u-10">
             <span className="hidden lg:inline-flex">{langButton}</span>
+            {/* Figma: 165×46, radio 20, blanco, Montserrat 500 15 negro */}
             <Link
               href="/contacto"
               onClick={() => trackEvent("cta_navbar")}
-              className="btn-light hidden h-10 cursor-pointer items-center rounded-full px-5 font-display text-[13px] font-semibold transition-all duration-300 active:scale-[0.97] lg:inline-flex"
+              className={cn(
+                "hidden h-u-46 cursor-pointer items-center rounded-u-20 px-u-24 font-display fs-u-15 font-medium transition-all duration-300 active:scale-[0.97] lg:inline-flex",
+                light ? "bg-ink text-white hover:bg-electric" : "bg-white text-black hover:bg-cloud"
+              )}
             >
               {t.cta}
             </Link>

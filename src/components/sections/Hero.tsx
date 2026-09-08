@@ -158,13 +158,13 @@ export default function Hero() {
             as="span"
             text={t.titleA}
             delay={0.45}
-            className="block text-[clamp(2.3rem,5.4vw,4.3rem)] text-white"
+            className="block fs-u-52 lh-u-54 text-white"
           />
           <TextReveal
             as="span"
             text={t.titleB}
             delay={0.7}
-            className="block text-[clamp(2.3rem,5.4vw,4.3rem)] text-white"
+            className="block fs-u-52 lh-u-54 text-white"
           />
         </motion.div>
 
@@ -172,7 +172,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-7 max-w-2xl text-balance text-base leading-relaxed text-frost/85 md:text-[1.2rem] md:leading-[1.55]"
+          className="sub-section mt-u-32 text-balance"
         >
           {t.sub}
         </motion.p>
@@ -181,13 +181,13 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14 flex flex-col items-center gap-4 sm:flex-row md:mt-24"
+          className="mt-u-180 flex flex-col items-center gap-u-32 sm:flex-row"
         >
           <MagneticButton href="/contacto">
             {t.ctaPrimary}
             <ArrowRight
-              className="h-5 w-5 text-electric transition-transform duration-300 group-hover:translate-x-1"
-              strokeWidth={2}
+              className="size-u-24 text-electric transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={3}
             />
           </MagneticButton>
           {/* La "demo" no es un vídeo: es hablar con el agente. El CTA
@@ -200,7 +200,7 @@ export default function Hero() {
                 onClick={() => window.dispatchEvent(new CustomEvent("ng:open-voice"))}
               >
                 {t.ctaSecondary}
-                <Play className="h-4 w-4 fill-electric text-electric" strokeWidth={1.5} />
+                <Play className="size-u-20 fill-electric text-electric" strokeWidth={1.5} />
               </MagneticButton>
             </span>
           )}
