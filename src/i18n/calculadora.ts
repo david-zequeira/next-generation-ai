@@ -52,7 +52,7 @@ export const ASSUMPTIONS = {
 /** Tarifa pública. Espejo de `pricing.ts` — si cambia allí, cambia aquí. */
 export const CALC_PLANS = [
   { k: "arranque", setup: 2900, mrr: 349 },
-  { k: "core", setup: 5900, mrr: 349 },
+  { k: "core", setup: 5900, mrr: 449 },
 ] as const;
 
 export type CalcPlanKey = (typeof CALC_PLANS)[number]["k"];
@@ -258,7 +258,7 @@ const es: CalcDict = {
     planHint: "La cuota mensual es la misma en los dos. Lo que cambia es si además te construimos la web.",
     plans: [
       { k: "arranque", name: "Starter", desc: "El asistente sobre la web que ya tienes" },
-      { k: "core", name: "Core", desc: "El asistente y la web nueva" },
+      { k: "core", name: "Core", desc: "El asistente, la web nueva y su SEO" },
     ],
     perMonth: "/mes",
     setupNote: "de puesta en marcha",
@@ -414,7 +414,7 @@ const en: CalcDict = {
     planHint: "The monthly fee is the same in both. What changes is whether we also build your website.",
     plans: [
       { k: "arranque", name: "Starter", desc: "The assistant on the site you already have" },
-      { k: "core", name: "Core", desc: "The assistant and a new website" },
+      { k: "core", name: "Core", desc: "The assistant, a new website and its SEO" },
     ],
     perMonth: "/mo",
     setupNote: "setup",
