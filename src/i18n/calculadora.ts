@@ -52,7 +52,7 @@ export const ASSUMPTIONS = {
 /** Tarifa pública. Espejo de `pricing.ts` — si cambia allí, cambia aquí. */
 export const CALC_PLANS = [
   { k: "arranque", setup: 2900, mrr: 349 },
-  { k: "core", setup: 5900, mrr: 349 },
+  { k: "core", setup: 5900, mrr: 449 },
 ] as const;
 
 export type CalcPlanKey = (typeof CALC_PLANS)[number]["k"];
@@ -255,10 +255,10 @@ const es: CalcDict = {
     noShowsLabel: "Citas a las que no se presentan",
     noShowsHint: "Al mes. Los plantones que hoy dejan el hueco vacío.",
     step3: "3 · Con qué plan lo comparo",
-    planHint: "La cuota mensual es la misma en los dos. Lo que cambia es si además te construimos la web.",
+    planHint: "El Starter monta el asistente sobre la web que ya tienes. El Core añade la web nueva y su posicionamiento, y por eso cuesta 100 € más al mes.",
     plans: [
       { k: "arranque", name: "Starter", desc: "El asistente sobre la web que ya tienes" },
-      { k: "core", name: "Core", desc: "El asistente y la web nueva" },
+      { k: "core", name: "Core", desc: "El asistente, la web nueva y su SEO" },
     ],
     perMonth: "/mes",
     setupNote: "de puesta en marcha",
@@ -411,10 +411,10 @@ const en: CalcDict = {
     noShowsLabel: "Appointments nobody shows up to",
     noShowsHint: "Per month. The no-shows that leave the slot empty today.",
     step3: "3 · Which plan am I comparing against",
-    planHint: "The monthly fee is the same in both. What changes is whether we also build your website.",
+    planHint: "Starter puts the assistant on the website you already have. Core adds the new website and its ranking, which is why it costs €100 more per month.",
     plans: [
       { k: "arranque", name: "Starter", desc: "The assistant on the site you already have" },
-      { k: "core", name: "Core", desc: "The assistant and a new website" },
+      { k: "core", name: "Core", desc: "The assistant, a new website and its SEO" },
     ],
     perMonth: "/mo",
     setupNote: "setup",
