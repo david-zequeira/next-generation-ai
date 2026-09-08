@@ -249,30 +249,34 @@ function VoiceMock({ t }: { t: { chips: string[]; sectors: string[] } }) {
 const NODE_ICONS: LucideIcon[] = [Users, Receipt, CalendarDays, Repeat];
 
 /**
- * Coordenadas del Figma dentro de la tarjeta de 524×573 (en %): el cliente
- * arriba, el orbe de marca, la facturación debajo, CRM y agenda a los lados
- * una fila más abajo, y el seguimiento al pie. Las líneas blancas unen todo.
+ * Disposición del gráfico dentro de la tarjeta de 524×573, en coordenadas del
+ * viewBox (las mismas que usa el HTML en %). Simétrica respecto al eje central:
+ * cliente arriba, orbe, facturación, CRM y agenda espejados una fila más abajo,
+ * seguimiento al pie. Todos los nodos miden lo mismo (160×55).
  */
 const BOOK = {
-  client: { x: 50, y: 9 },
-  orb: { x: 50, y: 33.5, size: 25.6 },
-  billing: { x: 50, y: 49.6 },
-  crm: { x: 32.6, y: 62.8 },
-  calendar: { x: 79.6, y: 62.8 },
-  followup: { x: 50, y: 80.6 },
+  w: 524,
+  h: 573,
+  node: { w: 160, h: 55 },
+  orbR: 67,
+  client: { x: 262, y: 52 },
+  orb: { x: 262, y: 192 },
+  billing: { x: 262, y: 300 },
+  crm: { x: 157, y: 380 },
+  calendar: { x: 367, y: 380 },
+  followup: { x: 262, y: 480 },
 };
-// Trazos en el viewBox 524×573 (mismas coordenadas que el Figma)
 const BOOK_PATHS = [
-  "M 262 100 L 262 137", // cliente → orbe
-  "M 262 245 L 262 284", // orbe → facturación
-  "M 220 312 L 171 359", // facturación → CRM
-  "M 304 312 L 355 359", // facturación → agenda
-  "M 171 385 L 355 385", // CRM — agenda
-  "M 262 385 L 262 462", // → seguimiento
+  `M 262 ${BOOK.client.y + BOOK.node.h / 2} L 262 ${BOOK.orb.y - BOOK.orbR}`, // cliente → orbe
+  `M 262 ${BOOK.orb.y + BOOK.orbR} L 262 ${BOOK.billing.y - BOOK.node.h / 2}`, // orbe → facturación
+  `M 222 ${BOOK.billing.y + BOOK.node.h / 2} L ${BOOK.crm.x} ${BOOK.crm.y - BOOK.node.h / 2}`, // → CRM
+  `M 302 ${BOOK.billing.y + BOOK.node.h / 2} L ${BOOK.calendar.x} ${BOOK.calendar.y - BOOK.node.h / 2}`, // → agenda
+  `M ${BOOK.crm.x + BOOK.node.w / 2} ${BOOK.crm.y} L ${BOOK.calendar.x - BOOK.node.w / 2} ${BOOK.calendar.y}`, // CRM — agenda
+  `M 262 ${BOOK.crm.y} L 262 ${BOOK.followup.y - BOOK.node.h / 2}`, // → seguimiento
 ];
 
 function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
-  const at = (p: { x: number; y: number }) => ({ left: `${p.x}%`, top: `${p.y}%` });
+  const at = (p: { x: number; y: number }) => ({ left: `${(p.x / BOOK.w) * 100}%`, top: `${(p.y / BOOK.h) * 100}%` });
   return (
     <motion.div
       {...reveal(0.15)}
@@ -296,7 +300,7 @@ function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
       <img
         src={`${BASE}/orb.png`}
         alt=""
-        style={{ ...at(BOOK.orb), width: `${BOOK.orb.size}%` }}
+        style={{ ...at(BOOK.orb), width: `${((BOOK.orbR * 2) / BOOK.w) * 100}%` }}
         className="absolute aspect-square -translate-x-1/2 -translate-y-1/2"
       />
 
@@ -328,7 +332,7 @@ function Chip({
     <span
       style={style}
       className={cn(
-        "absolute flex h-u-55 -translate-x-1/2 -translate-y-1/2 items-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-20 font-display fs-u-18 font-medium",
+        "absolute flex h-u-55 w-u-160 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-12 font-display fs-u-18 font-medium",
         light ? "bg-frost text-[#294296]" : "bg-electric text-frost"
       )}
     >

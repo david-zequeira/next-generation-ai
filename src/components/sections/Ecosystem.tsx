@@ -173,7 +173,7 @@ export default function Ecosystem() {
 
         {/* Escritorio: rejilla orbital. El eslogan va en una sola fila, centrado en la altura
             del planeta, sobre una banda oscura (Figma: 1349×59, #04071a) */}
-        <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[1fr_max(300px,464*var(--u))_1fr] lg:items-stretch lg:gap-x-u-30">
+        <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max(300px,464*var(--u))_minmax(0,1fr)] lg:items-stretch lg:gap-x-u-30">
           <div aria-hidden className="absolute inset-x-0 top-1/2 z-0 h-u-59 -translate-y-1/2 bg-[#04071a]" />
 
           {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
@@ -186,22 +186,29 @@ export default function Ecosystem() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full self-center whitespace-nowrap text-right font-display fs-u-38 lh-u-36 font-semibold text-paper"
+              // El eslogan es más ancho que su columna (en el Figma se sale del área de contenido).
+              // En dirección rtl el texto se ancla al borde derecho y el sobrante cae hacia fuera,
+              // nunca sobre el planeta; el span interior vuelve a ltr para leerse bien.
+              dir="rtl"
+              className="flex w-full min-w-0 justify-start self-center font-display fs-u-38 lh-u-36 font-semibold text-paper"
             >
-              {letters(t.left, 0)}
+              <span dir="ltr" className="whitespace-nowrap">{letters(t.left, 0)}</span>
             </motion.h3>
             <ul className="flex w-full self-end">
               <Step n={5} title={s[4].title} desc={s[4].desc} active={active === 4} delay={0.4} />
             </ul>
           </div>
 
-          {/* Centro: paso 1, órbita, paso 4 */}
-          <div className="relative z-10 flex flex-col items-center gap-u-10">
-            <ul className="flex justify-center">
+          {/* Centro: paso 1 arriba, órbita en el medio exacto, paso 4 abajo. Misma rejilla
+              1fr/auto/1fr que las columnas laterales, así el planeta queda a la altura del eslogan */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-center">
+            <ul className="flex justify-center self-start">
               <Step n={1} title={s[0].title} desc={s[0].desc} active={active === 0} />
             </ul>
-            <Orbit ariaLabel={t.svgAria} onStep={setActive} onPoint={onPoint} />
-            <ul className="flex justify-center">
+            <div className="w-full self-center py-u-10">
+              <Orbit ariaLabel={t.svgAria} onStep={setActive} onPoint={onPoint} />
+            </div>
+            <ul className="flex justify-center self-end">
               <Step n={4} title={s[3].title} desc={s[3].desc} active={active === 3} delay={0.3} />
             </ul>
           </div>
@@ -216,9 +223,9 @@ export default function Ecosystem() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full self-center whitespace-nowrap text-left font-display fs-u-38 lh-u-36 font-semibold text-paper"
+              className="flex w-full min-w-0 justify-start self-center font-display fs-u-38 lh-u-36 font-semibold text-paper"
             >
-              {letters(t.right, 100)}
+              <span className="whitespace-nowrap">{letters(t.right, 100)}</span>
             </motion.h3>
             <ul className="flex w-full justify-end self-end">
               <Step n={3} title={s[2].title} desc={s[2].desc} active={active === 2} delay={0.2} />
