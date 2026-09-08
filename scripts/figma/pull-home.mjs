@@ -31,6 +31,7 @@ function parseArgs(argv) {
     else if (a === "--node") o.node = next().replace("-", ":");
     else if (a === "--out") o.out = next();
     else if (a === "--depth") o.depth = Number(next());
+    else if (a === "--png-scale") o.pngScale = Number(next());
     else if (a === "--sections-parent") o.sectionsParent = next().replace("-", ":");
     else if (a === "--skip-raw") o.skipRaw = true;
     else if (a === "--skip-png") o.skipPng = true;
@@ -77,10 +78,10 @@ async function figmaGet(path, token, { retries = 3, timeoutMs = 180_000 } = {}) 
   }
 }
 
-async function download(url, dest, retries = 2) {
+async function download(url, dest, retries = 2, timeoutMs = 120_000) {
   for (let attempt = 0; ; attempt++) {
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(120_000) });
+      const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
       if (!res.ok) throw new Error(`${res.status} al descargar`);
       const bytes = Buffer.from(await res.arrayBuffer());
       await writeFile(dest, bytes);
@@ -165,6 +166,88 @@ function pickSections(rootDoc, overrideParentId) {
       bbox: { x: b.x, y: b.y, width: b.width, height: b.height },
     };
   });
+}
+
+/**
+ * `sections.json` (opcional): bandas verticales definidas a mano para marcos
+ * que no agrupan las capas por sección. Cada capa de primer nivel se asigna a
+ * la banda donde cae su centro vertical.
+ */
+async function loadBands(out) {
+  try {
+    const json = JSON.parse(await readFile(join(out, "sections.json"), "utf8"));
+    return Array.isArray(json.bands) && json.bands.length ? json.bands : null;
+  } catch {
+    return null;
+  }
+}
+
+function bandSections(rootDoc, bands) {
+  const rb = bbox(rootDoc);
+  const kids = (rootDoc.children ?? []).filter((n) => n.visible !== false && bbox(n));
+  const seen = new Map();
+  return bands.map((b, i) => {
+    let slug = slugify(b.name, `banda-${i + 1}`);
+    const n = (seen.get(slug) ?? 0) + 1;
+    seen.set(slug, n);
+    if (n > 1) slug += `-${n}`;
+    const members = kids
+      .filter((k) => {
+        const c = bbox(k).y + bbox(k).height / 2 - rb.y;
+        return c >= b.y0 && c < b.y1;
+      })
+      .sort((p, q) => bbox(p).y - bbox(q).y || bbox(p).x - bbox(q).x)
+      .map((k) => k.id);
+    return {
+      order: String(i + 1).padStart(2, "0"),
+      id: `band:${slug}`,
+      name: b.name,
+      slug,
+      type: "BAND",
+      kind: "section",
+      component: b.component,
+      bbox: { x: rb.x, y: rb.y + b.y0, width: rb.width, height: b.y1 - b.y0 },
+      members,
+    };
+  });
+}
+
+/** Recorta el render del marco por bandas con `sips` (macOS). */
+async function cropBands(out, sections, fullPng, scale) {
+  const { execFile } = await import("node:child_process");
+  const { promisify } = await import("node:util");
+  const run = promisify(execFile);
+  try {
+    await run("sips", ["--version"]);
+  } catch {
+    console.warn("⚠ sin `sips`: no se recortan los PNG por banda (se deja el marco completo)");
+    return 0;
+  }
+  let ok = 0;
+  for (const s of sections) {
+    const h = Math.max(1, Math.round(s.bbox.height * scale));
+    const w = Math.round(s.bbox.width * scale);
+    const y = Math.round((s.bbox.y - sections[0].bbox.y) * scale);
+    const dest = `png/${s.order}-${s.slug}.png`;
+    await run("sips", ["-c", String(h), String(w), "--cropOffset", String(y), "0", join(out, fullPng), "--out", join(out, dest)]);
+    s.png = dest;
+    ok++;
+  }
+  return ok;
+}
+
+async function renderBandPngs(token, { file, out, pngScale }, sections, rootId) {
+  await mkdir(join(out, "png"), { recursive: true });
+  // El marco entero (1920×13393) a escala 0,5 por defecto: a escala 1 el PNG
+  // pesa decenas de MB y la descarga se eterniza. `--png-scale 1` para intentarlo.
+  const scale = pngScale ?? 0.5;
+  const src = scale === 1 ? "png/00-home-full.png" : `png/00-home-full@${scale}.png`;
+  const full = await figmaGet(`/images/${file}?ids=${encodeURIComponent(rootId)}&format=png&scale=${scale}&use_absolute_bounds=true`, token);
+  if (!full.images?.[rootId]) throw new Error(`Figma no pudo renderizar el marco a escala ${scale}`);
+  await download(full.images[rootId], join(out, src), 0, 600_000);
+  const n = await cropBands(out, sections, src, scale);
+  console.log(`png: marco completo a escala ${scale} + ${n} bandas recortadas`);
+  return src;
 }
 
 async function renderPngs(token, { file, out }, sections, rootId) {
@@ -296,7 +379,7 @@ async function main() {
   const token = await loadEnvToken();
   const out = resolve(process.cwd(), opts.out);
   await mkdir(out, { recursive: true });
-  const ctx = { file: opts.file, node: opts.node, depth: opts.depth, out };
+  const ctx = { file: opts.file, node: opts.node, depth: opts.depth, out, pngScale: opts.pngScale };
 
   let raw;
   if (opts.skipRaw) {
@@ -305,12 +388,34 @@ async function main() {
     raw = await fetchSubtree(token, ctx);
   }
   const rootDoc = raw.nodes[opts.node].document;
-  const sections = pickSections(rootDoc, opts.sectionsParent);
-  console.log(`secciones: ${sections.filter((s) => s.kind === "section").length} (+${sections.filter((s) => s.kind === "aux").length} aux)`);
-  for (const s of sections) console.log(`  ${s.order} ${s.kind === "aux" ? "·" : "■"} ${s.name}  ${s.bbox.width}×${s.bbox.height} @y=${s.bbox.y}`);
+  const bands = await loadBands(out);
+  const sections = bands ? bandSections(rootDoc, bands) : pickSections(rootDoc, opts.sectionsParent);
+  console.log(
+    `secciones: ${sections.filter((s) => s.kind === "section").length} (+${sections.filter((s) => s.kind === "aux").length} aux)${bands ? " · bandas de sections.json" : ""}`
+  );
+  for (const s of sections)
+    console.log(`  ${s.order} ${s.kind === "aux" ? "·" : "■"} ${s.name}  ${s.bbox.width}×${s.bbox.height} @y=${s.bbox.y}${s.members ? ` · ${s.members.length} capas` : ""}`);
 
-  const fullPng = opts.skipPng ? "png/00-home-full@0.5.png" : await renderPngs(token, ctx, sections, opts.node);
-  if (opts.skipPng) for (const s of sections) s.png = `png/${s.order}-${s.slug}.png`;
+  let fullPng;
+  if (opts.skipPng) {
+    const scale = opts.pngScale ?? 0.5;
+    fullPng = bands && scale === 1 ? "png/00-home-full.png" : `png/00-home-full@${scale}.png`;
+    for (const s of sections) s.png = `png/${s.order}-${s.slug}.png`;
+    // Con bandas y el marco ya descargado, se recorta sin tocar la red.
+    if (bands) {
+      try {
+        await readFile(join(out, fullPng));
+        const n = await cropBands(out, sections, fullPng, scale);
+        console.log(`png: ${n} bandas recortadas de ${fullPng} (sin red)`);
+      } catch {
+        console.warn(`⚠ no existe ${fullPng}; sin recortes`);
+      }
+    }
+  } else if (bands) {
+    fullPng = await renderBandPngs(token, ctx, sections, opts.node);
+  } else {
+    fullPng = await renderPngs(token, ctx, sections, opts.node);
+  }
 
   const refs = collectImageRefs(rootDoc, sections);
   const fills = opts.skipFills ? [] : await fetchFills(token, ctx, refs);

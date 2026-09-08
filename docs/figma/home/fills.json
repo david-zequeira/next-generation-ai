@@ -1,0 +1,41 @@
+[
+  {
+    "imageRef": "dfd0d85a2f765d9b5957a704da4c79bb0e68aaaa",
+    "scaleMode": "STRETCH",
+    "nodes": [
+      {
+        "id": "541:421",
+        "name": "image",
+        "section": "19"
+      }
+    ],
+    "file": "fills/dfd0d85a2f765d9b5957a704da4c79bb0e68aaaa.png",
+    "bytes": 329710
+  },
+  {
+    "imageRef": "1fd5b04700ce938a38d38b08a6a0f8003fdae19a",
+    "scaleMode": "FILL",
+    "nodes": [
+      {
+        "id": "965:12734",
+        "name": "aaaa 1",
+        "section": ""
+      }
+    ],
+    "file": "fills/1fd5b04700ce938a38d38b08a6a0f8003fdae19a.png",
+    "bytes": 24740
+  },
+  {
+    "imageRef": "d3c90fbf14dae973f98c6120588aa8122d20ad88",
+    "scaleMode": "FILL",
+    "nodes": [
+      {
+        "id": "1272:4340",
+        "name": "Fondo-30 1",
+        "section": "01"
+      }
+    ],
+    "file": "fills/d3c90fbf14dae973f98c6120588aa8122d20ad88.png",
+    "bytes": 2895593
+  }
+]

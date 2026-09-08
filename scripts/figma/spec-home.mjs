@@ -58,7 +58,8 @@ const SECTION_MAP = [
   [/hablemos|cta|contacto/i, "src/components/sections/FinalCTA.tsx"],
   [/pie|footer/i, "src/components/layout/Footer.tsx"],
 ];
-const componentFor = (name) => SECTION_MAP.find(([re]) => re.test(name))?.[1] ?? "(asignar)";
+const componentFor = (section) =>
+  section.component ?? SECTION_MAP.find(([re]) => re.test(section.name))?.[1] ?? "(asignar)";
 
 const bbox = (n) => n.absoluteBoundingBox ?? { x: 0, y: 0, width: 0, height: 0 };
 const rel = (n, s) => `${round(bbox(n).x - bbox(s).x, 0)},${round(bbox(n).y - bbox(s).y, 0)}`;
@@ -185,7 +186,7 @@ function sectionSpec(section, node, styles, components, opts, tokens) {
     "",
     section.png ? `![${section.name}](${section.png})` : "",
     "",
-    `Componente: \`${componentFor(section.name)}\`  `,
+    `Componente: \`${componentFor(section)}\`  `,
     `Contenedor: relleno ${rootFill || "—"} · radio ${radiusOf(node) || "0"} · layout ${layoutOf(node) || "—"} · efectos ${effectsToCss(node.effects) || "—"}`,
     "",
     `### Textos (${texts.length})`,
@@ -388,7 +389,7 @@ function auditMd(meta) {
     "",
   ];
   for (const s of meta.sections) {
-    out.push(`## ${s.order} · ${s.name} → \`${componentFor(s.name)}\`${s.kind === "aux" ? " _(auxiliar)_" : ""}`, "", head);
+    out.push(`## ${s.order} · ${s.name} → \`${componentFor(s)}\`${s.kind === "aux" ? " _(auxiliar)_" : ""}`, "", head);
     for (const r of AUDIT_ROWS) out.push(`| ${r} | | | pendiente | |`);
     out.push("");
   }
@@ -424,7 +425,17 @@ async function main() {
   const sections = [];
   const aux = [];
   for (const s of meta.sections) {
-    const node = byId.get(s.id);
+    // Bandas de sections.json: nodo virtual con las capas de primer nivel asignadas.
+    const node = s.members
+      ? {
+          id: s.id,
+          name: s.name,
+          type: "BAND",
+          absoluteBoundingBox: s.bbox,
+          fills: [],
+          children: s.members.map((id) => byId.get(id)).filter(Boolean),
+        }
+      : byId.get(s.id);
     if (!node) continue;
     (s.kind === "aux" ? aux : sections).push(sectionSpec(s, node, styles, components, opts, tk));
   }
