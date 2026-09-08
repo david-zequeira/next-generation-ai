@@ -194,6 +194,7 @@ const en = {
     body: "Not a brochure and not a promise: your own figures, our assumptions in plain sight, and a number you can argue with. Four questions, no sign-up — and if it doesn't pay for your business, it says so.",
     exampleLabel: "Worked example · neighbourhood salon",
     inputsLabel: "What the owner typed in",
+    inputLabels: ["Average ticket", "Visit frequency", "Unanswered enquiries", "Lost bookings"],
     inputs: [
       "€45 average per visit",
       "6 visits a year per client",
@@ -505,6 +506,7 @@ const es: typeof en = {
     body: "Ni un folleto ni una promesa: tus cifras, nuestras hipótesis a la vista y un número que puedes discutir. Cuatro preguntas, sin registro — y si a tu negocio no le compensa, lo dice.",
     exampleLabel: "Ejemplo real de la cuenta · peluquería de barrio",
     inputsLabel: "Lo que puso el dueño",
+    inputLabels: ["Ingreso medio", "Frecuencia media", "Consultas sin responder", "Reservas perdidas"],
     inputs: [
       "45 € de media por visita",
       "6 visitas al año por cliente",

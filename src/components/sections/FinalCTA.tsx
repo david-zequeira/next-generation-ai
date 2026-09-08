@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Mic } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
 import { useLocale } from "@/i18n/LocaleContext";
@@ -11,7 +11,8 @@ import { warmUpVoice } from "@/lib/voice-warmup";
 
 /**
  * Sección 10 — «Hablemos.» (Figma): el sitio se abre a la luz. Fondo lavanda
- * claro, el titular en el azul de la marca y una única pastilla de contacto.
+ * claro, el titular en azul de marca (SemiBold 65/62, tracking −0,05 em, con
+ * la segunda frase en Regular) y una única pastilla de contacto de 72 px.
  * El cambio de oscuro a claro se hace con el scroll, como una persiana.
  */
 export default function FinalCTA({ tone = "light" }: { tone?: "light" | "dark" }) {
@@ -46,12 +47,14 @@ export default function FinalCTA({ tone = "light" }: { tone?: "light" | "dark" }
 
       <motion.div
         style={{ y: rise }}
-        className="relative mx-auto max-w-7xl px-6 pb-24 pt-28 md:pb-32 md:pt-40"
+        className="relative mx-auto max-w-[1920px] px-5 pb-u-80 pt-u-171 md:px-10 xl:px-[12.5%]"
         key={locale}
       >
-        <h2 className={`max-w-3xl font-display text-[clamp(2.4rem,5.4vw,4.4rem)] font-light leading-[1.08] tracking-[-0.02em] ${dark ? "text-[#2f5cff]" : "text-electric"}`}>
-          <TextReveal as="span" text={t.titleA} className="inline font-bold" />{" "}
-          <TextReveal as="span" text={t.titleB} delay={0.2} className="inline font-light tracking-[-0.02em]" />
+        <h2
+          className={`max-w-u-640 font-display fs-u-65 lh-u-62 font-semibold tracking-[-0.05em] text-balance ${dark ? "text-[#2f5cff]" : "text-electric"}`}
+        >
+          <TextReveal as="span" text={t.titleA} className="inline font-semibold" />{" "}
+          <TextReveal as="span" text={t.titleB} delay={0.2} className="inline font-normal" />
         </h2>
 
         <motion.div
@@ -59,15 +62,17 @@ export default function FinalCTA({ tone = "light" }: { tone?: "light" | "dark" }
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8"
+          className="mt-u-54 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8"
         >
+          {/* Figma «Contactar»: 244×72, radio completo, #d5dae9, SemiBold 20 con flecha oscura */}
           <MagneticButton
             href="/contacto"
             variant={dark ? "ghost" : "primary"}
             onClick={() => trackEvent("cta_final_home")}
-            className={dark ? "min-w-[210px] border-white/20 bg-gradient-to-r from-[#3a4a7a] to-[#1c2a55]" : "min-w-[210px] border-ink/15 shadow-[0_18px_40px_-18px_rgba(11,18,38,0.5)]"}
+            className={dark ? "min-w-u-244 border-white/20 bg-gradient-to-r from-[#3a4a7a] to-[#1c2a55]" : "btn-light-paper min-w-u-244"}
           >
             {t.cta}
+            <ArrowRight className={`size-u-22 ${dark ? "text-white" : "text-void"}`} strokeWidth={3} />
           </MagneticButton>
 
           {/* Segundo permiso: la demo está a un clic — el chat ES el producto.
@@ -105,7 +110,7 @@ export default function FinalCTA({ tone = "light" }: { tone?: "light" | "dark" }
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.6, delay: 1 }}
-          className={`mt-8 text-xs tracking-wide ${dark ? "text-white/50" : "text-ink/50"}`}
+          className={`mt-u-32 fs-u-12 tracking-wide ${dark ? "text-white/50" : "text-ink/50"}`}
         >
           {t.note}
         </motion.p>

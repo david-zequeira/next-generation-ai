@@ -175,7 +175,7 @@ export default function Ecosystem() {
           <div aria-hidden className="absolute inset-x-0 top-1/2 z-0 h-u-59 -translate-y-1/2 bg-[#04071a]" />
 
           {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
-          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-181">
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-110">
             <ul className="flex w-full">
               <Step n={6} title={s[5].title} desc={s[5].desc} active={active === 5} delay={0.5} />
             </ul>
@@ -205,7 +205,7 @@ export default function Ecosystem() {
           </div>
 
           {/* Derecha: paso 2 arriba, eslogan en el centro, paso 3 abajo */}
-          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-end pr-u-181">
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-end pr-u-110">
             <ul className="flex w-full justify-end">
               <Step n={2} title={s[1].title} desc={s[1].desc} active={active === 1} delay={0.1} />
             </ul>

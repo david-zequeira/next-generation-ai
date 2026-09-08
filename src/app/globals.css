@@ -163,6 +163,21 @@ html {
 @utility my-u-* {
   margin-block: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
+@utility top-u-* {
+  top: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility right-u-* {
+  right: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility bottom-u-* {
+  bottom: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility left-u-* {
+  left: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility min-w-u-* {
+  min-width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
 @utility inset-u-* {
   inset: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
