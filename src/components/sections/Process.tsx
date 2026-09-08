@@ -5,6 +5,7 @@ import {
   AudioLines,
   Building2,
   CalendarDays,
+  ChevronRight,
   Headset,
   HeartPulse,
   MessagesSquare,
@@ -19,29 +20,31 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import TextReveal from "@/components/ui/TextReveal";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/* ——— Piezas comunes ——— */
+/* ——— Piezas comunes (medidas en px del Figma a 1920, utilidades *-u-N) ——— */
 
+/** Etiqueta de producto — Figma: 243×72, radio 30, navy→abyss con borde azul y brillo. */
 function Tag({ children }: { children: string }) {
   return (
-    <span className="btn-blue inline-flex rounded-full px-6 py-2.5 font-display text-sm font-semibold">
+    <span className="tag-pill inline-flex h-u-72 items-center rounded-u-30 px-u-40 font-display fs-u-18 font-semibold">
       {children}
     </span>
   );
 }
 
+/** Viñetas — Figma: chevron lima de trazo grueso, Montserrat Medium 16/35 blanco. */
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+    <ul className="mt-u-40 grid gap-x-u-24 sm:grid-cols-2">
       {items.map((b) => (
-        <li key={b} className="flex items-start gap-3 text-[13px] text-frost/90">
-          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-neon shadow-[0_0_8px_1px_rgba(184,242,30,0.6)]" />
+        <li key={b} className="flex items-center gap-u-10 fs-u-16 lh-u-35 font-medium text-white">
+          <ChevronRight className="size-u-14 shrink-0 text-neon" strokeWidth={3} />
           {b}
         </li>
       ))}
@@ -49,13 +52,18 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
+/**
+ * Nota al pie — Figma: icono lineal de 60 px (lima y azul claro) y texto
+ * Montserrat 24/24 en azul de marca. Los iconos animados los enviará la
+ * diseñadora; de momento, lucide.
+ */
 function Note({ icon: Icon, children }: { icon: LucideIcon; children: string }) {
   return (
-    <p className="mt-10 flex items-center gap-3 font-display text-sm font-semibold text-electric">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-electric/50">
-        <Icon className="h-5 w-5" strokeWidth={1.5} />
+    <p className="mt-u-44 flex items-center gap-u-16 font-display fs-u-24 lh-u-24 text-electric">
+      <span className="flex size-u-60 shrink-0 items-center justify-center">
+        <Icon className="size-u-44 text-neon" strokeWidth={1.4} />
       </span>
-      <span className="max-w-[180px] leading-tight">{children}</span>
+      <span className="max-w-u-340 text-balance">{children}</span>
     </p>
   );
 }
@@ -83,10 +91,9 @@ function Copy({
       transition={{ duration: 0.9, ease: EASE }}
     >
       <Tag>{tag}</Tag>
-      <h3 className="mt-7 font-display text-[clamp(1.7rem,3.2vw,2.5rem)] font-light leading-[1.15] text-white">
-        {title}
-      </h3>
-      <p className="mt-5 max-w-lg text-base leading-relaxed text-mist">{desc}</p>
+      {/* Figma: Montserrat Regular 45/49, #f1f3fe, ancho 704 */}
+      <h3 className="mt-u-53 max-w-u-704 font-display fs-u-45 lh-u-49 font-normal text-paper text-balance">{title}</h3>
+      <p className="mt-u-14 max-w-u-704 fs-u-20 lh-u-30 text-cloud/80">{desc}</p>
       <Bullets items={bullets} />
       <Note icon={noteIcon}>{note}</Note>
     </motion.div>
@@ -98,6 +105,12 @@ const reveal = (delay = 0) => ({
   whileInView: { opacity: 1, y: 0, scale: 1 },
   viewport: { once: true, margin: "-12%" },
   transition: { duration: 1, delay, ease: EASE },
+});
+
+/** Borde de 1,5 px en degradado azul (Figma: #6994ff → #1a4dff) para las tres maquetas. */
+const ringStyle = (angle: number) => ({
+  ["--ring-w" as string]: "1.5px",
+  ["--ring-bg" as string]: `linear-gradient(${angle}deg, #6994ff 0%, #1a4dff 100%)`,
 });
 
 /* ——— 1. AI Concierge: el chat, escribiéndose solo ——— */
@@ -112,41 +125,52 @@ function ChatMock({ t }: { t: { name: string; status: string; msgs: string[]; pl
   return (
     <motion.div
       {...reveal(0.15)}
-      className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[26px] border border-pulse/40 bg-gradient-to-b from-[#0b1a52] to-[#0a1440] shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
+      style={ringStyle(0)}
+      // Figma: 524×573, radio 30, degradado #0a1540→#1a4dff
+      className="ring-conic relative mx-auto w-full max-w-u-524 overflow-hidden rounded-u-30 bg-[linear-gradient(180deg,#0a1540_0%,#1a4dff_100%)] shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
     >
-      <div className="card-blue flex items-center justify-between px-5 py-4">
-        <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white">
+      {/* Cabecera: 109 px, azul al 75 %, avatar blanco de 68 */}
+      <div className="flex h-u-109 items-center justify-between rounded-t-u-30 bg-electric/75 px-u-33">
+        <div className="flex items-center gap-u-22">
+          <span className="flex size-u-68 items-center justify-center rounded-full bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${BASE}/isotipo.png`} alt="" className="h-6 w-6" />
+            <img src={`${BASE}/isotipo.png`} alt="" className="size-u-36" />
           </span>
           <div>
-            <p className="font-display text-base font-medium text-white">{t.name}</p>
-            <p className="flex items-center gap-1.5 text-[11px] text-white/80">
-              <span className="h-1.5 w-1.5 rounded-full bg-neon animate-pulse-glow" />
+            <p className="font-display fs-u-24 font-medium leading-none text-white">{t.name}</p>
+            <p className="mt-u-6 flex items-center gap-u-8 fs-u-15 font-light text-frost">
+              <span className="size-u-8 rounded-full bg-neon animate-pulse-glow" />
               {t.status}
             </p>
           </div>
         </div>
-        <X className="h-5 w-5 text-white/80" strokeWidth={1.6} />
+        <X className="size-u-16 text-white" strokeWidth={2} />
       </div>
-      <div className="space-y-4 px-5 pb-5 pt-6">
-        <motion.p {...bubble(0)} className="ml-auto w-fit rounded-xl bg-electric px-4 py-2.5 text-sm text-white">
+      {/* Conversación: burbujas azules con la esquina inferior derecha recta (25 25 5 25) */}
+      <div className="flex flex-col gap-u-30 px-u-45 pb-u-47 pt-u-48">
+        <motion.p
+          {...bubble(0)}
+          className="ml-auto w-fit rounded-u-25 rounded-br-[5px] bg-electric px-u-24 py-u-20 fs-u-18 leading-none text-frost"
+        >
           {t.msgs[0]}
         </motion.p>
-        <motion.p {...bubble(1)} className="max-w-[85%] text-sm leading-relaxed text-frost">
+        <motion.p {...bubble(1)} className="max-w-u-437 fs-u-18 lh-u-24 text-frost">
           {t.msgs[1]}
         </motion.p>
-        <motion.p {...bubble(2)} className="ml-auto w-fit max-w-[80%] rounded-xl bg-electric px-4 py-2.5 text-right text-sm text-white">
+        <motion.p
+          {...bubble(2)}
+          className="ml-auto w-fit max-w-u-320 rounded-u-25 rounded-br-[5px] bg-electric px-u-24 py-u-14 text-right fs-u-18 lh-u-21 text-frost"
+        >
           {t.msgs[2]}
         </motion.p>
+        {/* Campo de texto: 437×73, radio 25, borde #c7d7ff, botón blanco de 43 */}
         <motion.div
           {...bubble(3)}
-          className="mt-8 flex items-center justify-between rounded-2xl border border-pulse/60 bg-white/[0.06] py-2 pl-5 pr-2"
+          className="mt-u-30 flex h-u-73 items-center justify-between rounded-u-25 border border-cloud pl-u-32 pr-u-15"
         >
-          <span className="text-sm text-frost/70">{t.placeholder}</span>
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-electric">
-            <Sparkles className="h-4 w-4 text-white" strokeWidth={1.8} />
+          <span className="fs-u-18 text-white/80">{t.placeholder}</span>
+          <span className="flex size-u-43 items-center justify-center rounded-full bg-white">
+            <Sparkles className="size-u-20 fill-electric text-electric" strokeWidth={1.8} />
           </span>
         </motion.div>
       </div>
@@ -154,7 +178,7 @@ function ChatMock({ t }: { t: { name: string; status: string; msgs: string[]; pl
   );
 }
 
-/* ——— 2. Voz: el orbe con sus anillos y las etiquetas flotando ——— */
+/* ——— 2. Voz: el orbe verde con sus anillos y las etiquetas flotando ——— */
 
 const SECTOR_ICONS: LucideIcon[] = [ShoppingBag, Building2, UtensilsCrossed, HeartPulse];
 
@@ -162,11 +186,13 @@ function VoiceMock({ t }: { t: { chips: string[]; sectors: string[] } }) {
   return (
     <motion.div
       {...reveal(0.15)}
-      className="relative mx-auto w-full max-w-[400px] rounded-[26px] border border-pulse/35 bg-gradient-to-b from-[#0b1640] to-[#0c1a4e] p-6 shadow-[0_50px_100px_-40px_rgba(26,77,255,0.6)]"
+      style={ringStyle(180)}
+      // Figma: 522×573, radio 25, radial #1a4dff → #101837
+      className="ring-conic relative mx-auto w-full max-w-u-522 rounded-u-25 bg-[radial-gradient(55%_45%_at_50%_50%,#1a4dff_0%,#101837_100%)] px-u-44 pb-u-40 pt-u-45 shadow-[0_50px_100px_-40px_rgba(26,77,255,0.6)]"
     >
       <div className="relative flex flex-col items-center">
-        {/* Etiquetas flotando: en fila que se parte, así nunca se pisan en móvil */}
-        <div className="relative z-10 -mb-8 flex flex-wrap justify-center gap-2">
+        {/* Etiquetas flotando — Figma: 55 px de alto, radio 25, #101a3e, Montserrat 16 */}
+        <div className="relative z-10 -mb-[max(24px,40*var(--u))] flex flex-wrap justify-center gap-u-12">
           {t.chips.map((c, i) => (
             <motion.span
               key={c}
@@ -175,38 +201,39 @@ function VoiceMock({ t }: { t: { chips: string[]; sectors: string[] } }) {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 + i * 0.2, ease: EASE }}
               className={cn(
-                "animate-float flex items-center gap-2 rounded-full bg-[#0e2050]/90 px-3.5 py-2 text-[11px] font-medium text-white ring-1 ring-pulse/30 backdrop-blur-sm",
+                "animate-float flex h-u-55 items-center gap-u-10 rounded-u-25 bg-space px-u-20 fs-u-16 leading-tight text-white",
                 i === 0 && "sm:-translate-y-3"
               )}
               style={{ animationDelay: `${i * 0.7}s` }}
             >
-              <AudioLines className="h-3.5 w-3.5 text-pulse" strokeWidth={2} />
+              <AudioLines className="size-u-20 text-white" strokeWidth={2} />
               {c}
             </motion.span>
           ))}
         </div>
-        {/* El orbe */}
-        <div className="relative mb-2 flex h-[230px] w-[230px] items-center justify-center">
-          <span className="animate-ring absolute inset-0 rounded-full bg-mint/20" />
-          <span className="animate-ring absolute inset-0 rounded-full bg-mint/15" style={{ animationDelay: "1.4s" }} />
-          <span className="absolute inset-[18px] rounded-full bg-mint/15" />
-          <span className="absolute inset-[38px] rounded-full bg-mint/20" />
+        {/* El orbe: verde #1cfcb9 con halos azules */}
+        <div className="relative mb-u-30 flex size-u-300 items-center justify-center">
+          <span className="animate-ring absolute inset-0 rounded-full bg-electric/25" />
+          <span className="animate-ring absolute inset-0 rounded-full bg-electric/20" style={{ animationDelay: "1.4s" }} />
+          <span className="absolute inset-[8%] rounded-full bg-electric/25 blur-md" />
+          <span className="absolute inset-[16%] rounded-full bg-electric/40 blur-sm" />
           <motion.span
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="relative flex h-[110px] w-[110px] items-center justify-center rounded-full bg-mint shadow-[0_0_60px_-10px_rgba(125,227,195,0.8)]"
+            className="relative flex size-u-200 items-center justify-center rounded-full bg-mint shadow-[0_0_60px_-10px_rgba(28,252,185,0.6)]"
           >
-            <Phone className="h-9 w-9 fill-electric text-electric" strokeWidth={1.5} />
+            <Phone className="size-u-56 fill-electric text-electric" strokeWidth={1.5} />
           </motion.span>
         </div>
       </div>
-      <div className="mt-2 border-t border-pulse/25 pt-4">
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+      {/* Sectores — Figma: línea #c7d7ff, iconos blancos de 22, Montserrat 16/28 */}
+      <div className="border-t border-cloud pt-u-24">
+        <ul className="grid grid-cols-2 gap-x-u-16">
           {t.sectors.map((s, i) => {
             const Icon = SECTOR_ICONS[i];
             return (
-              <li key={s} className="flex items-center gap-2 text-[12px] text-neon">
-                <Icon className="h-3.5 w-3.5 shrink-0 text-frost" strokeWidth={1.8} />
+              <li key={s} className="flex items-center gap-u-10 fs-u-16 lh-u-28 text-white">
+                <Icon className="size-u-22 shrink-0 text-white" strokeWidth={1.8} />
                 {s}
               </li>
             );
@@ -233,34 +260,28 @@ function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
   return (
     <motion.div
       {...reveal(0.15)}
-      className="card-blue relative mx-auto w-full max-w-[420px] overflow-hidden rounded-[26px] border border-pulse/40 p-5 shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
+      style={ringStyle(180)}
+      // Figma: 524×573, radio 30, degradado #1a4dff→#0a1540, orbe de marca de 134 px
+      className="ring-conic relative mx-auto w-full max-w-u-524 overflow-hidden rounded-u-30 bg-[linear-gradient(180deg,#1a4dff_0%,#0a1540_100%)] p-u-45 shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
     >
       <svg viewBox="0 0 400 340" className="w-full" aria-hidden>
-        <defs>
-          <linearGradient id="bookingOrb" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#7de3c3" />
-            <stop offset="50%" stopColor="#94b2fc" />
-            <stop offset="100%" stopColor="#c58bff" />
-          </linearGradient>
-        </defs>
         {paths.map((d, i) => (
           <g key={i}>
-            <path d={d} fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" strokeDasharray="4 5" className="animate-dash" />
-            <circle r="3.5" fill="#ffffff">
+            <path d={d} fill="none" stroke="#ffffff" strokeWidth="1" />
+            <circle r="3.5" fill="#b8f21e">
               <animateMotion dur={`${2.2 + i * 0.4}s`} repeatCount="indefinite" path={d} begin={`${i * 0.3}s`} />
             </circle>
           </g>
         ))}
-        {/* Orbe central */}
-        <circle cx="200" cy="164" r="44" fill="url(#bookingOrb)" opacity="0.95" />
-        <circle cx="200" cy="164" r="44" fill="none" stroke="#ffffff" strokeOpacity="0.5" />
-        <circle cx="200" cy="164" r="22" fill="#0b1435" opacity="0.85" />
-        <circle cx="200" cy="164" r="8" fill="#ffffff" />
+        {/* Orbe de marca: la imagen del Figma */}
+        <image href={`${BASE}/orb.png`} x="140" y="104" width="120" height="120" />
       </svg>
 
       {/* Chips en HTML por encima del SVG, para tipografía real */}
-      <div className="pointer-events-none absolute inset-5">
-        <Chip icon={UserRound} className="left-1/2 top-[6%] -translate-x-1/2">{t.client}</Chip>
+      <div className="pointer-events-none absolute inset-u-45">
+        <Chip icon={UserRound} light className="left-1/2 top-[6%] -translate-x-1/2">
+          {t.client}
+        </Chip>
         <Chip icon={NODE_ICONS[0]} className="left-[3%] top-[70%]">{t.nodes[0]}</Chip>
         <Chip icon={NODE_ICONS[1]} className="left-1/2 top-[70%] -translate-x-1/2">{t.nodes[1]}</Chip>
         <Chip icon={NODE_ICONS[2]} className="right-[3%] top-[70%]">{t.nodes[2]}</Chip>
@@ -270,15 +291,17 @@ function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
   );
 }
 
-function Chip({ icon: Icon, className, children }: { icon: LucideIcon; className: string; children: string }) {
+/** Nodo del flujo — Figma: 55 px de alto, radio 25, azul con texto #ecefff (el cliente, claro con texto #294296). */
+function Chip({ icon: Icon, className, light = false, children }: { icon: LucideIcon; className: string; light?: boolean; children: string }) {
   return (
     <span
       className={cn(
-        "absolute flex -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-xl bg-white/[0.14] px-3.5 py-2 text-[12px] font-medium text-white ring-1 ring-white/30 backdrop-blur-md",
+        "absolute flex h-u-55 -translate-y-1/2 items-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-20 font-display fs-u-18 font-medium",
+        light ? "bg-frost text-[#294296]" : "bg-electric text-frost",
         className
       )}
     >
-      <Icon className="h-3.5 w-3.5" strokeWidth={1.8} />
+      <Icon className="size-u-22" strokeWidth={1.8} />
       {children}
     </span>
   );
@@ -293,30 +316,17 @@ export default function Process() {
   const t = dict.aiLayer;
 
   return (
-    <section id="process" className="relative bg-void py-28 md:py-40">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mx-auto max-w-3xl text-center" key={locale}>
-          <p className="eyebrow mb-6">{t.eyebrow}</p>
-          <TextReveal text={t.titleA} className="block text-[clamp(2rem,4.6vw,3.4rem)] text-white" />
-          <TextReveal text={t.titleB} delay={0.2} className="block text-[clamp(2rem,4.6vw,3.4rem)] text-white" />
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.3 }}
-            className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-mist md:text-lg"
-          >
-            {t.sub}
-          </motion.p>
-        </div>
+    <section id="process" className="relative border-t border-line bg-void pb-u-120 pt-u-117">
+      <div className="mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+        <SectionHeading key={locale} eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} subSize={24} />
 
-        <div className="mt-24 space-y-28 md:mt-32 md:space-y-40">
-          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="mt-u-180 flex flex-col gap-u-190">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-u-100">
             <Copy {...t.concierge} noteIcon={MessagesSquare} />
             <ChatMock t={t.concierge} />
           </div>
 
-          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-u-100">
             <div className="order-2 lg:order-1">
               <VoiceMock t={t.voice} />
             </div>
@@ -325,7 +335,7 @@ export default function Process() {
             </div>
           </div>
 
-          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-u-100">
             <Copy {...t.booking} noteIcon={CalendarDays} />
             <BookingMock t={t.booking} />
           </div>

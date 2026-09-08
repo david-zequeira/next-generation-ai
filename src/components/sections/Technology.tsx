@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import TextReveal from "@/components/ui/TextReveal";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { useLocale } from "@/i18n/LocaleContext";
 
 type Brand = { name: string; file: string };
@@ -43,19 +43,23 @@ const ROW_B: Brand[] = [
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Pastilla como en Figma: cristal oscuro con borde azul pulso, disco blanco
- * con el logo original y el nombre en blanco.
+ * Pastilla del Figma: 70 px de alto, radio completo, blanco al 10 %, borde de
+ * 0,5 px en degradado #94b2fc→#586a96, disco #ecefff de 48 px con el logo
+ * (≈ 36 px) y el nombre en Montserrat Medium 18. Medidas a 1920 (*-u-N).
  */
 function LogoPill({ brand }: { brand: Brand }) {
   return (
-    <span className="group/pill mx-2.5 inline-flex shrink-0 cursor-default items-center gap-3.5 rounded-full border border-pulse/40 bg-[linear-gradient(135deg,rgba(238,242,255,0.16),rgba(154,165,192,0.08))] py-2.5 pl-2.5 pr-7 font-display text-[15px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_14px_34px_-20px_rgba(0,0,0,0.9)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pulse/80 hover:bg-[linear-gradient(135deg,rgba(238,242,255,0.24),rgba(154,165,192,0.12))] md:py-3 md:pl-3 md:pr-8 md:text-base">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_0_0_1px_rgba(148,178,252,0.25)] transition-transform duration-300 group-hover/pill:scale-105">
+    <span
+      style={{ ["--ring-bg" as string]: "linear-gradient(90deg, #94b2fc, #586a96)", ["--ring-w" as string]: "0.5px" }}
+      className="ring-conic group/pill mx-u-6 inline-flex h-u-70 shrink-0 cursor-default items-center gap-u-14 rounded-full bg-white/10 pl-u-11 pr-u-28 font-display fs-u-18 font-medium text-frost backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
+    >
+      <span className="flex size-u-48 items-center justify-center rounded-full bg-frost transition-transform duration-300 group-hover/pill:scale-105">
         <Image
           src={`${BASE}/logos/${brand.file}.svg`}
           alt=""
-          width={40}
-          height={40}
-          className="h-10 w-10"
+          width={36}
+          height={36}
+          className="size-u-36"
           draggable={false}
           // Carga inmediata a propósito: son 19 SVG de 1–2 KB dentro de una
           // cinta que no para de moverse. Con la carga diferida de next/image
@@ -99,24 +103,9 @@ export default function Technology() {
   const t = dict.technology;
 
   return (
-    <section className="relative overflow-hidden border-t border-line bg-void py-28 md:py-36">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[60%] h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-electric/[0.08] blur-[140px]"
-      />
-      <div className="relative mx-auto max-w-7xl px-6 text-center" key={locale}>
-        <p className="eyebrow mb-6">{t.eyebrow}</p>
-        <TextReveal text={t.titleA} className="block text-[clamp(2rem,4.6vw,3.4rem)] text-white" />
-        <TextReveal text={t.titleB} delay={0.2} className="block text-[clamp(2rem,4.6vw,3.4rem)] text-white" />
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.3 }}
-          className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-mist md:text-lg"
-        >
-          {t.sub}
-        </motion.p>
+    <section id="technology" className="relative overflow-hidden border-t border-line bg-void pb-u-160 pt-u-130">
+      <div className="relative mx-auto max-w-7xl px-6">
+        <SectionHeading key={locale} eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} gradientEyebrow subSize={18} />
       </div>
 
       <motion.div
@@ -124,7 +113,7 @@ export default function Technology() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 1.2 }}
-        className="relative mt-16 space-y-4 md:mt-20"
+        className="relative mt-u-130 flex flex-col gap-u-24"
       >
         <MarqueeRow items={ROW_A} />
         <MarqueeRow items={ROW_B} reverse />

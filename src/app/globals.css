@@ -157,6 +157,15 @@ html {
 @utility mb-u-* {
   margin-bottom: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
+@utility mx-u-* {
+  margin-inline: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility my-u-* {
+  margin-block: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
+@utility inset-u-* {
+  inset: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
+}
 @utility gap-u-* {
   gap: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
@@ -240,8 +249,8 @@ body {
     background: linear-gradient(247deg, #101837 0%, #050b21 100%);
   }
 
-  /* Borde de 1 px con degradado cónico azul (Figma: #6994ff → #1a4dff → #6994ff).
-     Grosor con --ring-w. Hereda el radio del elemento. */
+  /* Borde de 1 px con degradado (Figma: cónico #6994ff → #1a4dff → #6994ff por
+     defecto; otro degradado con --ring-bg). Grosor con --ring-w. Hereda el radio. */
   .ring-conic {
     position: relative;
   }
@@ -251,7 +260,7 @@ body {
     inset: 0;
     border-radius: inherit;
     padding: var(--ring-w, 1px);
-    background: conic-gradient(#6994ff 26%, #1a4dff 50%, #6994ff 74%);
+    background: var(--ring-bg, conic-gradient(#6994ff 26%, #1a4dff 50%, #6994ff 74%));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
