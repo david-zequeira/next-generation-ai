@@ -101,9 +101,6 @@ export default function Evolution() {
               transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
             >
-              <span className="mb-6 font-display text-xs font-light tracking-[0.4em] text-mist">
-                {String(i + 1).padStart(2, "0")} / {String(t.stages.length).padStart(2, "0")}
-              </span>
               {/* La etapa "IA" rompe la escala: dos letras del tamaño del mundo */}
               <h3
                 className={`display text-white ${

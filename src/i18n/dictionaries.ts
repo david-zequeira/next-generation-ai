@@ -10,7 +10,6 @@ const en = {
     ariaOpen: "Open menu",
     ariaClose: "Close menu",
     ariaLang: "Cambiar a español",
-    railAria: "Chapters",
   },
   hero: {
     eyebrow: "Asenix",
@@ -19,7 +18,6 @@ const en = {
     sub: "We create premium digital experiences and intelligent systems that attract customers, automate operations and drive growth.",
     ctaPrimary: "Get started",
     ctaSecondary: "See the demo",
-    scroll: "Scroll",
   },
   evolution: {
     eyebrow: "The future of business",
@@ -330,7 +328,6 @@ const es: typeof en = {
     ariaOpen: "Abrir menú",
     ariaClose: "Cerrar menú",
     ariaLang: "Switch to English",
-    railAria: "Capítulos",
   },
   hero: {
     eyebrow: "Asenix",
@@ -339,7 +336,6 @@ const es: typeof en = {
     sub: "Creamos experiencias digitales premium y sistemas inteligentes que atraen clientes, automatizan operaciones e impulsan el crecimiento.",
     ctaPrimary: "Comenzar",
     ctaSecondary: "Ver demo",
-    scroll: "Desliza",
   },
   evolution: {
     eyebrow: "El futuro de los negocios",
