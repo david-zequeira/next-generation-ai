@@ -17,16 +17,16 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Asenix — Webs premium y agentes de IA para tu negocio",
+  title: "Asenix — Agentes de IA para responder clientes y reservar citas",
   description:
-    "Marca, web premium y agentes de IA que atienden, reservan citas y capturan clientes 24/7. Diseño, software a medida y automatización para negocios en España.",
+    "Instalamos agentes de IA conectados a web, WhatsApp y calendario para responder clientes, capturar leads y reservar citas 24/7.",
   // Canonical relativo: Next lo resuelve por ruta contra metadataBase, así cada
   // página declara la suya y la copia de github.io deja de competir con asenix.es.
   alternates: { canonical: "./" },
   openGraph: {
-    title: "Asenix — Webs premium y agentes de IA para tu negocio",
+    title: "Asenix — Agentes de IA para responder clientes y reservar citas",
     description:
-      "Marca, web premium y agentes de IA que atienden, reservan y capturan clientes 24/7.",
+      "Deja de perder clientes por no responder a tiempo. Agentes de IA para web, WhatsApp y reservas.",
     type: "website",
     locale: "es_ES",
     url: "./",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Asenix",
-    description: "Webs premium y agentes de IA que atienden y reservan por ti.",
+    description: "Agentes de IA que responden clientes y reservan citas por ti.",
     images: ["/og.png"],
   },
   robots: { index: true, follow: true },
