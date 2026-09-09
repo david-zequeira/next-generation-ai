@@ -141,9 +141,10 @@ export default function Services() {
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           style={{ ["--ring-w" as string]: "0.5px" }}
-          className="ring-conic relative mt-u-68 rounded-t-u-35 bg-[linear-gradient(180deg,#101a3e_0%,#1a3ba9_100%)] px-6 pb-0 pt-u-104 shadow-[0_0_150px_rgba(26,77,255,0.5)] md:px-u-91"
+          // Figma: texto a 91 del borde, tableta a 92 arriba y 87 abajo (no toca la base de la tarjeta)
+          className="ring-conic relative mt-u-68 rounded-t-u-35 bg-[linear-gradient(180deg,#101a3e_0%,#1a3ba9_100%)] px-6 pb-u-87 pt-u-92 shadow-[0_0_150px_rgba(26,77,255,0.5)] md:px-u-91"
         >
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.13fr] lg:gap-u-44">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.13fr] lg:items-start lg:gap-u-44">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${locale}-${tab}`}
@@ -151,7 +152,7 @@ export default function Services() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 18 }}
                 transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col pb-u-90"
+                className="flex flex-col lg:pt-u-12"
               >
                 <h3 className="max-w-u-569 font-display fs-u-38 lh-u-47 font-semibold text-white text-balance">
                   {current.title}
@@ -191,13 +192,22 @@ export default function Services() {
               </motion.div>
             </AnimatePresence>
 
-            {/* La "tableta" azul — Figma: 645×573, radio 25, degradado #1a4dff→#294296,
-                y dentro el dispositivo claro (399×511, radio 20 arriba) que asoma por la base */}
-            <div
-              style={{ ["--gx" as string]: "70%", ["--gy" as string]: "10%", ["--gr" as string]: "60%", ["--go" as string]: "0.7" }}
-              className="glow-inset flex items-end justify-center rounded-t-u-25 bg-[linear-gradient(180deg,#1a4dff_28%,#294296_100%)] px-u-60 pt-u-75 md:px-u-123"
-            >
-              <div className="relative w-full max-w-u-399 rounded-t-u-20 border-[0.5px] border-white bg-[linear-gradient(180deg,#ffffff_0%,#94b2fc_47%,#7a93d0_100%)] shadow-[0_0_50px_-13px_rgba(255,255,255,0.59)]">
+            {/* La "tableta" azul — Figma: 645×573, radio 25, degradado #1a4dff 28 % → #294296,
+                dos brillos radiales (uno arriba a la derecha con blur 40, otro grande a la
+                izquierda) y dentro el dispositivo claro (399×511, radio 20 arriba) que
+                asoma recortado por la base */}
+            <div className="relative flex h-u-573 w-full items-start justify-center overflow-hidden rounded-u-25 bg-[linear-gradient(180deg,#1a4dff_28%,#294296_100%)] px-u-60 pt-u-75 md:px-u-123">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute aspect-square w-[109%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[20px]"
+                style={{ left: "75%", top: "15%" }}
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute aspect-square w-[169%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[4px]"
+                style={{ left: "-5%", top: "63%" }}
+              />
+              <div className="relative min-h-u-511 w-full max-w-u-399 rounded-t-u-20 border-[0.5px] border-white bg-[linear-gradient(180deg,#ffffff_0%,#94b2fc_47%,#7a93d0_100%)] shadow-[0_0_50px_-13px_rgba(255,255,255,0.59)]">
                 {/* Barra superior con la cámara */}
                 <div className="flex h-u-74 items-center justify-center rounded-t-u-20 bg-white/50">
                   <span className="flex size-u-15 items-center justify-center rounded-full border border-electric">
