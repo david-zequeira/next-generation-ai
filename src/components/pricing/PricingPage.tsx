@@ -8,15 +8,12 @@ import {
   CalendarDays,
   Camera,
   Check,
-  ChevronRight,
   Cpu,
   Globe,
   MessageSquarePlus,
   MessagesSquare,
   Mic,
   Palette,
-  Sparkle,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -32,7 +29,7 @@ import { pricingDicts } from "@/i18n/pricing";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Convierte `**negrita**` del diccionario en <strong>. */
-function Rich({ text, strongClass = "font-semibold text-ink" }: { text: string; strongClass?: string }) {
+function Rich({ text, strongClass = "font-semibold text-black" }: { text: string; strongClass?: string }) {
   return (
     <>
       {text.split("**").map((part, i) =>
@@ -63,179 +60,181 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
   );
 }
 
-/** Cabecera de sección centrada, como en el Figma: etiqueta azul, título tinta, sub. */
-function SectionHead({ eyebrow, titleA, titleB, sub }: { eyebrow: string; titleA: string; titleB?: string; sub?: ReactNode }) {
+/**
+ * Cabecera de sección del Figma «Asenix Planes»: pastilla con borde en
+ * degradado, título Montserrat Bold 52/52 en negro y subtítulo 18 en negro.
+ */
+function SectionHead({ eyebrow, title, sub, subClass }: { eyebrow: string; title: string; sub?: ReactNode; subClass?: string }) {
   return (
-    <Reveal className="mx-auto max-w-3xl text-center">
-      <p className="eyebrow">{eyebrow}</p>
-      <h2 className="mt-5 font-display text-[clamp(1.9rem,4vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] text-ink">
-        {titleA}
-        {titleB && (
-          <>
-            <br />
-            {titleB}
-          </>
-        )}
-      </h2>
-      {sub && <p className="mt-4 text-base leading-relaxed text-ink/75 md:text-[17px]">{sub}</p>}
+    <Reveal className="mx-auto flex flex-col items-center text-center">
+      <p className="eyebrow eyebrow-light">{eyebrow}</p>
+      <h2 className="mt-u-58 max-w-u-736 font-display fs-u-52 lh-u-52 font-bold text-black text-balance">{title}</h2>
+      {sub && <p className={cn("mt-u-26 max-w-u-952 fs-u-18 lh-u-27 text-black", subClass)}>{sub}</p>}
     </Reveal>
   );
 }
 
-/** Celda de la comparativa: check redondo (lima en la columna destacada), aspa, o texto. */
+/** La estrella del Figma (capa «i2», 30×29): el mismo destello de los planes del home. */
+function PlanStar({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden className={className}>
+      <path
+        fill="currentColor"
+        d="M19.514 0.351486C19.6876 -0.117162 20.3124 -0.117162 20.486 0.351486L22.3432 5.4719C24.3914 11.1478 28.8522 15.626 34.5281 17.6741L39.6485 19.514C40.1172 19.6876 40.1172 20.3298 39.6485 20.5034L34.5281 22.3432C28.8522 24.3914 24.3914 28.8522 22.3432 34.5281L20.486 39.6485C20.3124 40.1172 19.6876 40.1172 19.514 39.6485L17.6568 34.5281C15.6086 28.8522 11.1478 24.3914 5.4719 22.3432L0.351486 20.5034C-0.117162 20.3298 -0.117162 19.6876 0.351486 19.514L5.4719 17.6741C11.1478 15.626 15.6086 11.1478 17.6568 5.4719L19.514 0.351486Z"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Celda de la comparativa (Figma): círculo de 24 con el check —en degradado
+ * lima en la columna destacada, azul noche en las otras—, guion, o texto.
+ */
 function CellValue({ value, star }: { value: string; star: boolean }) {
   if (value === "✓")
     return (
       <span
         aria-label="✓"
         className={cn(
-          "mx-auto flex h-5 w-5 items-center justify-center rounded-full",
-          star ? "bg-neon text-ink" : "bg-electric text-white"
+          "mx-auto flex size-u-24 items-center justify-center rounded-full",
+          star ? "bg-[linear-gradient(180deg,#b8f21e_0%,#97ca0f_100%)] text-space" : "bg-space text-white"
         )}
       >
-        <Check className="h-3 w-3" strokeWidth={3} />
+        <Check className="size-u-12" strokeWidth={3} />
       </span>
     );
-  if (value === "—") return <X aria-label="—" className="mx-auto h-3.5 w-3.5 text-ink/70" strokeWidth={2.4} />;
+  if (value === "—") return <span aria-label="—">–</span>;
   return <>{value}</>;
 }
 
 /** Iconos de los módulos, por orden del diccionario. */
 const ADDON_ICONS: LucideIcon[] = [Mic, MessageSquarePlus, MessagesSquare, CalendarDays, Globe, Cpu, Palette, Camera];
 
+/** Orden de las formas de pago en el Figma: sin entrada (recomendado), contado, fraccionado, lo mismo. */
+const PAY_ORDER = [2, 0, 1, 3];
+
 /**
- * /precios — la tarifa completa en el tema claro del Figma «Asenix Planes»:
- * planes, diagnóstico, comparativa, módulos, formas de pago, FAQ y cierre. Los
- * textos siguen viviendo en `src/i18n/pricing.ts`, ES y EN.
+ * /precios — la tarifa completa con las medidas del Figma «Asenix Planes»
+ * (marco 690:14, tema claro): cabecera, tres planes en tarjetas de 377×1169,
+ * la banda del Diagnóstico, la comparativa en su tarjeta, los módulos sobre
+ * fondo lavanda, las cuatro formas de pago unidas por una línea, las dudas
+ * razonables y la tarjeta azul del cierre. Los textos y precios siguen
+ * viviendo en `src/i18n/pricing.ts`, ES y EN.
  */
 export default function PricingPage() {
   const { locale } = useLocale();
   const t = pricingDicts[locale];
+  const es = locale === "es";
 
   return (
     <>
-      <div className="relative min-h-screen overflow-x-clip bg-[#eef0f6] text-ink">
-        {/* Bruma azul muy tenue arriba, como el degradado del Figma */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-[720px] bg-[radial-gradient(60%_50%_at_50%_0%,rgba(148,178,252,0.35),transparent_70%)]"
-        />
+      <div className="relative min-h-screen overflow-x-clip bg-white text-black">
         <Navbar tone="light" />
 
         <main className="relative">
-          {/* ——— Cabecera ——— */}
-          <header className="mx-auto max-w-4xl px-6 pb-16 pt-36 text-center md:pt-44">
-            <Reveal>
-              <p className="eyebrow">{t.header.eyebrow}</p>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <h1 className="mx-auto mt-5 font-display text-[clamp(2.2rem,4.8vw,3.6rem)] font-bold leading-[1.08] tracking-[-0.025em] text-ink">
+          {/* ——— Cabecera (Figma): pastilla, título 52/54 en #0b1226, texto de pago y CTA ——— */}
+          <header className="relative mx-auto flex max-w-[1920px] flex-col items-center px-5 pt-u-201 text-center md:px-10 xl:px-[12.5%]">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 -top-[120px] h-[826px] bg-[linear-gradient(180deg,#ffffff_0%,rgba(240,242,245,0)_65%)]"
+            />
+            <Reveal className="relative flex flex-col items-center">
+              <p className="eyebrow eyebrow-light">{t.header.eyebrow}</p>
+              <h1 className="mt-u-57 max-w-u-946 font-display fs-u-52 lh-u-54 font-bold text-ink text-balance">
                 {t.header.titleA} {t.header.titleB}
               </h1>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-ink/80 md:text-[17px]">
-                <Rich text={t.kit.body} />
+              <p className="mt-u-37 max-w-u-950 fs-u-18 lh-u-22 text-black">
+                <Rich text={t.kit.body} strongClass="font-semibold" />
               </p>
-              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-ink/60">{t.header.lede}</p>
+              <p className="mt-u-16 max-w-u-950 fs-u-15 lh-u-22 text-black/60">{t.header.lede}</p>
+            </Reveal>
+            {/* Figma: pastilla de 337×70 en azul noche, Montserrat 500 20 */}
+            <Reveal delay={0.1} className="relative mt-u-44">
+              <Link
+                href="/contacto"
+                onClick={() => trackEvent("cta_header_precios")}
+                className="inline-flex h-u-70 min-w-u-337 cursor-pointer items-center justify-center rounded-u-25 bg-space px-u-30 font-display fs-u-20 font-medium text-frost transition-colors hover:bg-electric"
+              >
+                {t.header.cta}
+              </Link>
             </Reveal>
           </header>
 
-          {/* ——— Planes ——— */}
-          <section className="mx-auto max-w-6xl px-6">
-            <div className="grid items-stretch gap-6 min-[680px]:grid-cols-2 xl:grid-cols-3">
+          {/* ——— Planes (Figma): tres tarjetas de 377×1169, radio 35, con la etiqueta asomando ——— */}
+          <section className="mx-auto mt-u-160 max-w-[1920px] px-5 md:px-10">
+            <div className="mx-auto grid max-w-u-1190 items-stretch gap-8 min-[680px]:grid-cols-2 xl:grid-cols-3 xl:gap-u-30">
               {t.plans.map((plan, i) => {
                 const star = !!plan.star;
                 const slug = plan.name.toLowerCase();
                 return (
-                  <Reveal key={plan.name} delay={(i % 3) * 0.08} className="h-full">
-                    <article
-                      className={cn(
-                        "group relative flex h-full flex-col rounded-[26px] border bg-white transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5",
-                        star
-                          ? "border-[#cad3ec] shadow-[0_40px_90px_-40px_rgba(26,77,255,0.55)]"
-                          : "border-[#cad3ec] shadow-[0_30px_70px_-45px_rgba(11,18,38,0.35)] hover:shadow-[0_40px_90px_-45px_rgba(26,77,255,0.35)]"
-                      )}
-                    >
-                      {plan.tag && (
-                        <span className="btn-blue absolute right-6 top-0 -translate-y-1/2 rounded-full px-4 py-1.5 font-display text-[11px] font-semibold">
-                          {plan.tag}
-                        </span>
-                      )}
-
-                      {/* Cabecera de la tarjeta */}
-                      <div className="px-7 pb-6 pt-8">
-                        <div className="flex items-center gap-3">
-                          <Sparkle
-                            className={cn(
-                              "h-7 w-7",
-                              star ? "fill-neon text-neon" : i === 1 ? "fill-[#a7b2d1] text-[#a7b2d1]" : "fill-electric text-electric"
-                            )}
-                            strokeWidth={1.2}
-                          />
-                          <h3 className="font-display text-[26px] font-bold text-ink">{plan.name}</h3>
+                  <Reveal key={plan.name} delay={(i % 3) * 0.08} className="relative h-full">
+                    {plan.tag && (
+                      // Figma: 206×33, radio 25, azul de marca, SemiBold 14 — asoma por el borde superior
+                      <span className="absolute top-[calc(-1*max(10px,17*var(--u)))] left-u-40 z-10 inline-flex h-u-33 items-center rounded-u-25 bg-electric px-u-21 font-display fs-u-14 font-semibold text-[#eef2ff]">
+                        {plan.tag}
+                      </span>
+                    )}
+                    <article className="group flex h-full flex-col overflow-hidden rounded-u-35 bg-white shadow-[0_0_45px_10px_rgba(16,26,62,0.2)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5">
+                      {/* Cabecera blanca: estrella de 30, nombre Bold 30, para quién 15/18 */}
+                      <div className="min-h-u-164 px-u-38 pb-u-24 pt-u-40">
+                        <div className="flex items-center gap-u-24">
+                          <PlanStar className={cn("size-u-30 shrink-0", star ? "text-neon" : "text-electric")} />
+                          <h3 className="font-display fs-u-30 leading-none font-bold text-black">{plan.name}</h3>
                         </div>
-                        <p className="mt-3 min-h-10 text-[13px] leading-relaxed text-ink/70">{plan.who}</p>
+                        <p className="mt-u-16 max-w-u-298 fs-u-15 lh-u-18 text-black">{plan.who}</p>
                       </div>
 
-                      {/* Bloque de precio: azul en el destacado, gris azulado en el resto */}
+                      {/* Cuerpo: azul en el destacado, lavanda→blanco en el resto */}
                       <div
                         className={cn(
-                          "flex flex-1 flex-col rounded-b-[26px] px-7 pb-8 pt-7",
-                          star ? "card-blue text-white" : "bg-[#eef1fa] text-ink"
+                          "flex flex-1 flex-col px-u-32 pb-u-58 pt-u-57",
+                          star ? "bg-[linear-gradient(180deg,#3b67ff_0%,#29459f_100%)] text-white" : "bg-[linear-gradient(180deg,#d5dae9_0%,#ffffff_62%)] text-black"
                         )}
                       >
                         <div className="text-center">
-                          <p className="font-display text-[42px] font-bold leading-none tracking-[-0.02em]">
-                            {plan.mrr}
-                          </p>
-                          <p className={cn("mt-2 font-display text-[10px] font-medium uppercase tracking-[0.2em]", star ? "text-white/85" : "text-ink/60")}>
-                            {plan.mrrNote.replace(/^\/?/, "")}
-                          </p>
+                          <p className="font-display fs-u-48 font-bold leading-none tracking-[0.02em]">{plan.mrr}</p>
+                          <p className="mt-u-10 font-display fs-u-12 font-medium uppercase tracking-[0.07em]">{plan.mrrNote.replace(/^\/?/, "")}</p>
                         </div>
 
-                        <p className={cn("mt-6 text-[15px]", star ? "text-white" : "text-ink")}>
-                          <span className={cn("font-display font-bold", star ? "text-white" : "text-electric")}>
+                        <p className="mt-u-45 font-display fs-u-18 leading-none">
+                          <span className={cn("font-extrabold", star ? "text-neon" : "text-electric")}>
                             {plan.setupPrefix ? `${plan.setupPrefix} ` : ""}
                             {plan.setup}
                           </span>{" "}
-                          <span className={star ? "text-white/85" : "text-ink/70"}>{plan.setupNote}</span>
+                          <span className={cn("font-medium", star ? "text-neon" : "text-electric")}>{plan.setupNote}</span>
                         </p>
-                        <p className="mt-3 rounded-lg bg-white px-3.5 py-2.5 text-[12px] leading-snug text-electric">
-                          <Rich text={plan.kitline} strongClass="font-semibold text-electric" />
+                        {/* Figma: caja blanca 317×70, radio 5, texto 14/16 azul con «0 € de entrada» en negro */}
+                        <p className="mt-u-12 rounded-u-5 bg-white px-u-27 py-u-12 fs-u-14 lh-u-16 font-medium text-electric">
+                          <Rich text={plan.kitline} strongClass="font-medium text-black" />
                         </p>
 
-                        <ul className="mt-6 flex flex-1 flex-col gap-3">
+                        <ul className="mt-u-20 flex flex-1 flex-col gap-u-14">
                           {plan.features.map((f) => (
-                            <li key={f.text} className="flex gap-2.5 text-[13px] leading-snug">
-                              <Check
-                                className={cn("mt-0.5 h-4 w-4 shrink-0", star ? "text-neon" : "text-electric")}
-                                strokeWidth={3}
-                              />
-                              <span className={star ? "text-white/90" : "text-ink/75"}>
-                                <Rich text={f.text} strongClass={cn("font-semibold", star ? "text-white" : "text-ink")} />
+                            <li key={f.text} className="flex gap-u-13 fs-u-14 lh-u-17">
+                              <Check className={cn("mt-u-2 size-u-14 shrink-0", star ? "text-neon" : i === 0 ? "text-electric" : "text-space")} strokeWidth={3} />
+                              <span className={star ? "text-white" : "text-black"}>
+                                <Rich text={f.text} strongClass={cn("font-semibold", star ? "text-white" : "text-black")} />
                               </span>
                             </li>
                           ))}
                         </ul>
 
-                        <div className="mt-7 flex flex-wrap gap-1.5">
+                        {/* Figma: pastillas de 30 px en azul noche, 12 px blanco */}
+                        <div className="mt-u-40 flex flex-wrap gap-u-8">
                           {plan.quota.map((q) => (
-                            <span key={q} className="rounded-full bg-[#101a3e] px-3 py-1 text-[11px] text-white">
+                            <span key={q} className="inline-flex h-u-30 items-center rounded-u-25 bg-space px-u-14 fs-u-12 text-white">
                               {q}
                             </span>
                           ))}
                         </div>
 
-                        {/* El slug del plan viaja en la URL: /contacto lo preselecciona */}
+                        {/* Figma: 226×57, radio 25, azul de marca, SemiBold 16. El slug del plan viaja a /contacto */}
                         <Link
                           href={`/contacto?plan=${slug === "starter" ? "arranque" : slug}`}
                           onClick={() => trackEvent(`cta_plan_${slug}`)}
                           className={cn(
-                            "mt-7 block rounded-full py-3.5 text-center font-display text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5",
-                            star
-                              ? "bg-white text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] hover:bg-[#f2f5ff]"
-                              : "btn-blue"
+                            "mx-auto mt-u-40 flex h-u-57 w-u-226 max-w-full items-center justify-center rounded-u-25 font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5",
+                            star ? "bg-white text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] hover:bg-[#f2f5ff]" : "bg-electric text-white hover:bg-[#2557ff]"
                           )}
                         >
                           {plan.cta}
@@ -247,68 +246,69 @@ export default function PricingPage() {
               })}
             </div>
 
+            {/* Figma: «¿Necesitas algo personalizado? Habla con nuestro equipo →», Medium 20 */}
             <Reveal delay={0.2}>
-              <p className="mt-14 text-center text-[15px] text-ink">
-                {locale === "es" ? "¿Necesitas algo personalizado?" : "Need something custom?"}{" "}
-                <Link
-                  href="/contacto"
-                  className="group inline-flex items-center gap-1 text-electric underline decoration-electric/40 underline-offset-4 hover:decoration-electric"
-                >
-                  {locale === "es" ? "Habla con nuestro equipo" : "Talk to our team"}
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              <p className="mt-u-100 text-center font-display fs-u-20 lh-u-24 font-medium text-black">
+                {es ? "¿Necesitas algo personalizado?" : "Need something custom?"}{" "}
+                <Link href="/contacto" className="group inline-flex items-center gap-1 text-electric transition-colors hover:text-ink">
+                  {es ? "Habla con nuestro equipo" : "Talk to our team"}
+                  <ArrowRight className="size-u-18 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </p>
             </Reveal>
           </section>
 
-          {/* ——— Diagnóstico ——— */}
-          <section className="mx-auto max-w-6xl px-6 pt-10">
+          {/* ——— Banda del Diagnóstico (Figma): 1268×220 en #d5dae9, radio 25 ——— */}
+          <section className="mx-auto mt-u-56 max-w-[1920px] px-5 md:px-10">
             <Reveal>
-              <div className="grid gap-8 rounded-[26px] bg-[#d5dae9] px-8 py-10 md:grid-cols-[240px_1fr] md:items-center md:px-12">
-                <div className="text-center">
-                  <p className="font-display text-[34px] font-bold leading-none text-electric">0 €</p>
-                  <p className="mt-1 font-display text-[13px] font-semibold text-ink">
-                    {locale === "es" ? "Diagnóstico de IA" : "AI Diagnostic"}
-                  </p>
+              <div className="mx-auto grid max-w-u-1268 items-center gap-8 rounded-u-25 bg-[#d5dae9] px-6 py-u-40 md:grid-cols-[minmax(0,320fr)_minmax(0,948fr)] md:px-u-60">
+                <div className="flex flex-col items-center text-center">
+                  <p className="font-display fs-u-38 font-semibold leading-none text-electric">0 €</p>
+                  <p className="mt-u-8 font-display fs-u-15 font-semibold text-black">{es ? "Diagnóstico de IA" : "AI Diagnostic"}</p>
+                  {/* Figma: 183×58, radio 50, azul con borde #94b2fc, SemiBold 16 */}
                   <Link
                     href="/contacto"
                     onClick={() => trackEvent("cta_diagnostico_precios")}
-                    className="btn-blue mt-4 inline-flex rounded-full px-7 py-2.5 font-display text-sm font-semibold"
+                    className="mt-u-20 inline-flex h-u-58 min-w-u-183 items-center justify-center rounded-full border border-pulse bg-electric px-u-30 font-display fs-u-16 font-semibold text-white transition-colors hover:bg-[#2557ff]"
                   >
-                    {locale === "es" ? "Contactar" : "Contact"}
+                    {es ? "Contactar" : "Contact"}
                   </Link>
                 </div>
-                <div>
-                  <p className="font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-electric">{t.diag.badge}</p>
-                  <p className="mt-2 text-[15px] leading-relaxed text-ink/80">
-                    <Rich text={t.diag.body} />
-                  </p>
-                </div>
+                <p className="max-w-u-675 fs-u-18 lh-u-23 text-black">
+                  <Rich text={t.diag.body} strongClass="font-semibold" />
+                </p>
               </div>
             </Reveal>
 
-            {/* Dos notas: la cuenta antes que la tarifa, y la voz en lista de espera */}
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
+            {/* Dos notas que el Figma no dibuja pero que sostienen decisiones de tarifa:
+                la cuenta antes que el precio, y la voz en lista de espera */}
+            <div className="mx-auto mt-u-24 grid max-w-u-1268 gap-6 md:grid-cols-2">
               <Reveal delay={0.05}>
-                <div className="flex h-full flex-col rounded-[22px] border border-[#cad3ec] bg-white p-6">
-                  <p className="font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-electric">{t.calc.badge}</p>
-                  <p className="mt-3 flex-1 text-[14px] leading-relaxed text-ink/75">
+                <div
+                  style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
+                  className="ring-conic flex h-full flex-col rounded-u-25 bg-white px-u-36 py-u-32 shadow-[0_0_15px_rgba(0,0,0,0.12)]"
+                >
+                  <p className="font-display fs-u-14 font-bold uppercase tracking-[0.1em] text-electric">{t.calc.badge}</p>
+                  <p className="mt-u-12 flex-1 fs-u-15 lh-u-22 text-black">
                     <Rich text={t.calc.body} />
                   </p>
                   <Link
                     href="/calculadora"
                     onClick={() => trackEvent("cta_calculadora_precios")}
-                    className="group mt-4 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-electric"
+                    className="group mt-u-16 inline-flex items-center gap-1.5 font-display fs-u-15 font-semibold text-electric"
                   >
                     {t.calc.cta}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                    <ArrowRight className="size-u-16 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </Link>
                 </div>
               </Reveal>
               <Reveal delay={0.1}>
-                <div className="h-full rounded-[22px] border border-[#cad3ec] bg-white p-6">
-                  <p className="font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/55">{t.voice.badge}</p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-ink/75">
+                <div
+                  style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
+                  className="ring-conic h-full rounded-u-25 bg-white px-u-36 py-u-32 shadow-[0_0_15px_rgba(0,0,0,0.12)]"
+                >
+                  <p className="font-display fs-u-14 font-bold uppercase tracking-[0.1em] text-black/55">{t.voice.badge}</p>
+                  <p className="mt-u-12 fs-u-15 lh-u-22 text-black">
                     <Rich text={t.voice.body} />
                   </p>
                 </div>
@@ -316,23 +316,26 @@ export default function PricingPage() {
             </div>
           </section>
 
-          {/* ——— Comparativa ——— */}
-          <section className="mx-auto max-w-6xl px-6 pt-28 md:pt-36">
-            <SectionHead eyebrow={t.compare.eyebrow} titleA={t.compare.title} sub={t.compare.sub} />
-            <Reveal delay={0.1} className="mt-12">
-              <div className="overflow-x-auto rounded-[26px] border border-pulse bg-white shadow-[0_30px_80px_-50px_rgba(26,77,255,0.5)]">
-                <table className="w-full min-w-[760px] border-collapse text-sm">
+          {/* ——— Comparativa (Figma): tarjeta de 1440×1128, radio 35, columna Starter destacada ——— */}
+          <section className="mx-auto mt-u-96 max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+            <SectionHead eyebrow={t.compare.eyebrow} title={t.compare.title} sub={t.compare.sub} subClass="lh-u-22" />
+            <Reveal delay={0.1} className="mt-u-121">
+              <div
+                style={{ ["--ring-w" as string]: "1.3px", ["--ring-bg" as string]: "linear-gradient(0deg, #9babd4, #c7d7ff)" }}
+                className="ring-conic overflow-x-auto rounded-u-35 bg-white/50 shadow-[0_0_20px_rgba(0,0,0,0.2)]"
+              >
+                <table className="w-full min-w-[760px] border-collapse">
                   <thead>
                     <tr>
-                      <th className="w-[36%] px-8 py-6 text-left font-display text-[17px] font-semibold text-ink">
-                        {locale === "es" ? "Característica" : "Feature"}
+                      <th className="w-[36%] px-u-86 pb-u-32 pt-u-41 text-left font-display fs-u-24 lh-u-30 font-semibold text-black">
+                        {es ? "Característica" : "Feature"}
                       </th>
                       {t.compare.cols.map((col, i) => (
                         <th
                           key={col}
                           className={cn(
-                            "px-4 py-6 text-center font-display text-[17px] font-semibold text-ink",
-                            i === 0 && "bg-[#eef1ff]"
+                            "px-4 pb-u-32 pt-u-41 text-center font-display fs-u-24 lh-u-30 text-black",
+                            i === 0 ? "bg-cloud/20 font-semibold" : "font-bold"
                           )}
                         >
                           {col}
@@ -340,23 +343,27 @@ export default function PricingPage() {
                       ))}
                     </tr>
                     <tr aria-hidden>
-                      <td colSpan={4} className="px-8">
-                        <div className="h-px bg-pulse" />
+                      <td colSpan={4} className="px-u-86">
+                        <div className="h-px bg-[rgba(154,165,192,0.8)]" />
                       </td>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-[linear-gradient(180deg,#ffffff_0%,#ecefff_40%)]">
                     {t.compare.rows.map((row) => (
-                      <tr key={row.label} className="transition-colors hover:bg-[#f6f7fd]">
-                        <th className="px-8 py-2.5 text-left font-display text-[13px] font-semibold text-ink">{row.label}</th>
+                      <tr key={row.label} className="transition-colors hover:bg-cloud/10">
+                        <th className="h-u-45 px-u-86 text-left font-display fs-u-16 font-bold text-black">
+                          {/* Figma: cuadradito de 11 px delante de cada característica */}
+                          <span className="mr-u-22 inline-block size-u-11 align-middle border-[1.3px] border-[rgba(115,125,149,0.8)]" aria-hidden />
+                          {row.label}
+                        </th>
                         {row.cells.map((cell, ci) => (
                           <td
                             key={ci}
                             className={cn(
-                              "px-4 py-2.5 text-center text-[13px]",
-                              ci === 0 && "bg-[#eef1ff]",
-                              row.strong ? "font-semibold text-ink" : "text-ink/75",
-                              row.accent && "font-semibold text-electric"
+                              "h-u-45 px-4 text-center fs-u-16",
+                              ci === 0 && "bg-cloud/20",
+                              row.strong ? "font-bold text-black" : "font-medium text-black",
+                              row.accent && "font-bold text-electric"
                             )}
                           >
                             <CellValue value={cell} star={ci === 0} />
@@ -365,7 +372,7 @@ export default function PricingPage() {
                       </tr>
                     ))}
                     <tr aria-hidden>
-                      <td colSpan={4} className="py-3" />
+                      <td colSpan={4} className="py-u-24" />
                     </tr>
                   </tbody>
                 </table>
@@ -373,37 +380,39 @@ export default function PricingPage() {
             </Reveal>
           </section>
 
-          {/* ——— Módulos ——— */}
-          <section className="mt-28 bg-gradient-to-b from-[#ecefff] to-[#d5dae9] py-24 md:mt-36 md:py-28">
-            <div className="mx-auto max-w-6xl px-6">
-              <SectionHead eyebrow={t.addons.eyebrow} titleA={`${t.addons.titleA} ${t.addons.titleB}`} sub={t.addons.sub} />
-              <div className="mt-14 grid gap-5 min-[680px]:grid-cols-2 lg:grid-cols-3">
+          {/* ——— Módulos (Figma): fondo lavanda, tarjetas de 459×244 con icono azul y flecha ——— */}
+          <section className="mt-u-153 bg-[linear-gradient(180deg,#f4f6ff_0%,rgba(213,218,233,0.74)_100%)] pb-u-170 pt-u-105">
+            <div className="mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+              <SectionHead eyebrow={t.addons.eyebrow} title={`${t.addons.titleA} ${t.addons.titleB}`} sub={t.addons.sub} />
+              <div className="mt-u-90 grid gap-6 min-[680px]:grid-cols-2 lg:grid-cols-3 lg:gap-u-32">
                 {t.addons.items.map((addon, i) => {
-                  const Icon = ADDON_ICONS[i] ?? Sparkle;
+                  const Icon = ADDON_ICONS[i] ?? Cpu;
                   return (
                     <Reveal key={`${addon.name}-${i}`} delay={(i % 3) * 0.07} className="h-full">
-                      <div className="flex h-full flex-col rounded-[22px] border border-[#cad3ec] bg-white p-6 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(26,77,255,0.5)]">
-                        <div className="flex items-start justify-between gap-4">
-                          <h4 className="font-display text-[17px] font-bold leading-tight text-ink">
-                            {addon.name}
-                            {addon.note && <span className="block text-sm font-normal text-ink/60">{addon.note.replace(/^·\s*/, "")}</span>}
-                          </h4>
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-electric text-white">
-                            <Icon className="h-4.5 w-4.5" strokeWidth={2} />
-                          </span>
-                        </div>
-                        <p className="mt-3 flex-1 text-[12.5px] leading-relaxed text-ink/70">{addon.desc}</p>
-                        <div className="mt-5 flex items-end justify-between gap-3">
-                          <p className="font-display text-[18px] font-semibold text-ink">
+                      <div
+                        style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
+                        className="ring-conic relative flex h-full min-h-u-244 flex-col rounded-u-25 bg-white px-u-36 pb-u-33 pt-u-41 shadow-[0_0_15px_rgba(0,0,0,0.2)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1"
+                      >
+                        {/* Figma: icono de 57×57, radio 15, degradado azul, arriba a la derecha */}
+                        <span className="absolute right-u-25 top-u-37 flex size-u-57 items-center justify-center rounded-u-15 bg-[linear-gradient(180deg,#1a4dff_0%,#1036ba_100%)] text-white">
+                          <Icon className="size-u-25" strokeWidth={2} />
+                        </span>
+                        <h4 className="max-w-u-297 font-display fs-u-22 lh-u-24 font-bold text-black">
+                          {addon.name}
+                          {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
+                        </h4>
+                        <p className="mt-u-16 max-w-u-388 flex-1 fs-u-15 lh-u-17 text-black">{addon.desc}</p>
+                        <div className="mt-u-20 flex items-end justify-between gap-3">
+                          <p className="font-display fs-u-25 lh-u-30 font-semibold text-black">
                             {addon.price && <span>{addon.price} </span>}
                             {addon.tail && <span className="text-electric">{addon.tail.replace(/^·\s*/, "")}</span>}
                           </p>
                           <Link
                             href="/contacto"
-                            className="inline-flex shrink-0 items-center gap-0.5 text-[11px] font-medium text-electric hover:underline"
+                            aria-label={es ? `Agregar ${addon.name}` : `Add ${addon.name}`}
+                            className="inline-flex shrink-0 items-center text-[#556a9e] transition-transform hover:translate-x-0.5"
                           >
-                            {locale === "es" ? "Agregar" : "Add"}
-                            <ChevronRight className="h-3 w-3" strokeWidth={2.2} />
+                            <ArrowRight className="size-u-26" strokeWidth={2} />
                           </Link>
                         </div>
                       </div>
@@ -414,42 +423,49 @@ export default function PricingPage() {
             </div>
           </section>
 
-          {/* ——— Formas de pago: cuatro nodos unidos por una línea ——— */}
-          <section className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-            <SectionHead eyebrow={t.pay.eyebrow} titleA={t.pay.titleA} titleB={t.pay.titleB} sub={t.pay.sub} />
-            <div className="relative mt-14 grid gap-8 min-[680px]:grid-cols-2 xl:grid-cols-4 xl:gap-6">
-              <div aria-hidden className="absolute left-[12%] right-[12%] top-[30px] hidden h-px bg-pulse xl:block" />
-              {t.pay.items.map((item, i) => (
-                <Reveal key={item.k} delay={(i % 4) * 0.08} className="relative">
-                  <div className="relative mx-auto flex h-[60px] max-w-[250px] flex-col items-center justify-center rounded-full border border-electric bg-[#d5dae9] px-6">
-                    <p className="font-display text-[19px] font-bold leading-none text-electric">{item.title}</p>
-                    <p className="mt-1 text-[11px] text-ink/80">{item.k}</p>
-                  </div>
-                  <div className="mx-auto mt-6 max-w-[250px]">
-                    <p className="text-[12.5px] leading-relaxed text-ink/70">{item.body}</p>
-                    <p className="mt-2 font-display text-[12.5px] font-bold text-ink">{item.foot}</p>
-                  </div>
-                </Reveal>
-              ))}
+          {/* ——— Formas de pago (Figma): cuatro pastillas de 295×92 unidas por una línea azul ——— */}
+          <section className="mx-auto max-w-[1920px] px-5 pt-u-146 md:px-10 xl:px-[12.5%]">
+            <SectionHead eyebrow={t.pay.eyebrow} title={`${t.pay.titleA} ${t.pay.titleB}`} sub={t.pay.sub} />
+            <div className="relative mx-auto mt-u-93 grid max-w-u-1420 gap-10 min-[680px]:grid-cols-2 xl:grid-cols-4 xl:gap-u-73">
+              {PAY_ORDER.map((idx, i) => {
+                const item = t.pay.items[idx];
+                return (
+                  <Reveal key={item.k} delay={i * 0.08} className="relative">
+                    {i < PAY_ORDER.length - 1 && (
+                      <span aria-hidden className="absolute right-[calc(-1*max(44px,73*var(--u)))] top-u-47 hidden h-px w-u-73 bg-electric xl:block" />
+                    )}
+                    <div className="mx-auto flex h-u-92 w-full max-w-u-295 flex-col items-center justify-center rounded-full border border-electric bg-[#d5dae9] px-4">
+                      <p className="font-display fs-u-30 font-bold leading-none text-electric">{item.title}</p>
+                      <p className="mt-u-4 fs-u-16 font-medium leading-none text-black">{item.k}</p>
+                    </div>
+                    <div className="mx-auto mt-u-33 max-w-u-295">
+                      {/* Figma: las dos primeras explicaciones en SemiBold, las otras en Regular */}
+                      <p className={cn("fs-u-16 lh-u-21 text-black", i < 2 && "font-semibold")}>{item.body}</p>
+                      <p className="mt-u-6 font-display fs-u-16 lh-u-21 font-bold text-void">{item.foot}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
           </section>
 
-          {/* ——— FAQ ——— */}
-          <section className="mx-auto max-w-3xl px-6 pb-24">
-            <SectionHead eyebrow={t.faq.eyebrow} titleA={`${t.faq.titleA} ${t.faq.titleB}`} />
-            <Reveal delay={0.1} className="mt-10 space-y-3">
+          {/* ——— Dudas razonables (Figma): filas de 704×80, radio 25, borde en degradado ——— */}
+          <section className="mx-auto max-w-[1920px] px-5 pt-u-220 md:px-10 xl:px-[12.5%]">
+            <SectionHead eyebrow={t.faq.eyebrow} title={`${t.faq.titleA} ${t.faq.titleB}`} />
+            <Reveal delay={0.1} className="mx-auto mt-u-83 flex max-w-u-704 flex-col gap-u-13">
               {t.faq.items.map((item) => (
                 <details
                   key={item.q}
-                  className="group/faq rounded-[22px] border border-pulse bg-[#e9ecf4] px-6 py-4 transition-colors open:bg-white"
+                  style={{ ["--ring-w" as string]: "1.3px", ["--ring-bg" as string]: "linear-gradient(0deg, #9babd4, #c7d7ff)" }}
+                  className="ring-conic group/faq rounded-u-25 bg-white/50 px-u-41 py-u-20 transition-colors open:bg-white"
                 >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display text-[13px] font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display fs-u-16 lh-u-23 font-bold text-black [&::-webkit-details-marker]:hidden">
                     {item.q}
-                    <span aria-hidden className="shrink-0 text-xl font-medium leading-none text-electric transition-transform duration-300 group-open/faq:rotate-45">
+                    <span aria-hidden className="shrink-0 fs-u-42 font-medium leading-none text-electric transition-transform duration-300 group-open/faq:rotate-45">
                       +
                     </span>
                   </summary>
-                  <p className="mt-3 max-w-[70ch] text-sm leading-relaxed text-ink/75">
+                  <p className="mt-u-14 max-w-[70ch] fs-u-15 lh-u-22 text-black/80">
                     <Rich text={item.a} />
                   </p>
                 </details>
@@ -457,30 +473,32 @@ export default function PricingPage() {
             </Reveal>
           </section>
 
-          {/* ——— CTA final: la tarjeta azul ——— */}
-          <section id="contacto" className="mx-auto max-w-5xl px-6 pb-28">
+          {/* ——— CTA final (Figma): tarjeta de 1197×460, radio 35, degradado #3b67ff→#29459f ——— */}
+          <section id="contacto" className="mx-auto mt-u-85 max-w-[1920px] px-5 pb-u-200 md:px-10">
             <Reveal>
-              <div className="card-blue rounded-[28px] px-8 py-14 text-center text-white shadow-[0_50px_100px_-50px_rgba(26,77,255,0.8)] md:py-16">
-                <h2 className="mx-auto font-display text-[clamp(1.8rem,3.6vw,2.6rem)] font-bold leading-[1.1] tracking-[-0.02em]">
+              <div className="mx-auto flex max-w-u-1197 flex-col items-center rounded-u-35 bg-[linear-gradient(180deg,#3b67ff_0%,#29459f_100%)] px-6 pb-u-58 pt-u-52 text-center text-white">
+                <p className="eyebrow eyebrow-white">{t.final.eyebrow}</p>
+                <h2 className="mt-u-34 max-w-u-766 font-display fs-u-40 lh-u-40 font-bold text-white text-balance">
                   {t.final.titleA} {t.final.titleB}
                 </h2>
-                <p className="mx-auto mt-4 max-w-xl text-[13px] leading-relaxed text-white/80">{t.final.sub}</p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <p className="mt-u-46 max-w-u-772 fs-u-18 lh-u-23 text-white">{t.final.sub}</p>
+                {/* Figma: 223×69, radio 50, blanco con borde #94b2fc, SemiBold 15 azul */}
+                <div className="mt-u-50 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-u-20">
                   <Link
                     href="/contacto"
                     onClick={() => trackEvent("cta_final_precios")}
-                    className="inline-flex min-w-[200px] items-center justify-center rounded-full bg-white px-8 py-3.5 font-display text-sm font-semibold text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:-translate-y-0.5"
+                    className="inline-flex h-u-69 min-w-u-223 items-center justify-center rounded-full border border-pulse bg-white px-u-30 font-display fs-u-15 font-semibold text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:-translate-y-0.5"
                   >
                     {t.final.cta}
                   </Link>
                   <Link
                     href="/calculadora"
-                    className="inline-flex min-w-[200px] items-center justify-center rounded-full border border-white/70 px-8 py-3.5 font-display text-sm font-semibold text-white transition-colors duration-300 hover:bg-white/10"
+                    className="inline-flex h-u-69 min-w-u-223 items-center justify-center rounded-full border border-white/70 px-u-30 font-display fs-u-15 font-semibold text-white transition-colors duration-300 hover:bg-white/10"
                   >
                     {t.calc.cta}
                   </Link>
                 </div>
-                <p className="mt-8 text-[11px] text-white/70">{t.final.mini}</p>
+                <p className="mt-u-25 fs-u-14 lh-u-23 text-mint">{t.final.mini}</p>
               </div>
             </Reveal>
           </section>

@@ -141,8 +141,10 @@ html {
 @utility w-u-* {
   width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
+/* Anchos máximos: con el mismo suelo, para que en móvil un texto de 946 px
+   del Figma ocupe la columna entera en vez de quedarse en 185 px. */
 @utility max-w-u-* {
-  max-width: calc(--value(integer) * var(--u));
+  max-width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
 }
 @utility size-u-* {
   width: max(calc(--value(integer) * 0.6px), calc(--value(integer) * var(--u)));
@@ -433,6 +435,24 @@ body {
     background:
       linear-gradient(var(--color-void), var(--color-void)) padding-box,
       linear-gradient(128deg, #1a4dff 0%, #102e99 100%) border-box;
+  }
+  /* La misma pastilla sobre fondo claro (/precios): caja blanca, borde en degradado */
+  .eyebrow-light {
+    border-color: transparent;
+    background:
+      linear-gradient(#ffffff, #ffffff) padding-box,
+      linear-gradient(124deg, #1a4dff 0%, #102e99 100%) border-box;
+  }
+  .eyebrow-light::after {
+    background: radial-gradient(70% 220% at 50% -80%, rgba(26, 77, 255, 0.35), rgba(46, 107, 255, 0.06) 70%, transparent 100%);
+  }
+  /* Sobre la tarjeta azul del cierre: borde y texto blancos, sin brillo */
+  .eyebrow-white {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  .eyebrow-white::after {
+    display: none;
   }
   .eyebrow-muted {
     color: var(--color-mist);

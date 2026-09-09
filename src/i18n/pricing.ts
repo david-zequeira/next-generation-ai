@@ -80,7 +80,7 @@ export type PricingPlan = {
 
 export type PricingDict = {
   back: string;
-  header: { eyebrow: string; titleA: string; titleB: string; lede: string };
+  header: { eyebrow: string; titleA: string; titleB: string; lede: string; cta: string };
   kit: { badge: string; body: string };
   plans: PricingPlan[];
   /** Puente a /calculadora: la cuenta antes que la tarifa, para quien duda. */
@@ -120,6 +120,7 @@ const es: PricingDict = {
     titleA: "Elige por dónde",
     titleB: "quieres empezar",
     lede: "Un asistente que atiende en tu web y en tu WhatsApp, responde con la información real de tu negocio y cierra la cita en tu agenda. Tres niveles, según de dónde partas.",
+    cta: "Empezar con el diagnóstico gratis",
   },
   kit: {
     badge: "Tres formas de pagarlo",
@@ -303,6 +304,7 @@ const en: PricingDict = {
     titleA: "Choose where",
     titleB: "you want to start",
     lede: "An assistant that answers on your website and your WhatsApp, replies with your business's real information and books the appointment in your calendar. Three levels, depending on where you're starting from.",
+    cta: "Start with the free diagnostic",
   },
   kit: {
     badge: "Three ways to pay",

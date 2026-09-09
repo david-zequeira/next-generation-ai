@@ -1,0 +1,15 @@
+{
+  "_doc": "Bandas verticales del marco 690:14 (/precios, «Asenix Planes»), y relativo al marco en px.",
+  "bands": [
+    { "name": "Header", "y0": 0, "y1": 120, "component": "src/components/layout/Navbar.tsx" },
+    { "name": "Cabecera", "y0": 120, "y1": 681, "component": "src/components/pricing/PricingPage.tsx (cabecera)" },
+    { "name": "Planes", "y0": 681, "y1": 2007, "component": "src/components/pricing/PricingPage.tsx (planes)" },
+    { "name": "Banda Diagnóstico", "y0": 2007, "y1": 2323, "component": "src/components/pricing/PricingPage.tsx (diagnóstico)" },
+    { "name": "Comparativa", "y0": 2323, "y1": 3851, "component": "src/components/pricing/PricingPage.tsx (comparativa)" },
+    { "name": "Módulos", "y0": 3851, "y1": 5141, "component": "src/components/pricing/PricingPage.tsx (módulos)" },
+    { "name": "Formas de pago", "y0": 5141, "y1": 6380, "component": "src/components/pricing/PricingPage.tsx (pago)" },
+    { "name": "Dudas razonables", "y0": 6380, "y1": 7181, "component": "src/components/pricing/PricingPage.tsx (FAQ)" },
+    { "name": "CTA final", "y0": 7181, "y1": 7840, "component": "src/components/pricing/PricingPage.tsx (cta)" },
+    { "name": "Hablemos y pie", "y0": 7840, "y1": 8640, "component": "src/components/sections/FinalCTA.tsx + Footer" }
+  ]
+}

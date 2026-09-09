@@ -40,6 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# figma: extracción del home (regenerable con npm run figma:pull)
-/docs/figma/home/raw.json
-/docs/figma/home/fills/
+# figma: extracciones (regenerables con npm run figma:pull)
+/docs/figma/*/raw.json
+/docs/figma/*/fills/
+/docs/figma/*/png/*.png
+!/docs/figma/home/png/*.png

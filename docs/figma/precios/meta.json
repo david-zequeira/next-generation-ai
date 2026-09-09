@@ -1,0 +1,326 @@
+{
+  "fileKey": "IxRzkKKPa5XStlUI6UnpBv",
+  "rootId": "690:14",
+  "fileName": "Asenix Web",
+  "rootName": "Asenix Planes",
+  "lastModified": "2026-09-09T07:34:33Z",
+  "fetchedAt": "2026-09-09T10:01:07.121Z",
+  "rootBBox": {
+    "x": 9050,
+    "y": 366,
+    "width": 1920,
+    "height": 9086
+  },
+  "sections": [
+    {
+      "order": "01",
+      "id": "band:header",
+      "name": "Header",
+      "slug": "header",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/layout/Navbar.tsx",
+      "bbox": {
+        "x": 9050,
+        "y": 366,
+        "width": 1920,
+        "height": 120
+      },
+      "members": [
+        "693:2252",
+        "700:2755",
+        "693:2249",
+        "693:2245",
+        "700:2756",
+        "700:2749",
+        "700:2718"
+      ],
+      "png": "png/01-header.png"
+    },
+    {
+      "order": "02",
+      "id": "band:cabecera",
+      "name": "Cabecera",
+      "slug": "cabecera",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (cabecera)",
+      "bbox": {
+        "x": 9050,
+        "y": 486,
+        "width": 1920,
+        "height": 561
+      },
+      "members": [
+        "1127:2295",
+        "1170:1054",
+        "1170:1056",
+        "690:55",
+        "690:54",
+        "1203:2853",
+        "1168:1048",
+        "1168:1049",
+        "717:19848",
+        "717:19849"
+      ],
+      "png": "png/02-cabecera.png"
+    },
+    {
+      "order": "03",
+      "id": "band:planes",
+      "name": "Planes",
+      "slug": "planes",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (planes)",
+      "bbox": {
+        "x": 9050,
+        "y": 1047,
+        "width": 1920,
+        "height": 1326
+      },
+      "members": [
+        "1146:33",
+        "1139:4132",
+        "1139:4133",
+        "1146:98",
+        "1139:3968",
+        "1117:1562",
+        "1146:78",
+        "1139:3962",
+        "1117:1556",
+        "1139:3960",
+        "1117:1554",
+        "1146:104",
+        "1146:34",
+        "1139:3916",
+        "1117:1510",
+        "1146:103",
+        "1139:3914",
+        "1117:1508",
+        "1146:105",
+        "1146:102",
+        "1117:1507",
+        "1139:3915",
+        "1117:1509",
+        "1146:106",
+        "1146:107",
+        "1139:3961",
+        "1117:1555",
+        "1146:39",
+        "1173:1098",
+        "1173:1102",
+        "1173:1106",
+        "700:11020",
+        "1173:1110",
+        "1173:1114",
+        "1173:1118",
+        "1173:1122",
+        "1146:108",
+        "1146:109",
+        "1146:114",
+        "1146:113",
+        "1146:112",
+        "1146:110",
+        "1146:117",
+        "1146:116",
+        "1146:111",
+        "1146:115",
+        "1139:3917",
+        "1117:1511",
+        "1148:27",
+        "730:24985"
+      ],
+      "png": "png/03-planes.png"
+    },
+    {
+      "order": "04",
+      "id": "band:banda-diagnostico",
+      "name": "Banda Diagnóstico",
+      "slug": "banda-diagnostico",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (diagnóstico)",
+      "bbox": {
+        "x": 9050,
+        "y": 2373,
+        "width": 1920,
+        "height": 316
+      },
+      "members": [
+        "790:29336"
+      ],
+      "png": "png/04-banda-diagnostico.png"
+    },
+    {
+      "order": "05",
+      "id": "band:comparativa",
+      "name": "Comparativa",
+      "slug": "comparativa",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (comparativa)",
+      "bbox": {
+        "x": 9050,
+        "y": 2689,
+        "width": 1920,
+        "height": 1528
+      },
+      "members": [
+        "1170:1051",
+        "1139:3909",
+        "739:26440",
+        "739:26441",
+        "741:27299"
+      ],
+      "png": "png/05-comparativa.png"
+    },
+    {
+      "order": "06",
+      "id": "band:modulos",
+      "name": "Módulos",
+      "slug": "modulos",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (módulos)",
+      "bbox": {
+        "x": 9050,
+        "y": 4217,
+        "width": 1920,
+        "height": 1290
+      },
+      "members": [
+        "1160:983",
+        "1173:1191",
+        "1173:1193",
+        "756:27683",
+        "756:27682",
+        "823:203",
+        "756:27979",
+        "823:217",
+        "823:211",
+        "825:248",
+        "825:261",
+        "825:283",
+        "825:269",
+        "830:362",
+        "832:388",
+        "830:370",
+        "832:396",
+        "832:376"
+      ],
+      "png": "png/06-modulos.png"
+    },
+    {
+      "order": "07",
+      "id": "band:formas-de-pago",
+      "name": "Formas de pago",
+      "slug": "formas-de-pago",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (pago)",
+      "bbox": {
+        "x": 9050,
+        "y": 5507,
+        "width": 1920,
+        "height": 1239
+      },
+      "members": [
+        "1185:1588",
+        "1185:1590",
+        "761:28301",
+        "761:28300",
+        "1185:1600",
+        "836:417",
+        "836:440",
+        "836:444",
+        "836:449",
+        "836:437",
+        "836:441",
+        "836:446",
+        "836:451",
+        "836:425",
+        "836:445",
+        "836:450",
+        "836:438",
+        "836:442",
+        "836:447",
+        "836:452",
+        "761:28312",
+        "761:28317",
+        "761:28321",
+        "761:28325"
+      ],
+      "png": "png/07-formas-de-pago.png"
+    },
+    {
+      "order": "08",
+      "id": "band:dudas-razonables",
+      "name": "Dudas razonables",
+      "slug": "dudas-razonables",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (FAQ)",
+      "bbox": {
+        "x": 9050,
+        "y": 6746,
+        "width": 1920,
+        "height": 801
+      },
+      "members": [
+        "1185:1647",
+        "1185:1649",
+        "761:28333",
+        "1185:1883",
+        "1185:2106",
+        "1185:2112",
+        "1185:2118",
+        "1185:2124",
+        "1185:2130"
+      ],
+      "png": "png/08-dudas-razonables.png"
+    },
+    {
+      "order": "09",
+      "id": "band:cta-final",
+      "name": "CTA final",
+      "slug": "cta-final",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/pricing/PricingPage.tsx (cta)",
+      "bbox": {
+        "x": 9050,
+        "y": 7547,
+        "width": 1920,
+        "height": 659
+      },
+      "members": [
+        "1185:1632"
+      ],
+      "png": "png/09-cta-final.png"
+    },
+    {
+      "order": "10",
+      "id": "band:hablemos-y-pie",
+      "name": "Hablemos y pie",
+      "slug": "hablemos-y-pie",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/FinalCTA.tsx + Footer",
+      "bbox": {
+        "x": 9050,
+        "y": 8206,
+        "width": 1920,
+        "height": 800
+      },
+      "members": [
+        "776:28411"
+      ],
+      "png": "png/10-hablemos-y-pie.png"
+    }
+  ],
+  "fullPng": "png/00-home-full@0.5.png",
+  "imageFills": 0,
+  "svgAssets": [],
+  "apiCalls": 0
+}
