@@ -30,8 +30,10 @@ function Stage({
   const first = index === 0;
   const last = index === total - 1;
 
-  // Puntos clave del tramo: [entra … llega | se mantiene | se va … fuera]
-  const keys = [first ? 0 : start, first ? 0 : start + fade, last ? 1 : end - fade, last ? 1 : end];
+  // Puntos clave del tramo: [entra … llega | se mantiene | se va … fuera]. Siempre
+  // crecientes (framer no admite repetidos); la primera y la última frase se
+  // distinguen por los valores de salida, no por los puntos.
+  const keys = [start, start + fade, end - fade, end];
   const opacity = useTransform(progress, keys, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
   const y = useTransform(progress, keys, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
   const scale = useTransform(progress, keys, [first ? 1 : 0.92, 1, 1, last ? 1 : 1.06]);
