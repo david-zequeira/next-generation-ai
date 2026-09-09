@@ -123,7 +123,13 @@ export type CalcDict = {
     body: string;
     items: { title: string; body: string }[];
     foot: string;
+    /** Cabecera del Figma «/calculadora»: titular corto, entradilla y las tres fugas en una línea cada una. */
+    headline: string;
+    lede: string;
+    leaks: { title: string; body: string }[];
   };
+  /** Bloque «//CALCULADORA» entre la cabecera y el formulario (Figma). */
+  intro: { eyebrow: string; title: string; body: string };
   form: {
     step1: string;
     sectorLabel: string;
@@ -141,6 +147,13 @@ export type CalcDict = {
     noShowsHint: string;
     step3: string;
     planHint: string;
+    /** Títulos y subtítulos de los tres pasos como los escribe el Figma. */
+    step1Title: string;
+    step2Title: string;
+    step2Body: string;
+    step3Title: string;
+    step3Body: string;
+    calcCta: string;
     plans: { k: CalcPlanKey; name: string; desc: string }[];
     perMonth: string;
     setupNote: string;
@@ -171,6 +184,14 @@ export type CalcDict = {
     roiNote: string;
     clientValueLabel: string;
   };
+  /** «Cómo se recupera»: las tres piezas que tapan las fugas, con su cifra (Figma). */
+  solutions: {
+    eyebrow: string;
+    title: string;
+    cards: { title: string; sub: string; stat: string; statLabel: string }[];
+    linkLead: string;
+    link: string;
+  };
   assumptions: {
     title: string;
     /** Las tres hipótesis como cifra grande + etiqueta corta (Figma). */
@@ -186,6 +207,9 @@ export type CalcDict = {
     tags: string[];
     title: string;
     body: string;
+    /** Versión del Figma del bloque de captura. */
+    figTitle: string;
+    figBody: string;
     nameLabel: string;
     namePh: string;
     contactLabel: string;
@@ -231,6 +255,18 @@ const es: CalcDict = {
       },
     ],
     foot: "La calculadora de abajo pone cifras a esos tres goteos con los números de tu negocio, y los compara con lo que cuesta taparlos.",
+    headline: "Lo que no respondes, lo pierdes.",
+    lede: "La mayoría de las pérdidas no vienen de grandes errores. Vienen de consultas sin respuesta, respuestas tardías y citas perdidas. Las tres fugas más comunes son…",
+    leaks: [
+      { title: "Consultas fuera de horario.", body: "Quien pregunta hoy espera respuesta hoy." },
+      { title: "Citas perdidas por falta de seguimiento.", body: "Cada hueco vacío es una oportunidad que no factura." },
+      { title: "Tiempo crítico para responder.", body: "Responder tarde cuesta casi lo mismo que no responder." },
+    ],
+  },
+  intro: {
+    eyebrow: "Calculadora",
+    title: "Responde 4 preguntas y descubre cuánto dinero representan esas fugas en tu negocio.",
+    body: "Esta calculadora transforma esas pérdidas invisibles en números reales y las compara con el coste de solucionarlas.",
   },
   form: {
     step1: "1 · Tu negocio",
@@ -256,6 +292,12 @@ const es: CalcDict = {
     noShowsHint: "Al mes. Los plantones que hoy dejan el hueco vacío.",
     step3: "3 · Con qué plan lo comparo",
     planHint: "El Starter monta el asistente sobre la web que ya tienes. El Core añade la web nueva y su posicionamiento, y por eso cuesta 100 € más al mes.",
+    step1Title: "Tu negocio",
+    step2Title: "Lo que se escapa hoy",
+    step2Body: "Las respuestas que no llegan a tiempo y las citas perdidas suelen ser las mayores fugas de ingresos.",
+    step3Title: "Con qué plan lo comparo",
+    step3Body: "La cuota mensual es la misma. La diferencia está en si necesitas una nueva web o no.",
+    calcCta: "Calcular mi impacto",
     plans: [
       { k: "arranque", name: "Starter", desc: "El asistente sobre la web que ya tienes" },
       { k: "core", name: "Core", desc: "El asistente, la web nueva y su SEO" },
@@ -289,6 +331,17 @@ const es: CalcDict = {
     roiNote: "Por cada euro invertido en el primer año.",
     clientValueLabel: "Un cliente nuevo vale",
   },
+  solutions: {
+    eyebrow: "Cómo se recupera",
+    title: "Estas pérdidas no se recuperan trabajando más, sino respondiendo más rápido, haciendo seguimiento y automatizando tareas repetitivas.",
+    cards: [
+      { title: "AI Concierge", sub: "Responde consultas 24/7", stat: "2 de 10", statLabel: "consultas sin responder" },
+      { title: "AI Booking", sub: "Gestiona reservas y recordatorios", stat: "−30 %", statLabel: "citas perdidas" },
+      { title: "Automatización", sub: "Conecta agenda, pagos y seguimiento", stat: "+25 %", statLabel: "de clientes completan el flujo" },
+    ],
+    linkLead: "¿Necesitas algo personalizado?",
+    link: "Habla con nuestro equipo →",
+  },
   assumptions: {
     title: "De dónde sale cada número",
     stats: [
@@ -310,6 +363,8 @@ const es: CalcDict = {
     tags: ["Sin compromiso", "Sin presión", "Con datos"],
     title: "¿Te lo mandamos con tus números dentro?",
     body: "Te enviamos esta misma cuenta desglosada y, si quieres, media hora para revisarla con tus datos reales delante. Sin compromiso y sin llamadas a deshora.",
+    figTitle: "Te enviamos los resultados",
+    figBody: "Recibe esta misma estimación por correo y, si quieres, revisamos juntos los números reales de tu negocio.",
     nameLabel: "Tu nombre",
     namePh: "Nombre y negocio",
     contactLabel: "Email o teléfono",
@@ -323,8 +378,8 @@ const es: CalcDict = {
     subjectLine: "Calculadora de retorno · cifras del visitante",
   },
   faq: {
-    eyebrow: "Lo que sueles preguntar aquí",
-    title: "Antes de darnos tu email",
+    eyebrow: "Dudas razonables",
+    title: "Antes de dejar tu email",
     items: [
       {
         q: "¿Esto es una estimación o una promesa?",
@@ -387,6 +442,18 @@ const en: CalcDict = {
       },
     ],
     foot: "The calculator below puts figures on those three leaks using your own numbers, and weighs them against what it costs to plug them.",
+    headline: "What you don't answer, you lose.",
+    lede: "Most losses don't come from big mistakes. They come from unanswered enquiries, late replies and missed appointments. The three most common leaks are…",
+    leaks: [
+      { title: "Out-of-hours enquiries.", body: "Whoever asks today expects an answer today." },
+      { title: "Appointments lost to no follow-up.", body: "Every empty slot is an opportunity that never invoices." },
+      { title: "Critical response time.", body: "Replying late costs almost as much as not replying." },
+    ],
+  },
+  intro: {
+    eyebrow: "Calculator",
+    title: "Answer 4 questions and find out how much money those leaks represent in your business.",
+    body: "This calculator turns those invisible losses into real numbers and compares them with the cost of fixing them.",
   },
   form: {
     step1: "1 · Your business",
@@ -412,6 +479,12 @@ const en: CalcDict = {
     noShowsHint: "Per month. The no-shows that leave the slot empty today.",
     step3: "3 · Which plan am I comparing against",
     planHint: "Starter puts the assistant on the website you already have. Core adds the new website and its ranking, which is why it costs €100 more per month.",
+    step1Title: "Your business",
+    step2Title: "What slips away today",
+    step2Body: "Replies that arrive late and missed appointments are usually the biggest revenue leaks.",
+    step3Title: "Which plan to compare it with",
+    step3Body: "The monthly fee is the same. The difference is whether you need a new website or not.",
+    calcCta: "Calculate my impact",
     plans: [
       { k: "arranque", name: "Starter", desc: "The assistant on the site you already have" },
       { k: "core", name: "Core", desc: "The assistant, a new website and its SEO" },
@@ -445,6 +518,17 @@ const en: CalcDict = {
     roiNote: "For every euro invested in the first year.",
     clientValueLabel: "A new client is worth",
   },
+  solutions: {
+    eyebrow: "How it's recovered",
+    title: "These losses aren't recovered by working harder, but by replying faster, following up and automating repetitive tasks.",
+    cards: [
+      { title: "AI Concierge", sub: "Answers enquiries 24/7", stat: "2 in 10", statLabel: "unanswered enquiries" },
+      { title: "AI Booking", sub: "Manages bookings and reminders", stat: "−30 %", statLabel: "missed appointments" },
+      { title: "Automation", sub: "Connects calendar, payments and follow-up", stat: "+25 %", statLabel: "of customers complete the flow" },
+    ],
+    linkLead: "Need something custom?",
+    link: "Talk to our team →",
+  },
   assumptions: {
     title: "Where each number comes from",
     stats: [
@@ -466,6 +550,8 @@ const en: CalcDict = {
     tags: ["No commitment", "No pressure", "With data"],
     title: "Want it sent over with your numbers in it?",
     body: "We'll email you this same calculation, itemised, and half an hour to go through it with your real data if you want. No commitment, no calls at odd hours.",
+    figTitle: "We'll send you the results",
+    figBody: "Get this same estimate by email and, if you like, we'll go through your business's real numbers together.",
     nameLabel: "Your name",
     namePh: "Name and business",
     contactLabel: "Email or phone",
@@ -479,8 +565,8 @@ const en: CalcDict = {
     subjectLine: "ROI calculator · visitor's figures",
   },
   faq: {
-    eyebrow: "What people ask at this point",
-    title: "Before you give us your email",
+    eyebrow: "Reasonable doubts",
+    title: "Before you leave your email",
     items: [
       {
         q: "Is this an estimate or a promise?",
