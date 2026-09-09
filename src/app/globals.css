@@ -267,22 +267,21 @@ body {
 }
 
 /*
- * Letra que se hace polvo (El futuro). El contenedor fija --tin (1→0 al entrar)
- * y --tout (0→1 al salir) desde el scroll; cada letra trae su retardo (--st),
- * su inversa 1/(1-st) ya calculada (--inv) y su rumbo (--dx, --dy, --rot).
- * El nivel de polvo k va de 0 (letra entera) a 1 (desintegrada) y se resuelve
- * en CSS puro, sin JavaScript por letra. Va fuera de @layer para que el
- * compilador no toque las expresiones.
+ * Palabra que se disuelve (El futuro), al estilo Apple. El contenedor fija --tin
+ * (1→0 al entrar) y --tout (0→1 al salir) desde el scroll; cada palabra trae su
+ * retardo (--st), su inversa 1/(1-st) ya calculada (--inv) y su deriva (--dx,
+ * --dy). El nivel de disolución va de 0 (entera) a 1 (desaparecida): opacidad,
+ * desenfoque de hasta 14 px y un pequeño desplazamiento, en CSS puro. Va fuera
+ * de @layer para que el compilador no toque las expresiones.
  */
 .dust-letter {
   display: inline-block;
   opacity: calc(1 - max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1)));
   transform: translate(
-      calc(var(--dx, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))),
-      calc(var(--dy, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1)))
-    )
-    rotate(calc(var(--rot, 0deg) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))));
-  filter: blur(calc(10px * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))));
+    calc(var(--dx, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))),
+    calc(var(--dy, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1)))
+  );
+  filter: blur(calc(14px * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))));
   will-change: transform, opacity, filter;
 }
 

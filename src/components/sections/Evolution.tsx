@@ -11,46 +11,40 @@ function rand(seed: number) {
 }
 
 /**
- * Texto que se hace polvo: cada letra es un span con su retardo y su rumbo
- * (el viento sopla hacia arriba y a la derecha). El polvo lo pinta CSS
- * (.dust-letter) a partir de --tin/--tout, que fija el contenedor.
+ * Texto que se disuelve al estilo Apple: la unidad es la palabra (nunca se
+ * parte), y cada palabra se funde con desenfoque y una deriva leve hacia
+ * arriba, escalonadas de izquierda a derecha con un punto de azar. Sin giros
+ * ni vuelos: el efecto es lento y limpio. El polvo lo pinta CSS (.dust-letter)
+ * a partir de --tin/--tout, que fija el contenedor.
  */
 function DustText({ text, seed, spread }: { text: string; seed: number; spread: number }) {
   const words = text.split(" ");
-  let n = 0;
-  const total = text.replace(/ /g, "").length;
   return (
     <>
-      {words.map((word, w) => (
-        <span key={`${w}-${word}`} className="inline-block whitespace-nowrap">
-          {[...word].map((ch, i) => {
-            const idx = n++;
-            const r1 = rand(seed + idx * 7.1);
-            const r2 = rand(seed + idx * 3.7 + 1);
-            const r3 = rand(seed + idx * 5.3 + 2);
-            // Retardo: las letras de la izquierda se van antes, con algo de azar
-            const st = 0.35 * (idx / Math.max(1, total - 1)) + 0.35 * r1;
-            return (
-              <span
-                key={`${i}-${ch}`}
-                className="dust-letter"
-                style={
-                  {
-                    "--st": st.toFixed(3),
-                    "--inv": (1 / (1 - st)).toFixed(3),
-                    "--dx": `${(0.4 + r2) * spread}px`,
-                    "--dy": `${-(0.3 + r3) * spread}px`,
-                    "--rot": `${(r1 - 0.5) * 60}deg`,
-                  } as React.CSSProperties
-                }
-              >
-                {ch}
-              </span>
-            );
-          })}
-          {w < words.length - 1 ? " " : ""}
-        </span>
-      ))}
+      {words.map((word, i) => {
+        const r1 = rand(seed + i * 7.1);
+        const r2 = rand(seed + i * 3.7 + 1);
+        // Retardo: de izquierda a derecha, con algo de azar; cubre la mitad del fundido
+        const st = 0.3 * (i / Math.max(1, words.length - 1)) + 0.2 * r1;
+        return (
+          <span key={`${i}-${word}`}>
+            <span
+              className="dust-letter"
+              style={
+                {
+                  "--st": st.toFixed(3),
+                  "--inv": (1 / (1 - st)).toFixed(3),
+                  "--dx": `${(r2 - 0.5) * spread * 0.4}px`,
+                  "--dy": `${-(0.6 + r1 * 0.4) * spread}px`,
+                } as React.CSSProperties
+              }
+            >
+              {word}
+            </span>
+            {i < words.length - 1 ? " " : ""}
+          </span>
+        );
+      })}
     </>
   );
 }
@@ -79,7 +73,8 @@ function Stage({
   const span = 1 / total;
   const start = index * span;
   const end = start + span;
-  const fade = span * 0.3;
+  // Cada frase dispone de 150vh: 60vh para formarse, 30vh quieta, 60vh para disolverse
+  const fade = span * 0.4;
   const first = index === 0;
   const last = index === total - 1;
 
@@ -96,10 +91,10 @@ function Stage({
     >
       {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
       <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
-        <DustText text={label} seed={index * 100 + 1} spread={160} />
+        <DustText text={label} seed={index * 100 + 1} spread={40} />
       </h3>
       <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">
-        <DustText text={sub} seed={index * 100 + 50} spread={90} />
+        <DustText text={sub} seed={index * 100 + 50} spread={24} />
       </p>
     </motion.div>
   );
@@ -111,7 +106,7 @@ function Stage({
  * cada una de las tres frases del Figma («Diseñamos la experiencia»,
  * «Automatizamos el sistema», «Construimos la inteligencia») entra en foco en
  * azul de marca y se disuelve en la siguiente. Todo va atado al scroll: cada
- * frase ocupa 100vh de recorrido y el fundido entre dos frases dura 30vh.
+ * frase ocupa 150vh de recorrido, con 60vh para formarse y 60vh para disolverse.
  */
 export default function Evolution() {
   const ref = useRef<HTMLElement>(null);
@@ -128,7 +123,7 @@ export default function Evolution() {
   const gridOpacity = useTransform(scrollYProgress, [0.7, 0.95], [0.14, 0]);
 
   return (
-    <section ref={ref} id="future" className="relative h-[300vh] bg-void">
+    <section ref={ref} id="future" className="relative h-[450vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         {/* Espacio digital: estrellas en parallax */}
         <motion.div
