@@ -48,7 +48,7 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
       className={cn(
         "inline-flex h-u-46 cursor-pointer items-center gap-u-8 rounded-u-20 px-u-16 font-display fs-u-20 font-medium transition-all duration-300",
         light
-          ? "border border-ink/15 bg-white/70 text-ink hover:border-electric/50"
+          ? "border border-transparent text-electric hover:bg-electric/5"
           : "border border-transparent bg-gradient-to-b from-[#182557] to-abyss text-white hover:border-electric/60"
       )}
     >
@@ -60,7 +60,7 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
   // Figma: enlaces Montserrat SemiBold 15, blancos, centrados en la página
   const linkClass = cn(
     "group relative rounded-full px-u-14 py-2 font-display fs-u-15 font-semibold transition-colors duration-200",
-    light ? "text-ink/85 hover:text-electric" : "text-white hover:text-cloud"
+    light ? "text-black hover:text-electric" : "text-white hover:text-cloud"
   );
   const underline = (
     <span
@@ -127,8 +127,11 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
               href="/contacto"
               onClick={() => trackEvent("cta_navbar")}
               className={cn(
-                "hidden h-u-46 cursor-pointer items-center rounded-u-20 px-u-24 font-display fs-u-15 font-medium transition-all duration-300 active:scale-[0.97] lg:inline-flex",
-                light ? "bg-ink text-white hover:bg-electric" : "bg-white text-black hover:bg-cloud"
+                "hidden cursor-pointer items-center font-display fs-u-15 font-medium transition-all duration-300 active:scale-[0.97] lg:inline-flex",
+                // Figma (claro): caja gris de 128×41 con radio 10 · (oscuro): pastilla blanca de 165×46
+                light
+                  ? "h-u-41 rounded-u-10 bg-[#dfe2ea] px-u-20 text-black hover:bg-cloud"
+                  : "h-u-46 rounded-u-20 bg-white px-u-24 text-black hover:bg-cloud"
               )}
             >
               {t.cta}
