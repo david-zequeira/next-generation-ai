@@ -44,6 +44,8 @@
   --animate-sheen: sheen 5s linear infinite;
   --animate-ring: ring 2.8s ease-out infinite;
   --animate-twinkle: twinkle 4s ease-in-out infinite;
+  /* Estrella de los planes: late y gira un poco, como un destello */
+  --animate-sparkle: sparkle 2.6s ease-in-out infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -94,6 +96,10 @@
   @keyframes twinkle {
     0%, 100% { opacity: 0.25; }
     50% { opacity: 1; }
+  }
+  @keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+    50% { transform: scale(1.18) rotate(18deg); opacity: 1; }
   }
 }
 

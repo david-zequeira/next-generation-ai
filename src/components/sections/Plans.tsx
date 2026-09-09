@@ -2,12 +2,32 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 import { pricingDicts } from "@/i18n/pricing";
 import { trackEvent } from "@/lib/track";
+
+/**
+ * La estrella del Figma (capa «i1», 40×40, exportada del propio diseño): un
+ * destello de cuatro puntas. Toma el color del texto y late con `animate-sparkle`.
+ */
+function FigmaSparkle({ className, delay = 0 }: { className?: string; delay?: number }) {
+  return (
+    <svg
+      viewBox="0 0 40 40"
+      aria-hidden
+      className={cn("animate-sparkle origin-center", className)}
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <path
+        fill="currentColor"
+        d="M19.514 0.351486C19.6876 -0.117162 20.3124 -0.117162 20.486 0.351486L22.3432 5.4719C24.3914 11.1478 28.8522 15.626 34.5281 17.6741L39.6485 19.514C40.1172 19.6876 40.1172 20.3298 39.6485 20.5034L34.5281 22.3432C28.8522 24.3914 24.3914 28.8522 22.3432 34.5281L20.486 39.6485C20.3124 40.1172 19.6876 40.1172 19.514 39.6485L17.6568 34.5281C15.6086 28.8522 11.1478 24.3914 5.4719 22.3432L0.351486 20.5034C-0.117162 20.3298 -0.117162 19.6876 0.351486 19.514L5.4719 17.6741C11.1478 15.626 15.6086 11.1478 17.6568 5.4719L19.514 0.351486Z"
+      />
+    </svg>
+  );
+}
 
 /**
  * Sección 9 — «Planes simples que escalan contigo» (Figma): tres tarjetas de
@@ -47,12 +67,12 @@ export default function Plans() {
                 )}
               >
                 {/* La estrella asoma 20 px por encima del borde, a 52 px de la esquina derecha */}
-                <Sparkle
+                <FigmaSparkle
+                  delay={i * 0.4}
                   className={cn(
                     "absolute -top-[max(12px,20*var(--u))] right-[max(31px,52*var(--u))] size-u-40",
-                    p.star ? "fill-neon text-neon" : "fill-electric text-electric"
+                    p.star ? "text-neon" : "text-electric"
                   )}
-                  strokeWidth={1}
                 />
                 <span className="font-display fs-u-22 lh-u-30 font-semibold">{p.name}</span>
                 <span className={cn("fs-u-15 leading-none", p.star ? "font-medium text-neon" : "font-semibold text-electric")}>

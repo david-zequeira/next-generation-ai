@@ -90,8 +90,10 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
           className="relative mx-auto flex h-u-116 max-w-[1920px] items-center justify-between px-5 md:px-10 xl:px-[12.5%]"
         >
           <Link href="/" className="flex items-center gap-3">
+            {/* El glifo ocupa el 68 % del alto del PNG (512 px con aire): para que mida los 55 px
+                del Figma, la imagen va a 81 */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-55 w-auto" />
+            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-81 w-auto" />
           </Link>
 
           {/* Centrado absoluto: el Figma centra el menú en la página, no entre el logo y los botones */}
