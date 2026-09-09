@@ -149,7 +149,7 @@ export default function ChatWidget() {
             <X className="size-[max(18px,28*var(--u))]" strokeWidth={1.8} />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={`${BASE}/isotipo.png`} alt="" className="h-[max(28px,64*var(--u))] w-auto brightness-0 invert" draggable={false} />
+            <img src={`${BASE}/isotipo.png`} alt="" className="h-[max(28px,64*var(--u))] w-auto translate-y-[6%] brightness-0 invert" draggable={false} />
           )}
         </span>
       </motion.button>

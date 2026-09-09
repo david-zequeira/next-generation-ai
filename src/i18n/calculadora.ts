@@ -53,6 +53,7 @@ export const ASSUMPTIONS = {
 export const CALC_PLANS = [
   { k: "arranque", setup: 2900, mrr: 349 },
   { k: "core", setup: 5900, mrr: 449 },
+  { k: "nexus", setup: 18000, mrr: 1900 },
 ] as const;
 
 export type CalcPlanKey = (typeof CALC_PLANS)[number]["k"];
@@ -301,6 +302,7 @@ const es: CalcDict = {
     plans: [
       { k: "arranque", name: "Starter", desc: "El asistente sobre la web que ya tienes" },
       { k: "core", name: "Core", desc: "El asistente, la web nueva y su SEO" },
+      { k: "nexus", name: "Nexus", desc: "Toda la operación sobre agentes, con marca completa" },
     ],
     perMonth: "/mes",
     setupNote: "de puesta en marcha",
@@ -336,8 +338,8 @@ const es: CalcDict = {
     title: "Estas pérdidas no se recuperan trabajando más, sino respondiendo más rápido, haciendo seguimiento y automatizando tareas repetitivas.",
     cards: [
       { title: "AI Concierge", sub: "Responde consultas 24/7", stat: "2 de 10", statLabel: "consultas sin responder" },
-      { title: "AI Booking", sub: "Gestiona reservas y recordatorios", stat: "−30 %", statLabel: "citas perdidas" },
-      { title: "Automatización", sub: "Conecta agenda, pagos y seguimiento", stat: "+25 %", statLabel: "de clientes completan el flujo" },
+      { title: "AI Booking", sub: "Gestiona reservas y recordatorios", stat: "−30%", statLabel: "citas perdidas" },
+      { title: "Automatización", sub: "Conecta agenda, pagos y seguimiento", stat: "+25%", statLabel: "de clientes completan el flujo" },
     ],
     linkLead: "¿Necesitas algo personalizado?",
     link: "Habla con nuestro equipo →",
@@ -488,6 +490,7 @@ const en: CalcDict = {
     plans: [
       { k: "arranque", name: "Starter", desc: "The assistant on the site you already have" },
       { k: "core", name: "Core", desc: "The assistant, a new website and its SEO" },
+      { k: "nexus", name: "Nexus", desc: "The whole operation on agents, with full brand identity" },
     ],
     perMonth: "/mo",
     setupNote: "setup",
@@ -523,8 +526,8 @@ const en: CalcDict = {
     title: "These losses aren't recovered by working harder, but by replying faster, following up and automating repetitive tasks.",
     cards: [
       { title: "AI Concierge", sub: "Answers enquiries 24/7", stat: "2 in 10", statLabel: "unanswered enquiries" },
-      { title: "AI Booking", sub: "Manages bookings and reminders", stat: "−30 %", statLabel: "missed appointments" },
-      { title: "Automation", sub: "Connects calendar, payments and follow-up", stat: "+25 %", statLabel: "of customers complete the flow" },
+      { title: "AI Booking", sub: "Manages bookings and reminders", stat: "−30%", statLabel: "missed appointments" },
+      { title: "Automation", sub: "Connects calendar, payments and follow-up", stat: "+25%", statLabel: "of customers complete the flow" },
     ],
     linkLead: "Need something custom?",
     link: "Talk to our team →",

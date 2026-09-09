@@ -581,10 +581,14 @@ export default function CalculatorPage() {
                     key={c.title}
                     delay={0.08 * i}
                     className={cn(
-                      "ring-conic rounded-u-20 px-u-32 pb-u-28 pt-u-25",
+                      "ring-conic relative rounded-u-20 px-u-32 pb-u-28 pt-u-25",
                       i === 0 ? "bg-electric/10" : "bg-[linear-gradient(237deg,#101837_0%,#050b21_100%)]"
                     )}
                   >
+                    {/* Figma: las tres tarjetas van unidas por una línea a la altura del título */}
+                    {i < t.solutions.cards.length - 1 && (
+                      <span aria-hidden className="absolute right-[calc(-1*max(26px,43*var(--u)))] top-u-132 hidden h-px w-u-43 bg-[#354d8e] md:block" />
+                    )}
                     <span className="flex size-u-52 items-center justify-center rounded-u-18 bg-electric">
                       <Icon className="size-u-29 text-[#101837]" strokeWidth={2} />
                     </span>
@@ -592,7 +596,7 @@ export default function CalculatorPage() {
                     <p className="mt-u-9 fs-u-15 lh-u-22 text-cloud">{c.sub}</p>
                     <div className="mt-u-21 h-px bg-[#354d8e]" />
                     <p className="mt-u-19 flex items-baseline gap-u-8">
-                      <span className="font-display fs-u-28 font-semibold text-neon">{c.stat}</span>
+                      <span className="whitespace-nowrap font-display fs-u-28 font-semibold text-neon">{c.stat}</span>
                       <span className="fs-u-15 text-white">{c.statLabel}</span>
                     </p>
                   </Reveal>
