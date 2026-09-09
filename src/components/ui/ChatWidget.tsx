@@ -131,8 +131,8 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Botón flotante — Figma (Frame 164): halo de 176 px en azul al 25 % que respira,
-          disco de 135 con degradado #1a4dff→#102e99 y el isotipo en blanco (45×37) */}
+      {/* Botón flotante — Figma (Frame 164): halo, disco con degradado #1a4dff→#102e99
+          e isotipo en blanco. El diseño lo dibuja a 176 px; aquí va a 112 (el 176 se veía enorme) */}
       <motion.button
         type="button"
         aria-label={open ? t.ariaClose : t.ariaOpen}
@@ -140,15 +140,15 @@ export default function ChatWidget() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="group fixed bottom-[max(20px,38*var(--u))] right-[max(20px,34*var(--u))] z-[60] flex size-[max(64px,176*var(--u))] cursor-pointer items-center justify-center rounded-full"
+        className="group fixed bottom-[max(20px,38*var(--u))] right-[max(20px,34*var(--u))] z-[60] flex size-[max(56px,112*var(--u))] cursor-pointer items-center justify-center rounded-full"
       >
         <span aria-hidden className="animate-halo absolute inset-0 rounded-full bg-electric/25" />
-        <span className="relative flex size-[max(50px,135*var(--u))] items-center justify-center rounded-full bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white shadow-[0_0_40px_-6px_rgba(26,77,255,0.9)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_60px_-4px_rgba(26,77,255,1)] group-active:scale-95">
+        <span className="relative flex size-[max(44px,86*var(--u))] items-center justify-center rounded-full bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white shadow-[0_0_40px_-6px_rgba(26,77,255,0.9)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_60px_-4px_rgba(26,77,255,1)] group-active:scale-95">
           {open ? (
-            <X className="size-[max(22px,40*var(--u))]" strokeWidth={1.8} />
+            <X className="size-[max(18px,28*var(--u))]" strokeWidth={1.8} />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={`${BASE}/isotipo.png`} alt="" className="w-[max(22px,45*var(--u))] brightness-0 invert" draggable={false} />
+            <img src={`${BASE}/isotipo.png`} alt="" className="w-[max(16px,30*var(--u))] brightness-0 invert" draggable={false} />
           )}
         </span>
       </motion.button>
@@ -161,7 +161,7 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.96 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="glass fixed bottom-[calc(max(20px,38*var(--u))+max(64px,176*var(--u))+8px)] right-[max(20px,34*var(--u))] z-[60] flex h-[min(560px,calc(100svh-max(64px,176*var(--u))-max(20px,38*var(--u))-2rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl"
+            className="glass fixed bottom-[calc(max(20px,38*var(--u))+max(56px,112*var(--u))+8px)] right-[max(20px,34*var(--u))] z-[60] flex h-[min(560px,calc(100svh-max(56px,112*var(--u))-max(20px,38*var(--u))-2rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl"
             role="dialog"
             aria-label={t.ariaDialog}
           >
