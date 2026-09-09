@@ -1,22 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Phone } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import VoiceOverlay from "@/components/voice/VoiceOverlay";
 import { useVoiceCall } from "@/components/voice/useVoiceCall";
-import { useDict } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
-import { warmUpVoice } from "@/lib/voice-warmup";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
 /**
- * Lanzador flotante del modo voz. Aquí ya no vive nada de la llamada: el
+ * Puerta de entrada al modo voz. Aquí ya no vive nada de la llamada: el
  * flujo (token, SDK, eventos, niveles de audio) está en `useVoiceCall` y lo
- * que se ve está en `VoiceOverlay`. Este componente solo hace tres cosas:
- * el botón, el evento `ng:open-voice`, y arrancar la llamada DENTRO del
- * gesto del usuario.
+ * que se ve está en `VoiceOverlay`. Este componente solo hace dos cosas:
+ * escuchar el evento `ng:open-voice` (lo lanzan «Ver demo» del hero y el
+ * cierre) y arrancar la llamada DENTRO del gesto del usuario. No hay botón
+ * flotante: el chat es el único lanzador fijo de la página.
  *
  * Ese último punto no es un detalle de estilo: `startAudioPlayback()` del
  * SDK y `getUserMedia` solo cuentan con el permiso de autoplay si se llaman
@@ -24,7 +22,6 @@ const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
  * del overlay recién montado, Safari e iOS podrían negar el audio.
  */
 export default function VoiceWidget() {
-  const t = useDict().voice;
   const [open, setOpen] = useState(false);
   const call = useVoiceCall();
 
@@ -91,22 +88,8 @@ export default function VoiceWidget() {
 
   return (
     <>
-      {/* Botón flotante, a la izquierda del botón del chat */}
-      <motion.button
-        type="button"
-        aria-label={t.ariaStart}
-        onClick={openVoice}
-        onPointerEnter={warmUpVoice}
-        onFocus={warmUpVoice}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1.35, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        // A la izquierda del botón del chat, centrado con su disco y con el mismo acabado a menor tamaño
-        className="fixed bottom-[calc(max(20px,38*var(--u))+(max(56px,112*var(--u))-56px)/2)] right-[calc(max(20px,34*var(--u))+max(56px,112*var(--u))+12px)] z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white shadow-[0_0_40px_-6px_rgba(26,77,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(26,77,255,1)] active:scale-95"
-      >
-        <Phone className="h-6 w-6" strokeWidth={1.8} />
-      </motion.button>
-
+      {/* Sin botón flotante: la voz se abre desde «Ver demo» del hero y desde el
+          cierre («o llámanos»), que lanzan el evento ng:open-voice. */}
       <AnimatePresence>
         {open && <VoiceOverlay call={call} onClose={close} />}
       </AnimatePresence>
