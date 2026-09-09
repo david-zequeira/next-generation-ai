@@ -101,7 +101,8 @@ export default function VoiceWidget() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.35, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed bottom-5 right-[5.5rem] z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-br from-electric to-pulse text-white shadow-[0_0_40px_-6px_rgba(46,107,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(46,107,255,1)] active:scale-95"
+        // A la izquierda del botón del chat, centrado con su disco y con el mismo acabado a menor tamaño
+        className="fixed bottom-[calc(max(20px,38*var(--u))+(max(64px,176*var(--u))-56px)/2)] right-[calc(max(20px,34*var(--u))+max(64px,176*var(--u))+12px)] z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white shadow-[0_0_40px_-6px_rgba(26,77,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(26,77,255,1)] active:scale-95"
       >
         <Phone className="h-6 w-6" strokeWidth={1.8} />
       </motion.button>

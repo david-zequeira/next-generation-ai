@@ -44,6 +44,8 @@
   --animate-sheen: sheen 5s linear infinite;
   --animate-ring: ring 2.8s ease-out infinite;
   --animate-twinkle: twinkle 4s ease-in-out infinite;
+  /* Halo del botón del chat: respira despacio alrededor del disco */
+  --animate-halo: halo 3.2s ease-in-out infinite;
   /* Estrella de los planes: crece y encoge un poco en su sitio, sin girar */
   --animate-sparkle: sparkle-pulse 2.6s ease-in-out infinite;
 
@@ -96,6 +98,10 @@
   @keyframes twinkle {
     0%, 100% { opacity: 0.25; }
     50% { opacity: 1; }
+  }
+  @keyframes halo {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.55; }
   }
   @keyframes sparkle-pulse {
     0%, 100% { transform: scale(1); opacity: 0.9; }
