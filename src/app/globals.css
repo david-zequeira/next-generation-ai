@@ -45,7 +45,7 @@
   --animate-ring: ring 2.8s ease-out infinite;
   --animate-twinkle: twinkle 4s ease-in-out infinite;
   /* Estrella de los planes: crece y encoge un poco en su sitio, sin girar */
-  --animate-sparkle: sparkle 2.6s ease-in-out infinite;
+  --animate-sparkle: sparkle-pulse 2.6s ease-in-out infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -97,9 +97,9 @@
     0%, 100% { opacity: 0.25; }
     50% { opacity: 1; }
   }
-  @keyframes sparkle {
+  @keyframes sparkle-pulse {
     0%, 100% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 1; }
   }
 }
 
