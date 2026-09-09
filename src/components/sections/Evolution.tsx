@@ -1,24 +1,67 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useDict } from "@/i18n/LocaleContext";
+
+/**
+ * Una frase del viaje, atada al scroll («scrub»): no hay estados ni retardos.
+ * Cada frase tiene su tramo del recorrido; entra en el primer tercio del tramo,
+ * se mantiene en el centro y sale en el último tercio, encadenada con la
+ * siguiente. La primera ya está en pantalla al llegar y la última se queda.
+ */
+function Stage({
+  progress,
+  index,
+  total,
+  label,
+  sub,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+  total: number;
+  label: string;
+  sub: string;
+}) {
+  const span = 1 / total;
+  const start = index * span;
+  const end = start + span;
+  const fade = span * 0.3;
+  const first = index === 0;
+  const last = index === total - 1;
+
+  // Puntos clave del tramo: [entra … llega | se mantiene | se va … fuera]
+  const keys = [first ? 0 : start, first ? 0 : start + fade, last ? 1 : end - fade, last ? 1 : end];
+  const opacity = useTransform(progress, keys, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
+  const y = useTransform(progress, keys, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
+  const scale = useTransform(progress, keys, [first ? 1 : 0.92, 1, 1, last ? 1 : 1.06]);
+  const blur = useTransform(progress, keys, [first ? 0 : 12, 0, 0, last ? 0 : 12]);
+  const filter = useTransform(blur, (b) => `blur(${b.toFixed(1)}px)`);
+
+  return (
+    <motion.div
+      style={{ opacity, y, scale, filter }}
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center will-change-transform"
+    >
+      {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
+      <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
+        {label}
+      </h3>
+      <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">{sub}</p>
+    </motion.div>
+  );
+}
 
 /**
  * Sección 2 — «El futuro de los negocios».
  * Viaje de scroll fijado: la cámara avanza por el espacio digital mientras
  * cada una de las tres frases del Figma («Diseñamos la experiencia»,
  * «Automatizamos el sistema», «Construimos la inteligencia») entra en foco en
- * azul de marca y se disuelve en la siguiente.
+ * azul de marca y se disuelve en la siguiente. Todo va atado al scroll: cada
+ * frase ocupa 100vh de recorrido y el fundido entre dos frases dura 30vh.
  */
 export default function Evolution() {
   const ref = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
   const t = useDict().evolution;
   const total = t.stages.length;
 
@@ -27,27 +70,12 @@ export default function Evolution() {
     offset: ["start start", "end end"],
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActive(Math.min(total - 1, Math.max(0, Math.floor(v * total))));
-  });
-
   const starsY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
   const gridScale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
   const gridOpacity = useTransform(scrollYProgress, [0.7, 0.95], [0.14, 0]);
 
-  const stageState = (i: number) => {
-    const isActive = i === active;
-    const isPast = i < active;
-    return {
-      opacity: isActive ? 1 : 0,
-      scale: isActive ? 1 : isPast ? 1.16 : 0.84,
-      y: isActive ? 0 : isPast ? -48 : 48,
-      filter: isActive ? "blur(0px)" : "blur(16px)",
-    };
-  };
-
   return (
-    <section ref={ref} id="future" className="relative h-[400vh] bg-void">
+    <section ref={ref} id="future" className="relative h-[300vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         {/* Espacio digital: estrellas en parallax */}
         <motion.div
@@ -90,22 +118,10 @@ export default function Evolution() {
           <p className="eyebrow">{t.eyebrow}</p>
         </div>
 
-        {/* Etapas: la activa enfoca; el resto se disuelve */}
+        {/* Etapas, atadas al scroll */}
         <div className="relative h-full w-full">
-          {t.stages.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={false}
-              animate={stageState(i)}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-            >
-              {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
-              <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
-                {s.label}
-              </h3>
-              <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">{s.sub}</p>
-            </motion.div>
+          {t.stages.map((st, i) => (
+            <Stage key={st.label} progress={scrollYProgress} index={i} total={total} label={st.label} sub={st.sub} />
           ))}
         </div>
 
