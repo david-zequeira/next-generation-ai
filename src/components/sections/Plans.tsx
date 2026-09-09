@@ -66,11 +66,11 @@ export default function Plans() {
                     : "bg-white text-black hover:bg-cloud"
                 )}
               >
-                {/* La estrella asoma 20 px por encima del borde, a 52 px de la esquina derecha */}
+                {/* La estrella (32 px) asoma 15 px por encima del borde, a 56 px de la esquina derecha */}
                 <FigmaSparkle
                   delay={i * 0.4}
                   className={cn(
-                    "absolute -top-[max(12px,20*var(--u))] right-[max(31px,52*var(--u))] size-u-40",
+                    "absolute -top-[max(9px,15*var(--u))] right-[max(33px,56*var(--u))] size-u-32",
                     p.star ? "text-neon" : "text-electric"
                   )}
                 />
