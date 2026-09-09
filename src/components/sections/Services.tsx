@@ -10,14 +10,10 @@ import {
   CalendarDays,
   CheckCircle2,
   Contact,
-  Gauge,
-  Gem,
-  PenTool,
   Plug,
   Receipt,
   Repeat,
   ShieldCheck,
-  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -25,18 +21,23 @@ import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 /**
  * Iconos de las cuatro fichas de cada pestaña — los textos, en el diccionario.
- * TODO: sustituir por los SVG lineales del Figma cuando la diseñadora los exporte.
+ * La pestaña «Diseño web» usa los SVG del Figma (public/icons/services, exportados
+ * del propio diseño: azul #1a4dff con acentos lima). Las otras dos pestañas no
+ * tienen diseño todavía y siguen con lucide.
  */
-const TILE_ICONS: LucideIcon[][] = [
-  [PenTool, Gem, Gauge, TrendingUp],
+type TileIcon = LucideIcon | string;
+const TILE_ICONS: TileIcon[][] = [
+  ["brand-experience", "luxury-design", "high-performance", "conversion-growth"],
   [Contact, CalendarDays, Receipt, Repeat],
   [Bot, Plug, BarChart3, ShieldCheck],
 ];
 
 /** Ficha del Figma: 159×159, radio 15, degradado navy→abyss con brillo arriba a la derecha. */
-function Tile({ icon: Icon, label, index }: { icon: LucideIcon; label: string; index: number }) {
+function Tile({ icon, label, index }: { icon: TileIcon; label: string; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
 
   // Inclinación sutil hacia el cursor
@@ -76,7 +77,15 @@ function Tile({ icon: Icon, label, index }: { icon: LucideIcon; label: string; i
         }}
         className="glow-inset group flex aspect-square flex-col items-center justify-between rounded-u-15 bg-[linear-gradient(180deg,#101a3e_0%,#050b21_61%)] px-u-12 pb-u-14 pt-u-30 text-center transition-shadow duration-300 hover:shadow-[0_18px_44px_-20px_rgba(26,77,255,0.8)]"
       >
-        <Icon className="size-u-46 text-pulse transition-colors duration-300 group-hover:text-neon" strokeWidth={1.3} />
+        {typeof icon === "string" ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={`${BASE}/icons/services/${icon}.svg`} alt="" className="size-u-50" draggable={false} />
+        ) : (
+          (() => {
+            const Icon = icon;
+            return <Icon className="size-u-46 text-pulse transition-colors duration-300 group-hover:text-neon" strokeWidth={1.3} />;
+          })()
+        )}
         <span className="fs-u-12 lh-u-14 text-frost">{label}</span>
       </div>
     </motion.div>
