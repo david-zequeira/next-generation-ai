@@ -10,7 +10,6 @@ const en = {
     ariaOpen: "Open menu",
     ariaClose: "Close menu",
     ariaLang: "Cambiar a español",
-    railAria: "Chapters",
   },
   hero: {
     eyebrow: "Asenix",
@@ -19,19 +18,15 @@ const en = {
     sub: "We create premium digital experiences and intelligent systems that attract customers, automate operations and drive growth.",
     ctaPrimary: "Get started",
     ctaSecondary: "See the demo",
-    scroll: "Scroll",
   },
   evolution: {
     eyebrow: "The future of business",
+    // Las tres etapas del Figma (marcos 541:201, 1298:4363 y 1298:5622)
     stages: [
-      { label: "Manual business", sub: "People doing everything by hand." },
-      { label: "Automation", sub: "Rules take over the repetitive." },
-      { label: "AI", sub: "Systems that understand and decide." },
-      { label: "Autonomous company", sub: "Operations that run themselves." },
+      { label: "We design the experience", sub: "Digital experiences that elevate your brand." },
+      { label: "We automate the system", sub: "Turn visitors into customers." },
+      { label: "We build the intelligence", sub: "AI agents around the clock." },
     ],
-    finalTitle: "We design the experience.",
-    finalSub:
-      "We create premium digital experiences that elevate your brand, build trust and turn visitors into customers.",
   },
   services: {
     eyebrow: "Services",
@@ -199,6 +194,7 @@ const en = {
     body: "Not a brochure and not a promise: your own figures, our assumptions in plain sight, and a number you can argue with. Four questions, no sign-up — and if it doesn't pay for your business, it says so.",
     exampleLabel: "Worked example · neighbourhood salon",
     inputsLabel: "What the owner typed in",
+    inputLabels: ["Average ticket", "Visit frequency", "Unanswered enquiries", "Lost bookings"],
     inputs: [
       "€45 average per visit",
       "6 visits a year per client",
@@ -330,7 +326,6 @@ const es: typeof en = {
     ariaOpen: "Abrir menú",
     ariaClose: "Cerrar menú",
     ariaLang: "Switch to English",
-    railAria: "Capítulos",
   },
   hero: {
     eyebrow: "Asenix",
@@ -339,19 +334,14 @@ const es: typeof en = {
     sub: "Creamos experiencias digitales premium y sistemas inteligentes que atraen clientes, automatizan operaciones e impulsan el crecimiento.",
     ctaPrimary: "Comenzar",
     ctaSecondary: "Ver demo",
-    scroll: "Desliza",
   },
   evolution: {
     eyebrow: "El futuro de los negocios",
     stages: [
-      { label: "Negocio manual", sub: "Personas haciéndolo todo a mano." },
-      { label: "Automatización", sub: "Las reglas se encargan de lo repetitivo." },
-      { label: "IA", sub: "Sistemas que entienden y deciden." },
-      { label: "Empresa autónoma", sub: "Operaciones que funcionan solas." },
+      { label: "Diseñamos la experiencia", sub: "Experiencias digitales que elevan tu marca." },
+      { label: "Automatizamos el sistema", sub: "Convierte visitantes en clientes." },
+      { label: "Construimos la inteligencia", sub: "Agentes AI las 24 horas." },
     ],
-    finalTitle: "Diseñamos la experiencia.",
-    finalSub:
-      "Creamos experiencias digitales premium que elevan tu marca, generan confianza y convierten visitantes en clientes.",
   },
   services: {
     eyebrow: "Servicios",
@@ -516,6 +506,7 @@ const es: typeof en = {
     body: "Ni un folleto ni una promesa: tus cifras, nuestras hipótesis a la vista y un número que puedes discutir. Cuatro preguntas, sin registro — y si a tu negocio no le compensa, lo dice.",
     exampleLabel: "Ejemplo real de la cuenta · peluquería de barrio",
     inputsLabel: "Lo que puso el dueño",
+    inputLabels: ["Ingreso medio", "Frecuencia media", "Consultas sin responder", "Reservas perdidas"],
     inputs: [
       "45 € de media por visita",
       "6 visitas al año por cliente",

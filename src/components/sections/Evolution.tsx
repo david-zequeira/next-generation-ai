@@ -1,54 +1,129 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useDict } from "@/i18n/LocaleContext";
+
+/** Pseudoaleatorio determinista (0–1) para que cada letra tenga siempre el mismo rumbo. */
+function rand(seed: number) {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+/**
+ * Texto que se disuelve al estilo Apple: la unidad es la palabra (nunca se
+ * parte), y cada palabra se funde con desenfoque y una deriva leve hacia
+ * arriba, escalonadas de izquierda a derecha con un punto de azar. Sin giros
+ * ni vuelos: el efecto es lento y limpio. El polvo lo pinta CSS (.dust-letter)
+ * a partir de --tin/--tout, que fija el contenedor.
+ */
+function DustText({ text, seed, spread }: { text: string; seed: number; spread: number }) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((word, i) => {
+        const r1 = rand(seed + i * 7.1);
+        const r2 = rand(seed + i * 3.7 + 1);
+        // Retardo: de izquierda a derecha, con algo de azar; cubre la mitad del fundido
+        const st = 0.3 * (i / Math.max(1, words.length - 1)) + 0.2 * r1;
+        return (
+          <span key={`${i}-${word}`}>
+            <span
+              className="dust-letter"
+              style={
+                {
+                  "--st": st.toFixed(3),
+                  "--inv": (1 / (1 - st)).toFixed(3),
+                  "--dx": `${(r2 - 0.5) * spread * 0.4}px`,
+                  "--dy": `${-(0.6 + r1 * 0.4) * spread}px`,
+                } as React.CSSProperties
+              }
+            >
+              {word}
+            </span>
+            {i < words.length - 1 ? " " : ""}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * Una frase del viaje, atada al scroll («scrub»): no hay estados ni retardos.
+ * Cada frase tiene su tramo del recorrido: en el primer 30 % sus letras se
+ * recomponen desde el polvo, se mantiene en el centro y en el último 30 % se
+ * desintegra del todo. Los tramos no se solapan: la saliente ha desaparecido
+ * por completo cuando la siguiente empieza a formarse. La primera ya está
+ * entera al llegar y la última se queda.
+ */
+function Stage({
+  progress,
+  index,
+  total,
+  label,
+  sub,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+  total: number;
+  label: string;
+  sub: string;
+}) {
+  const span = 1 / total;
+  const start = index * span;
+  const end = start + span;
+  // Cada frase dispone de 150vh: 60vh para formarse, 30vh quieta, 60vh para disolverse
+  const fade = span * 0.4;
+  const first = index === 0;
+  const last = index === total - 1;
+
+  // Nivel de polvo al entrar (1 → 0) y al salir (0 → 1)
+  const tin = useTransform(progress, [start, start + fade], [first ? 0 : 1, 0]);
+  const tout = useTransform(progress, [end - fade, end], [0, last ? 0 : 1]);
+  // Fuera de su tramo la frase no existe (evita que la última letra en polvo asome)
+  const visible = useTransform(progress, (p) => (p >= start - 0.0005 && p <= end + 0.0005) || (first && p < start) || (last && p > end) ? 1 : 0);
+
+  return (
+    <motion.div
+      style={{ ["--tin" as string]: tin, ["--tout" as string]: tout, opacity: visible }}
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
+    >
+      {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
+      <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
+        <DustText text={label} seed={index * 100 + 1} spread={40} />
+      </h3>
+      <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">
+        <DustText text={sub} seed={index * 100 + 50} spread={24} />
+      </p>
+    </motion.div>
+  );
+}
 
 /**
  * Sección 2 — «El futuro de los negocios».
  * Viaje de scroll fijado: la cámara avanza por el espacio digital mientras
- * cada era del negocio entra en foco y se disuelve en la siguiente. El viaje
- * termina en la frase del Figma («Diseñamos la experiencia.») en azul, que es
- * lo que queda en pantalla cuando el visitante suelta el scroll.
+ * cada una de las tres frases del Figma («Diseñamos la experiencia»,
+ * «Automatizamos el sistema», «Construimos la inteligencia») entra en foco en
+ * azul de marca y se disuelve en la siguiente. Todo va atado al scroll: cada
+ * frase ocupa 150vh de recorrido, con 60vh para formarse y 60vh para disolverse.
  */
 export default function Evolution() {
   const ref = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
   const t = useDict().evolution;
-  // Las etapas + el cierre comparten el mismo carrusel de scroll
-  const total = t.stages.length + 1;
+  const total = t.stages.length;
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActive(Math.min(total - 1, Math.max(0, Math.floor(v * total))));
-  });
-
   const starsY = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
   const gridScale = useTransform(scrollYProgress, [0, 1], [1, 1.6]);
   const gridOpacity = useTransform(scrollYProgress, [0.7, 0.95], [0.14, 0]);
 
-  const stageState = (i: number) => {
-    const isActive = i === active;
-    const isPast = i < active;
-    return {
-      opacity: isActive ? 1 : 0,
-      scale: isActive ? 1 : isPast ? 1.16 : 0.84,
-      y: isActive ? 0 : isPast ? -48 : 48,
-      filter: isActive ? "blur(0px)" : "blur(16px)",
-    };
-  };
-
   return (
-    <section ref={ref} id="future" className="relative h-[500vh] bg-void">
+    <section ref={ref} id="future" className="relative h-[450vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         {/* Espacio digital: estrellas en parallax */}
         <motion.div
@@ -88,48 +163,14 @@ export default function Evolution() {
 
         {/* Etiqueta de sección, fija arriba */}
         <div className="absolute left-1/2 top-[12vh] w-full -translate-x-1/2 text-center">
-          <p className="eyebrow eyebrow-muted">{t.eyebrow}</p>
+          <p className="eyebrow">{t.eyebrow}</p>
         </div>
 
-        {/* Etapas: la activa enfoca; el resto se disuelve */}
+        {/* Etapas, atadas al scroll */}
         <div className="relative h-full w-full">
-          {t.stages.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={false}
-              animate={stageState(i)}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-            >
-              <span className="mb-6 font-display text-xs font-light tracking-[0.4em] text-mist">
-                {String(i + 1).padStart(2, "0")} / {String(t.stages.length).padStart(2, "0")}
-              </span>
-              {/* La etapa "IA" rompe la escala: dos letras del tamaño del mundo */}
-              <h3
-                className={`display text-white ${
-                  i === 2 ? "text-[clamp(6rem,24vw,20rem)]" : "text-[clamp(2.4rem,6.5vw,5.5rem)]"
-                }`}
-              >
-                {s.label}
-              </h3>
-              <p className="mt-6 max-w-md text-base font-light text-mist md:text-lg">{s.sub}</p>
-            </motion.div>
+          {t.stages.map((st, i) => (
+            <Stage key={st.label} progress={scrollYProgress} index={i} total={total} label={st.label} sub={st.sub} />
           ))}
-
-          {/* Cierre — la frase del Figma, en el azul de la marca */}
-          <motion.div
-            initial={false}
-            animate={stageState(total - 1)}
-            transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
-          >
-            <h2 className="display text-gradient text-[clamp(2.4rem,6.5vw,5.6rem)] font-semibold tracking-[-0.03em]">
-              {t.finalTitle}
-            </h2>
-            <p className="mt-7 max-w-xl text-balance text-base leading-relaxed text-frost/85 md:text-lg">
-              {t.finalSub}
-            </p>
-          </motion.div>
         </div>
 
         {/* Raíl de progreso */}

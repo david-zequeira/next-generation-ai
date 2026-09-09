@@ -1,0 +1,18 @@
+{
+  "_doc": "Bandas verticales del marco 541:168 (y relativo al marco, en px). El Figma no agrupa las capas por sección, así que se asignan por el centro vertical de cada capa de primer nivel.",
+  "bands": [
+    { "name": "Header", "y0": 0, "y1": 120, "component": "src/components/layout/Navbar.tsx" },
+    { "name": "Hero", "y0": 120, "y1": 906, "component": "src/components/sections/Hero.tsx" },
+    { "name": "El futuro", "y0": 906, "y1": 2585, "component": "src/components/sections/Evolution.tsx" },
+    { "name": "Servicios", "y0": 2585, "y1": 3534, "component": "src/components/sections/Services.tsx" },
+    { "name": "Cómo trabajamos", "y0": 3534, "y1": 4570, "component": "src/components/sections/Ecosystem.tsx" },
+    { "name": "Proceso", "y0": 4570, "y1": 7610, "component": "src/components/sections/Process.tsx" },
+    { "name": "Tecnología", "y0": 7610, "y1": 8600, "component": "src/components/sections/Technology.tsx" },
+    { "name": "Pruebas no promesas", "y0": 8600, "y1": 9369, "component": "src/components/sections/CaseStudies.tsx" },
+    { "name": "Demo", "y0": 9369, "y1": 10200, "component": "(n/a — sin diseño todavía: no implementar)" },
+    { "name": "Calculadora", "y0": 10200, "y1": 11000, "component": "src/components/sections/Roi.tsx" },
+    { "name": "Planes 2026", "y0": 11000, "y1": 11791, "component": "src/components/sections/Plans.tsx" },
+    { "name": "Hablemos", "y0": 11791, "y1": 12300, "component": "src/components/sections/FinalCTA.tsx" },
+    { "name": "Footer", "y0": 12300, "y1": 12585, "component": "src/components/layout/Footer.tsx" }
+  ]
+}

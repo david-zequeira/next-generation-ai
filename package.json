@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack && node scripts/postbuild.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "figma:pull": "node scripts/figma/pull-home.mjs",
+    "figma:spec": "node scripts/figma/spec-home.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

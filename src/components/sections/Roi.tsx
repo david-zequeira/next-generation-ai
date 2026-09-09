@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
 import { CALC_PLANS, calculate } from "@/i18n/calculadora";
-import { pricingDicts } from "@/i18n/pricing";
 
 /** El mismo caso que carga el botón «Ver un ejemplo» de /calculadora. */
 const EJEMPLO = { ticket: 45, visits: 6, missed: 10, noShows: 12 };
 
 /**
- * La cuenta, en la home — vive dentro de la gran tarjeta azul marino que el
- * Figma deja entre las pruebas y los planes. Primero la razón, luego la decisión.
+ * La cuenta, en la home (Figma «Calculadora»): tarjeta azul marino de 1196×568
+ * con el argumento a la izquierda y, a la derecha, un panel CLARO con el
+ * ejemplo ya calculado y el resultado en un bloque azul.
  *
  * Las cifras del ejemplo NO están escritas a mano: salen de `calculate()`, el
  * mismo motor que pinta /calculadora. Si mañana cambia una hipótesis o la
@@ -22,9 +22,6 @@ const EJEMPLO = { ticket: 45, visits: 6, missed: 10, noShows: 12 };
 export default function Roi() {
   const { locale, dict } = useLocale();
   const t = dict.roi;
-  // El Diagnóstico se lee del diccionario de /precios, no se copia: un cambio de
-  // precio o de promesa no puede quedar contado de dos maneras distintas.
-  const diag = pricingDicts[locale].diag;
   const r = calculate(EJEMPLO, CALC_PLANS[0]);
 
   const eur = (n: number) =>
@@ -39,115 +36,86 @@ export default function Roi() {
     maximumFractionDigits: 1,
   });
 
+  // El Figma pone en negrita la primera frase del cuerpo («Ni un folleto ni una promesa:»)
+  const colon = t.body.indexOf(":");
+  const bodyLead = colon > 0 ? t.body.slice(0, colon + 1) : "";
+  const bodyRest = colon > 0 ? t.body.slice(colon + 1) : t.body;
+
   return (
-    <section id="roi" className="relative bg-void py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section id="roi" className="relative bg-void pb-u-134 pt-u-120">
+      <div className="mx-auto max-w-[1920px] px-5 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="card-navy relative overflow-hidden rounded-[28px] p-7 md:p-12 lg:p-16"
+          style={{ ["--ring-w" as string]: "1.3px" }}
+          // Figma: radio 35, degradado #09112d→#0e1f5c, borde cónico de 1,3 px
+          className="ring-conic relative mx-auto max-w-u-1196 rounded-u-35 bg-[linear-gradient(180deg,#09112d_0%,#0e1f5c_100%)] p-6 md:pb-u-35 md:pl-u-50 md:pr-u-37 md:pt-u-35"
         >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-electric/25 blur-[120px]"
-          />
-          <div className="relative grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <div className="relative grid gap-12 lg:grid-cols-[1fr_auto] lg:gap-u-40">
             {/* — el argumento — */}
-            <div>
-              <p className="eyebrow">{t.eyebrow}</p>
-              <h2 className="display mt-6 text-[clamp(1.9rem,3.8vw,3rem)] text-white">
+            <div className="lg:pt-u-28">
+              <p className="eyebrow eyebrow-gradient">{t.eyebrow}</p>
+              {/* Figma: Montserrat SemiBold 35/40, blanco, con «haz la cuenta.» en azul */}
+              <h2 className="mt-u-24 max-w-u-462 font-display fs-u-35 lh-u-40 font-semibold text-white">
                 {t.titleA}
                 <br />
-                <span className="text-gradient">{t.titleB}</span>
+                <span className="text-electric">{t.titleB}</span>
               </h2>
-              <p className="mt-6 max-w-[52ch] leading-relaxed text-mist">{t.body}</p>
+              <p className="mt-u-24 max-w-u-485 fs-u-18 lh-u-25 text-white">
+                {bodyLead && <strong className="font-semibold">{bodyLead}</strong>}
+                {bodyRest}
+              </p>
 
+              {/* Figma: 375×62, radio completo, #c7d7ff, SemiBold 15, flecha azul */}
               <Link
                 href="/calculadora"
                 onClick={() => trackEvent("cta_calculadora_home")}
-                className="btn-light group mt-9 inline-flex h-[54px] items-center gap-3 rounded-full px-8 font-display text-[15px] font-semibold transition-all duration-300 active:scale-[0.97]"
+                className="btn-light group mt-u-52 inline-flex h-u-62 items-center gap-u-24 rounded-full pl-u-36 pr-u-24 font-display fs-u-15 font-semibold text-void transition-all duration-300 active:scale-[0.97]"
               >
                 {t.cta}
-                <ArrowRight className="h-5 w-5 text-electric transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2} />
+                <ArrowRight className="size-u-32 text-electric transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
-              <p className="mt-4 text-xs text-mist">{t.note}</p>
+              <p className="mt-u-40 fs-u-12 lh-u-22 font-medium text-cloud">{t.note}</p>
             </div>
 
-            {/* — el ejemplo, ya calculado — */}
-            <div className="rounded-3xl border border-pulse/30 bg-[#070f2c]/70 p-6 backdrop-blur-sm md:p-8">
-              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-neon">
-                {t.exampleLabel}
-              </p>
+            {/* — el ejemplo, ya calculado — Figma: panel claro 577×498, radio 35, #fff→#c7d7ff */}
+            <div className="w-full rounded-u-35 border-[1.3px] border-pulse/50 bg-[linear-gradient(180deg,#ffffff_0%,#c7d7ff_100%)] px-u-37 pb-u-37 pt-u-36 lg:w-u-577">
+              <p className="text-center font-display fs-u-22 lh-u-23 font-semibold text-black">{t.exampleLabel}</p>
 
-              <p className="mt-6 font-display text-xs font-medium uppercase tracking-[0.14em] text-mist">
-                {t.inputsLabel}
-              </p>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {t.inputs.map((line) => (
-                  <li
-                    key={line}
-                    className="rounded-xl border border-pulse/20 bg-white/[0.04] px-3.5 py-2.5 text-[13px] text-frost/90"
-                  >
-                    {line}
+              <ul className="mt-u-33 grid gap-x-u-9 gap-y-u-37 sm:grid-cols-2">
+                {t.inputs.map((line, i) => (
+                  <li key={line}>
+                    <p className="font-display fs-u-12 font-bold text-black">{t.inputLabels[i]}</p>
+                    <p className="mt-u-11 flex min-h-u-60 items-center rounded-u-16 bg-white px-u-23 fs-u-15 lh-u-17 font-medium text-black shadow-[0_1px_4px_rgba(12,12,13,0.05),0_1px_4px_rgba(12,12,13,0.1)]">
+                      {line}
+                    </p>
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-7 h-px bg-gradient-to-r from-transparent via-pulse/40 to-transparent" />
-
-              <dl className="mt-7 grid gap-4">
-                <div className="flex items-baseline justify-between gap-4">
-                  <dt className="text-[13px] text-mist">{t.leakLabel}</dt>
-                  <dd className="font-display text-lg font-semibold tabular-nums text-white">{eur(r.leak)}</dd>
+              {/* Bloque de resultado — Figma: 509×169, radio 16, azul de marca */}
+              <div className="mt-u-20 rounded-u-16 bg-electric px-u-23 pb-u-18 pt-u-23">
+                <dl className="flex flex-col gap-u-8">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <dt className="fs-u-15 font-medium text-cloud">{t.leakLabel}</dt>
+                    <dd className="font-display fs-u-18 font-bold tabular-nums text-cloud">{eur(r.leak)}</dd>
+                  </div>
+                  <div className="flex items-baseline justify-between gap-4">
+                    <dt className="fs-u-15 font-medium text-cloud">{t.netLabel}</dt>
+                    <dd className="font-display fs-u-18 font-bold tabular-nums text-neon">{eur(r.net)}</dd>
+                  </div>
+                </dl>
+                <div className="mt-u-30 flex items-end justify-between gap-4">
+                  <p className="font-display fs-u-18 lh-u-22 font-semibold text-white">{t.paybackLabel}</p>
+                  <p className="font-display leading-none text-white">
+                    <span className="fs-u-45 font-semibold">{meses}</span>
+                    <span className="ml-2 fs-u-25 font-semibold">{t.months}</span>
+                  </p>
                 </div>
-                <div className="flex items-baseline justify-between gap-4">
-                  <dt className="text-[13px] text-mist">{t.netLabel}</dt>
-                  <dd className="font-display text-lg font-semibold tabular-nums text-neon">{eur(r.net)}</dd>
-                </div>
-              </dl>
-
-              <div className="card-blue mt-7 rounded-2xl px-5 py-5 text-center">
-                <p className="font-display text-[11px] font-medium uppercase tracking-[0.16em] text-white/80">
-                  {t.paybackLabel}
-                </p>
-                <p className="mt-1 font-display text-[clamp(2.2rem,4vw,3rem)] font-bold leading-none tracking-[-0.03em] text-white">
-                  {meses}
-                  <span className="ml-2 font-display text-base font-medium tracking-normal text-neon">
-                    {t.months}
-                  </span>
-                </p>
               </div>
             </div>
-          </div>
-
-          {/* ——— El Diagnóstico, al alcance desde la home ———
-              Va después de la cuenta a propósito: primero el visitante ve el
-              número estimado, y justo entonces se le ofrece la versión medida. */}
-          <div className="relative mt-10 flex flex-col items-start gap-5 rounded-2xl border border-pulse/30 bg-white/[0.04] p-6 md:flex-row md:items-center md:px-8">
-            <span className="btn-blue shrink-0 rounded-full px-3.5 py-1.5 font-display text-[11px] font-bold uppercase tracking-[0.16em]">
-              {diag.badge}
-            </span>
-            <p className="text-sm leading-relaxed text-frost/85">
-              {diag.body.split("**").map((part, i) =>
-                i % 2 === 1 ? (
-                  <strong key={i} className="font-semibold text-white">
-                    {part}
-                  </strong>
-                ) : (
-                  <span key={i}>{part}</span>
-                )
-              )}
-            </p>
-            <Link
-              href="/contacto"
-              onClick={() => trackEvent("cta_diagnostico_home")}
-              className="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-pulse/50 px-5 py-3 font-display text-[13px] font-semibold text-white transition-all duration-300 hover:bg-white/10"
-            >
-              {t.diagCta}
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
           </div>
         </motion.div>
       </div>

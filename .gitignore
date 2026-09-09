@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# figma: extracción del home (regenerable con npm run figma:pull)
+/docs/figma/home/raw.json
+/docs/figma/home/fills/

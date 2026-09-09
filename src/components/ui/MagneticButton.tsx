@@ -48,7 +48,8 @@ export default function MagneticButton({
   };
 
   const baseClasses = cn(
-    "group relative inline-flex min-h-[54px] cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full px-9 py-3.5 font-display text-[15px] font-semibold transition-[background,box-shadow,border-color] duration-300",
+    // Figma: 244×72, radio 47 (pastilla), Montserrat SemiBold 20, icono a 12 px del texto
+    "group relative inline-flex min-h-u-72 cursor-pointer items-center justify-center gap-u-12 overflow-hidden rounded-full px-u-52 py-2 font-display fs-u-20 font-semibold transition-[background,box-shadow,border-color] duration-300",
     variant === "primary" && "btn-light",
     variant === "ghost" && "btn-outline",
     variant === "blue" && "btn-blue",

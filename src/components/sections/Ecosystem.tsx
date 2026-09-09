@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
@@ -9,14 +9,21 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /* ───────────────────────── Órbita ───────────────────────── */
 
-const CX = 240;
-const CY = 160;
-const RX = 220;
-const RY = 120;
+/*
+ * Geometría del Figma en px a 1920: la elipse ocupa 464×385 ya inclinada, lo
+ * que corresponde a semiejes 237×186 girados −20°; el planeta mide 185 y el
+ * isotipo unos 100. El viewBox (520×440) deja aire para el halo.
+ */
+const CX = 260;
+const CY = 220;
+const RX = 237;
+const RY = 186;
 /** Inclinación de la órbita en grados (la misma que dibuja el SVG). */
-const TILT = -18;
+const TILT = -20;
+/** Radio del planeta (185 px de diámetro en el Figma). */
+const PLANET_R = 92.5;
 /** Trayectoria elíptica de la línea — el punto de luz la recorre por cálculo. */
-const ORBIT_PATH = "M 20 160 A 220 120 0 1 1 460 160 A 220 120 0 1 1 20 160";
+const ORBIT_PATH = `M ${CX - RX} ${CY} A ${RX} ${RY} 0 1 1 ${CX + RX} ${CY} A ${RX} ${RY} 0 1 1 ${CX - RX} ${CY}`;
 /** Una vuelta completa. Lenta a propósito: hay que poder leer cada paso al pasar. */
 const ORBIT_PERIOD_MS = 18_000;
 /** Cuántos pasos rodean el núcleo y a qué ángulo visual (0 = derecha, 90 = abajo) está el primero. */
@@ -62,30 +69,32 @@ function Step({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      className="group w-full max-w-[250px]"
+      className="group w-full max-w-u-300"
     >
+      {/* Figma: título Montserrat SemiBold 20/23 con el número (círculo #101a3e de 42) a la derecha,
+          y una línea de 0,5 px #c7d7ff debajo; el paso activo pasa a lima */}
       <div
         className={cn(
-          "flex items-center justify-between gap-4 border-b pb-2.5 transition-colors duration-700",
-          active ? "border-neon/60" : "border-pulse/25"
+          "flex items-center justify-between gap-u-16 border-b-[0.5px] pb-u-12 transition-colors duration-700",
+          active ? "border-neon/70" : "border-cloud"
         )}
       >
         <span
           className={cn(
-            "font-display text-[15px] font-medium transition-colors duration-700",
-            active ? "text-neon" : "text-white group-hover:text-pulse"
+            "font-display fs-u-20 lh-u-23 font-semibold transition-colors duration-700",
+            active ? "text-neon" : "text-white group-hover:text-cloud"
           )}
         >
           {title}
         </span>
-        <span className="relative flex h-7 w-7 shrink-0 items-center justify-center">
+        <span className="relative flex size-u-42 shrink-0 items-center justify-center">
           {active && (
             <span aria-hidden className="animate-ring absolute inset-0 rounded-full border border-neon/70" />
           )}
           <span
             className={cn(
-              "flex h-7 w-7 items-center justify-center rounded-full font-display text-[11px] font-bold transition-all duration-700",
-              active ? "bg-neon text-ink shadow-[0_0_18px_rgba(184,242,30,0.55)]" : "bg-[#0d1a4d] text-white ring-1 ring-pulse/40"
+              "flex size-u-42 items-center justify-center rounded-full bg-space font-display fs-u-20 font-semibold transition-all duration-700",
+              active ? "text-neon shadow-[0_0_18px_rgba(184,242,30,0.35)]" : "text-white"
             )}
           >
             {n}
@@ -94,8 +103,8 @@ function Step({
       </div>
       <p
         className={cn(
-          "mt-3 text-[13px] leading-relaxed transition-colors duration-700",
-          active ? "text-neon/85" : "text-mist"
+          "mt-u-18 fs-u-18 lh-u-23 font-light transition-colors duration-700",
+          active ? "text-mist" : "text-cloud"
         )}
       >
         {desc}
@@ -120,11 +129,38 @@ export default function Ecosystem() {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
 
+  // Las letras del eslogan se encienden cuando la bolita de la órbita pasa a su lado
+  const lettersRef = useRef<HTMLSpanElement[]>([]);
+  const onPoint = useCallback((x: number, y: number) => {
+    // El array tiene huecos (las dos mitades del eslogan van a índices separados)
+    for (const el of lettersRef.current) {
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width) continue;
+      const dx = Math.abs(r.left + r.width / 2 - x);
+      const dy = Math.abs(r.top + r.height / 2 - y);
+      const k = Math.max(0, 1 - Math.hypot(dx, dy * 0.6) / (r.height * 2.2));
+      el.style.color = k > 0 ? `color-mix(in srgb, #b8f21e ${Math.round(k * 100)}%, #f1f3fe)` : "";
+    }
+  }, []);
+  const letters = (text: string, offset: number) =>
+    [...text].map((ch, i) => (
+      <span
+        key={`${offset}-${i}`}
+        ref={(el) => {
+          if (el) lettersRef.current[offset + i] = el;
+        }}
+        className="inline-block transition-colors duration-300"
+      >
+        {ch === " " ? "\u00a0" : ch}
+      </span>
+    ));
+
   return (
     <section
       id="ecosystem"
       ref={sectionRef}
-      className="relative overflow-hidden border-y border-line bg-[#02040f] py-28 md:py-36"
+      className="relative overflow-hidden border-y border-line bg-[#02040f] pb-u-140 pt-u-116"
     >
       <Galaxy sectionRef={sectionRef} />
       <div
@@ -132,14 +168,17 @@ export default function Ecosystem() {
         className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric/[0.12] blur-[120px]"
       />
 
-      <div className="relative mx-auto max-w-7xl px-6" key={locale}>
-        <p className="eyebrow text-center">{t.eyebrow}</p>
+      <div className="relative mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]" key={locale}>
+        <p className="eyebrow mx-auto flex w-fit">{t.eyebrow}</p>
 
-        {/* Escritorio: rejilla orbital */}
-        <div className="mt-20 hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-8">
-          {/* Izquierda */}
-          <div className="flex flex-col items-end gap-10">
-            <ul className="flex w-full flex-col items-end gap-10">
+        {/* Escritorio: rejilla orbital. El eslogan va en una sola fila, centrado en la altura
+            del planeta, sobre una banda oscura (Figma: 1349×59, #04071a) */}
+        <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max(300px,464*var(--u))_minmax(0,1fr)] lg:items-stretch lg:gap-x-u-30">
+          <div aria-hidden className="absolute inset-x-0 top-1/2 z-0 h-u-59 -translate-y-1/2 bg-[#04071a]" />
+
+          {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-110">
+            <ul className="flex w-full">
               <Step n={6} title={s[5].title} desc={s[5].desc} active={active === 5} delay={0.5} />
             </ul>
             <motion.h3
@@ -147,29 +186,36 @@ export default function Ecosystem() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="display w-full text-right text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold text-white"
+              // El eslogan es más ancho que su columna (en el Figma se sale del área de contenido).
+              // En dirección rtl el texto se ancla al borde derecho y el sobrante cae hacia fuera,
+              // nunca sobre el planeta; el span interior vuelve a ltr para leerse bien.
+              dir="rtl"
+              className="flex w-full min-w-0 justify-start self-center font-display fs-u-38 lh-u-36 font-semibold text-paper"
             >
-              {t.left}
+              <span dir="ltr" className="whitespace-nowrap">{letters(t.left, 0)}</span>
             </motion.h3>
-            <ul className="flex w-full flex-col items-end gap-10">
+            <ul className="flex w-full self-end">
               <Step n={5} title={s[4].title} desc={s[4].desc} active={active === 4} delay={0.4} />
             </ul>
           </div>
 
-          {/* Centro: paso 1, órbita, paso 4 */}
-          <div className="flex flex-col items-center gap-6">
-            <ul className="flex justify-center">
+          {/* Centro: paso 1 arriba, órbita en el medio exacto, paso 4 abajo. Misma rejilla
+              1fr/auto/1fr que las columnas laterales, así el planeta queda a la altura del eslogan */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-center">
+            <ul className="flex justify-center self-start">
               <Step n={1} title={s[0].title} desc={s[0].desc} active={active === 0} />
             </ul>
-            <Orbit ariaLabel={t.svgAria} onStep={setActive} />
-            <ul className="flex justify-center">
+            <div className="w-full self-center py-u-10">
+              <Orbit ariaLabel={t.svgAria} onStep={setActive} onPoint={onPoint} />
+            </div>
+            <ul className="flex justify-center self-end">
               <Step n={4} title={s[3].title} desc={s[3].desc} active={active === 3} delay={0.3} />
             </ul>
           </div>
 
-          {/* Derecha */}
-          <div className="flex flex-col items-start gap-10">
-            <ul className="flex w-full flex-col items-start gap-10">
+          {/* Derecha: paso 2 arriba, eslogan en el centro, paso 3 abajo */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-end pr-u-110">
+            <ul className="flex w-full justify-end">
               <Step n={2} title={s[1].title} desc={s[1].desc} active={active === 1} delay={0.1} />
             </ul>
             <motion.h3
@@ -177,11 +223,11 @@ export default function Ecosystem() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="display w-full text-left text-[clamp(1.6rem,2.4vw,2.2rem)] font-semibold text-white"
+              className="flex w-full min-w-0 justify-start self-center font-display fs-u-38 lh-u-36 font-semibold text-paper"
             >
-              {t.right}
+              <span className="whitespace-nowrap">{letters(t.right, 100)}</span>
             </motion.h3>
-            <ul className="flex w-full flex-col items-start gap-10">
+            <ul className="flex w-full justify-end self-end">
               <Step n={3} title={s[2].title} desc={s[2].desc} active={active === 2} delay={0.2} />
             </ul>
           </div>
@@ -189,8 +235,8 @@ export default function Ecosystem() {
 
         {/* Móvil y tablet: órbita arriba, pasos en lista */}
         <div className="mt-14 lg:hidden">
-          <h3 className="display text-center text-2xl font-semibold text-white">
-            {t.left} <span className="text-pulse">·</span> {t.right}
+          <h3 className="text-center font-display text-2xl font-semibold text-paper text-balance">
+            {t.left} <span className="text-electric">·</span> {t.right}
           </h3>
           <div className="mx-auto mt-8 max-w-sm">
             <Orbit ariaLabel={t.svgAria} onStep={setActive} />
@@ -210,6 +256,8 @@ export default function Ecosystem() {
 
 /** Estela: cuántos puntos van detrás de la luz y a qué distancia angular. */
 const TRAIL = [0.05, 0.1, 0.16, 0.23];
+const VIEW_W = 520;
+const VIEW_H = 440;
 
 /**
  * El núcleo: isotipo dentro de un disco blanco que respira, con su órbita y
@@ -217,7 +265,16 @@ const TRAIL = [0.05, 0.1, 0.16, 0.23];
  * saber en cada instante a qué paso apunta y avisar arriba. Las dos órbitas
  * (escritorio y móvil) comparten reloj, así que nunca discrepan.
  */
-function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) => void }) {
+function Orbit({
+  ariaLabel,
+  onStep,
+  onPoint,
+}: {
+  ariaLabel: string;
+  onStep: (i: number) => void;
+  /** Posición de la bolita en coordenadas de pantalla, cada fotograma (para el eslogan). */
+  onPoint?: (x: number, y: number) => void;
+}) {
   const svgRef = useRef<SVGSVGElement>(null);
   const dotRef = useRef<SVGCircleElement>(null);
   const glowRef = useRef<SVGCircleElement>(null);
@@ -259,6 +316,13 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
       place(glowRef.current, p);
       TRAIL.forEach((d, i) => place(trailRefs.current[i], orbitPoint(theta - d)));
 
+      if (onPoint) {
+        // Del viewBox a la pantalla: el SVG conserva la proporción, así que basta una escala
+        const box = svg.getBoundingClientRect();
+        const k = box.width / VIEW_W;
+        onPoint(box.left + p.x * k, box.top + p.y * k);
+      }
+
       const step = stepAt(p.x, p.y);
       if (step !== last) {
         last = step;
@@ -277,7 +341,7 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           return;
         }
         const e = 1 - Math.pow(1 - q, 3);
-        el.setAttribute("r", (80 + 95 * e).toFixed(2));
+        el.setAttribute("r", (PLANET_R + 10 + 110 * e).toFixed(2));
         el.setAttribute("opacity", (0.55 * (1 - e)).toFixed(3));
       });
       // Al cambiar de paso, la luz «respira»: el halo crece y se apaga en medio segundo
@@ -306,7 +370,7 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [onStep]);
+  }, [onStep, onPoint]);
 
   const start = orbitPoint(Math.PI);
 
@@ -314,10 +378,10 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
     <motion.svg
       ref={svgRef}
       data-orbit
-      viewBox="0 0 480 320"
+      viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       role="img"
       aria-label={ariaLabel}
-      className="w-full max-w-[480px]"
+      className="w-full max-w-u-520"
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.5 }}
@@ -329,15 +393,17 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           <stop offset="45%" stopColor="#94b2fc" stopOpacity="0.18" />
           <stop offset="100%" stopColor="#1a4dff" stopOpacity="0" />
         </radialGradient>
+        {/* Figma: trazo cónico #1a4dff → #94b2fc → #1a4dff → #b8f21e */}
         <linearGradient id={lineId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#94b2fc" stopOpacity="0.9" />
-          <stop offset="60%" stopColor="#1a4dff" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#94b2fc" stopOpacity="0.15" />
+          <stop offset="0%" stopColor="#1a4dff" />
+          <stop offset="50%" stopColor="#94b2fc" />
+          <stop offset="85%" stopColor="#1a4dff" />
+          <stop offset="100%" stopColor="#b8f21e" />
         </linearGradient>
-        <radialGradient id={sphereId} cx="38%" cy="30%" r="75%">
+        {/* Figma: planeta radial #ffffff → #ecefff con borde de 2 px #c7d7ff */}
+        <radialGradient id={sphereId} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="55%" stopColor="#f4f6ff" />
-          <stop offset="100%" stopColor="#c9d4ff" />
+          <stop offset="100%" stopColor="#ecefff" />
         </radialGradient>
         <radialGradient id={shadeId} cx="50%" cy="50%" r="50%">
           <stop offset="70%" stopColor="#1a4dff" stopOpacity="0" />
@@ -358,12 +424,12 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
         </filter>
       </defs>
 
-      {/* Halo */}
-      <circle cx={CX} cy={CY} r="150" fill={`url(#${glowId})`} />
+      {/* Halo — Figma: sombra 0 0 200 rgba(26,77,255,.49) alrededor del planeta */}
+      <circle cx={CX} cy={CY} r="215" fill={`url(#${glowId})`} />
 
       {/* Órbita inclinada */}
       <g transform={`rotate(${TILT} ${CX} ${CY})`}>
-        <path d={ORBIT_PATH} fill="none" stroke={`url(#${lineId})`} strokeWidth="1.2" />
+        <path d={ORBIT_PATH} fill="none" stroke={`url(#${lineId})`} strokeWidth="1.5" />
       </g>
 
       {/* Ondas que salen del núcleo cada vez que la órbita pasa por un paso */}
@@ -375,7 +441,7 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           }}
           cx={CX}
           cy={CY}
-          r="80"
+          r={PLANET_R + 10}
           fill="none"
           stroke="#b8f21e"
           strokeWidth="1.2"
@@ -389,10 +455,10 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         style={{ transformOrigin: `${CX}px ${CY}px` }}
       >
-        <circle cx={CX} cy={CY} r="84" fill={`url(#${atmoId})`} />
-        <circle cx={CX} cy={CY} r="74" fill="none" stroke="#94b2fc" strokeWidth="5" opacity="0.35" filter={`url(#${blurId})`} />
-        <circle cx={CX} cy={CY} r="66" fill={`url(#${sphereId})`} />
-        <circle cx={CX} cy={CY} r="66" fill={`url(#${shadeId})`} />
+        <circle cx={CX} cy={CY} r={PLANET_R + 22} fill={`url(#${atmoId})`} />
+        <circle cx={CX} cy={CY} r={PLANET_R + 8} fill="none" stroke="#94b2fc" strokeWidth="5" opacity="0.3" filter={`url(#${blurId})`} />
+        <circle cx={CX} cy={CY} r={PLANET_R} fill={`url(#${sphereId})`} stroke="#c7d7ff" strokeWidth="2" />
+        <circle cx={CX} cy={CY} r={PLANET_R} fill={`url(#${shadeId})`} />
         {/* Haz que recorre el borde del planeta */}
         <motion.g
           animate={{ rotate: 360 }}
@@ -402,15 +468,15 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           <circle
             cx={CX}
             cy={CY}
-            r="67.5"
+            r={PLANET_R + 1.5}
             fill="none"
             stroke={`url(#${sweepId})`}
             strokeWidth="3"
             strokeLinecap="round"
-            strokeDasharray="150 274"
+            strokeDasharray="200 400"
           />
         </motion.g>
-        <image href={`${BASE}/isotipo.png`} x={CX - 40} y={CY - 40} width="80" height="80" />
+        <image href={`${BASE}/isotipo.png`} x={CX - 50} y={CY - 50} width="100" height="100" />
       </motion.g>
 
       {/* Luz en órbita, con estela — va por encima del disco para que pase por delante */}
@@ -422,13 +488,13 @@ function Orbit({ ariaLabel, onStep }: { ariaLabel: string; onStep: (i: number) =
           }}
           cx={start.x}
           cy={start.y}
-          r={3 - i * 0.6}
+          r={3.5 - i * 0.7}
           fill="#b8f21e"
           opacity={0.45 - i * 0.1}
         />
       ))}
-      <circle ref={glowRef} cx={start.x} cy={start.y} r="9" fill="#b8f21e" opacity="0.25" />
-      <circle ref={dotRef} cx={start.x} cy={start.y} r="4" fill="#b8f21e" />
+      <circle ref={glowRef} cx={start.x} cy={start.y} r="10" fill="#b8f21e" opacity="0.25" />
+      <circle ref={dotRef} cx={start.x} cy={start.y} r="5" fill="#b8f21e" />
     </motion.svg>
   );
 }

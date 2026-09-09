@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, Send, X } from "lucide-react";
+import { Send, X } from "lucide-react";
 import { useDict } from "@/i18n/LocaleContext";
 import { getSessionId } from "@/lib/session";
 import { trackEvent } from "@/lib/track";
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
@@ -129,7 +131,8 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Botón flotante */}
+      {/* Botón flotante — Figma (Frame 164): halo, disco con degradado #1a4dff→#102e99
+          e isotipo en blanco. El diseño lo dibuja a 176 px; aquí va a 112 (el 176 se veía enorme) */}
       <motion.button
         type="button"
         aria-label={open ? t.ariaClose : t.ariaOpen}
@@ -137,16 +140,17 @@ export default function ChatWidget() {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed bottom-5 right-5 z-[60] flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-electric text-white shadow-[0_0_40px_-6px_rgba(46,107,255,0.9)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_-4px_rgba(46,107,255,1)] active:scale-95"
+        className="group fixed bottom-[max(20px,38*var(--u))] right-[max(20px,34*var(--u))] z-[60] flex size-[max(56px,112*var(--u))] cursor-pointer items-center justify-center rounded-full"
       >
-        {open ? (
-          <X className="h-6 w-6" strokeWidth={1.8} />
-        ) : (
-          <MessageCircle className="h-6 w-6" strokeWidth={1.8} />
-        )}
-        {!open && (
-          <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-neon animate-pulse-glow" />
-        )}
+        <span aria-hidden className="animate-halo absolute inset-0 rounded-full bg-electric/25" />
+        <span className="relative flex size-[max(44px,86*var(--u))] items-center justify-center rounded-full bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white shadow-[0_0_40px_-6px_rgba(26,77,255,0.9)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_60px_-4px_rgba(26,77,255,1)] group-active:scale-95">
+          {open ? (
+            <X className="size-[max(18px,28*var(--u))]" strokeWidth={1.8} />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={`${BASE}/isotipo.png`} alt="" className="w-[max(16px,30*var(--u))] brightness-0 invert" draggable={false} />
+          )}
+        </span>
       </motion.button>
 
       {/* Panel */}
@@ -157,7 +161,7 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.96 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="glass fixed bottom-[5.5rem] right-5 z-[60] flex h-[min(560px,calc(100svh-8rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl"
+            className="glass fixed bottom-[calc(max(20px,38*var(--u))+max(56px,112*var(--u))+8px)] right-[max(20px,34*var(--u))] z-[60] flex h-[min(560px,calc(100svh-max(56px,112*var(--u))-max(20px,38*var(--u))-2rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl"
             role="dialog"
             aria-label={t.ariaDialog}
           >

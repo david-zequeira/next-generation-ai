@@ -63,28 +63,30 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
 
   return (
     <footer className={dark ? "relative bg-[#060e29] text-white" : "relative bg-paper text-ink"}>
-      <div className="mx-auto max-w-7xl px-6 pb-12 pt-6 md:pb-16">
-        <div className={`flex flex-col gap-10 border-t pt-10 md:flex-row md:items-end md:justify-between ${dark ? "border-white/10" : "border-ink/10"}`}>
-          <div className="flex items-start gap-4">
+      {/* Figma: isotipo negro de 68 px, promesa en Montserrat 20/24 (la primera frase en SemiBold),
+          y a la derecha «© 2026 Asenix» y los legales en 16 px; sin línea superior */}
+      <div className="mx-auto max-w-[1920px] px-5 pb-u-70 pt-u-40 md:px-10 xl:px-[12.5%]">
+        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-u-23">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`${BASE}/isotipo.png`}
               alt="Asenix"
-              className={`h-12 w-auto brightness-0 md:h-14 ${dark ? "invert" : ""}`}
+              className={`h-u-68 w-auto brightness-0 ${dark ? "invert" : ""}`}
             />
-            <div>
-              <p className={`font-display text-[15px] font-bold ${dark ? "text-white" : "text-ink"}`}>{t.tagline}</p>
-              <p className={`mt-1 max-w-sm text-sm leading-relaxed ${dark ? "text-white/65" : "text-ink/65"}`}>{t.sub}</p>
+            <div className={`max-w-u-582 fs-u-20 lh-u-24 ${dark ? "text-white/90" : "text-[#04050a]/90"}`}>
+              <p className="font-display font-semibold">{t.tagline}</p>
+              <p className="text-pretty">{t.sub}</p>
             </div>
           </div>
 
           <div className="flex flex-col items-start gap-5 md:items-end">
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-              <p className={`font-display text-[12px] font-semibold ${dark ? "text-white" : "text-ink"}`}>
+            <div className="flex flex-wrap items-center gap-x-u-40 gap-y-3">
+              <p className={`font-display fs-u-16 font-semibold ${dark ? "text-white" : "text-black"}`}>
                 © {new Date().getFullYear()} Asenix
               </p>
               {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
-              <ul className={`flex flex-wrap gap-x-3 font-display text-[12px] font-semibold uppercase tracking-[0.1em] ${dark ? "text-white" : "text-ink"}`}>
+              <ul className={`flex flex-wrap gap-x-3 font-display fs-u-16 font-semibold uppercase tracking-[0.07em] ${dark ? "text-white" : "text-black"}`}>
                 {LEGAL_SLUGS.map((slug, i) => (
                   <li key={slug} className="flex gap-3">
                     {i > 0 && <span aria-hidden>/</span>}
@@ -99,7 +101,7 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
                   <button
                     type="button"
                     onClick={openCookiePreferences}
-                    className="cursor-pointer uppercase tracking-[0.1em] transition-colors duration-200 hover:text-electric"
+                    className="cursor-pointer uppercase tracking-[0.07em] transition-colors duration-200 hover:text-electric"
                   >
                     {dict.cookies.footerLink}
                   </button>
@@ -114,9 +116,10 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
                       aria-label={label}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-paper transition-transform duration-300 hover:-translate-y-0.5"
+                      // Figma: círculos de 41 px en #161614 con el icono en blanco
+                      className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white transition-transform duration-300 hover:-translate-y-0.5"
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="size-u-20" />
                     </a>
                   ))}
                 </div>
@@ -124,7 +127,7 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
             </div>
 
             <nav aria-label={t.navAria}>
-              <ul className={`flex flex-wrap gap-x-5 gap-y-2 text-xs ${dark ? "text-white/55" : "text-ink/55"}`}>
+              <ul className={`flex flex-wrap gap-x-5 gap-y-2 fs-u-13 ${dark ? "text-white/55" : "text-ink/55"}`}>
                 {links.map((item) => (
                   <li key={item.href}>
                     {item.href.startsWith("/#") ? (
@@ -142,7 +145,7 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
             </nav>
           </div>
         </div>
-        <p className={`mt-8 text-[11px] ${dark ? "text-white/40" : "text-ink/40"}`}>{t.rights}</p>
+        <p className={`mt-u-32 fs-u-12 ${dark ? "text-white/40" : "text-ink/40"}`}>{t.rights}</p>
       </div>
     </footer>
   );
