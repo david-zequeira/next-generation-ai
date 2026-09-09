@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, CalendarCheck, MessageSquare, PlusCircle, RefreshCcw, Workflow } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FinalCTA from "@/components/sections/FinalCTA";
@@ -23,7 +23,6 @@ import {
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 const EMAIL = COMPANY.email;
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Los campos viven como texto: un input vacío no es un 0, y 0 miente. */
@@ -69,17 +68,26 @@ function Reveal({ children, delay = 0, className }: { children: ReactNode; delay
   );
 }
 
-/** Título de paso dentro de la tarjeta azul marino: "1. Tu negocio" en azul. */
-function StepHead({ n, hint }: { n: string; hint?: string }) {
+/**
+ * Cabecera de cada paso (Figma): icono «plus circle» de 33 px en #779eff y
+ * título Montserrat Bold 25 en azul de marca; debajo, si lo hay, el subtítulo.
+ */
+function StepHead({ title, body }: { title: string; body?: string }) {
   return (
-    <div className="mb-5">
-      <h2 className="font-display text-[19px] font-semibold text-[#4d7dff]">{n.replace(" · ", ". ")}</h2>
-      {hint && <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-pulse/80">{hint}</p>}
+    <div>
+      <div className="flex items-center gap-u-15">
+        <PlusCircle className="size-u-33 shrink-0 text-[#779eff]" strokeWidth={2} />
+        <h2 className="font-display fs-u-25 leading-none font-bold text-electric">{title}</h2>
+      </div>
+      {body && <p className="mt-u-22 max-w-u-523 fs-u-16 lh-u-23 text-white">{body}</p>}
     </div>
   );
 }
 
-/** Campo claro sobre la tarjeta oscura, con el sufijo en azul, como en el Figma. */
+/**
+ * Campo del Figma: etiqueta SemiBold 16 blanca, caja blanca de 67 px con radio
+ * 16 y sombra corta, sufijo a la derecha, y la ayuda en Light 15 azul claro.
+ */
 function Field({
   label,
   hint,
@@ -94,29 +102,50 @@ function Field({
   suffix: string;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="font-display text-[13px] font-semibold text-white">{label}</span>
-      <span className="relative flex items-center">
+    <label className="block">
+      <span className="block font-display fs-u-16 lh-u-30 font-semibold text-white">{label}</span>
+      <span className="relative mt-u-13 flex items-center">
         <input
           type="text"
           inputMode="decimal"
           autoComplete="off"
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/[^\d.,]/g, ""))}
-          placeholder="…"
-          className="w-full rounded-xl bg-[#e9edff] px-4 py-3.5 pr-20 font-display text-base font-semibold text-ink outline-none ring-2 ring-transparent transition-shadow duration-200 placeholder:font-normal placeholder:text-ink/40 focus:ring-pulse"
+          placeholder="..."
+          className="h-u-67 w-full rounded-u-16 bg-white pl-u-26 pr-u-90 font-display fs-u-15 font-medium text-void shadow-[0_1px_4px_rgba(12,12,13,0.05),0_1px_4px_rgba(12,12,13,0.1)] outline-none ring-2 ring-transparent transition-shadow duration-200 placeholder:font-normal placeholder:text-void/60 focus:ring-electric"
         />
-        <span className="pointer-events-none absolute right-4 text-[13px] font-medium text-electric">{suffix}</span>
+        <span className="pointer-events-none absolute right-u-25 fs-u-15 font-medium text-black">{suffix}</span>
       </span>
-      <span className="text-[12px] leading-relaxed text-pulse/75">{hint}</span>
+      <span className="mt-u-13 block fs-u-15 lh-u-22 font-light text-cloud/80">{hint}</span>
     </label>
   );
 }
 
+/** Tarjeta de paso (Figma): 857 de ancho, radio 25, degradado navy→abyss y borde de 1 px azul en degradado. */
+function StepCard({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      style={{ ["--ring-w" as string]: "1px", ["--ring-bg" as string]: "linear-gradient(0deg, #1a4dff 0%, #102e99 100%)" }}
+      className={cn("ring-conic rounded-u-25 bg-[linear-gradient(180deg,#101837_0%,#050b21_61%)] px-u-28 pb-u-32 pt-u-40", className)}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Módulo claro de la derecha (Figma): radio 35, degradado blanco→#c7d7ff. */
+function LightModule({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("rounded-u-35 bg-[linear-gradient(180deg,#ffffff_0%,#c7d7ff_100%)] text-black", className)}>{children}</div>;
+}
+
+const SOLUTION_ICONS = [MessageSquare, CalendarCheck, Workflow];
+
 /**
- * /calculadora — la versión pública de la cuenta de retorno, en el tema del
- * Figma «Asenix Desktop»: el porqué arriba, el formulario en una tarjeta azul
- * marino a la izquierda y el resultado en tarjetas claras a la derecha.
+ * /calculadora — la versión pública de la cuenta de retorno, con las medidas
+ * del Figma «Asenix Desktop» (marco 984:14321): el porqué arriba con las tres
+ * fugas, la intro «//CALCULADORA», la gran tarjeta azul con los tres pasos y
+ * el módulo claro de la cuenta a la derecha, «cómo se recupera», las dudas
+ * razonables y la captura del desglose.
  *
  * Deliberadamente distinta de la que se usa en la llamada: cuatro preguntas en
  * vez de doce, hipótesis fijas y visibles en vez de deslizadores, tarifa pública
@@ -258,330 +287,356 @@ export default function CalculatorPage() {
     { k: "net", label: t.result.rows.net.label, note: t.result.rows.net.note, value: `${r.net < 0 ? "−" : ""}${eur(Math.abs(r.net))}`, tone: "net" },
   ];
 
+  // Figma: caja blanca de 67 px, radio 15, placeholder Light 16 negro
   const inputCls =
-    "w-full rounded-xl border border-white/40 bg-white/15 px-4 py-3.5 text-sm text-white outline-none transition-colors duration-200 placeholder:text-white/60 focus:border-white";
+    "h-u-67 w-full rounded-u-15 bg-white pl-u-23 pr-u-16 fs-u-16 font-light text-black shadow-[0_1px_4px_rgba(12,12,13,0.05),0_1px_4px_rgba(12,12,13,0.1)] outline-none ring-2 ring-transparent transition-shadow duration-200 placeholder:text-black/70 focus:ring-electric";
+
+  const loadExample = () => {
+    setFields(EXAMPLE);
+    setSector("belleza");
+  };
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-void">
       <Navbar />
 
       <main className="relative">
-        {/* ——— El porqué, como apertura: dónde se pierde el dinero ——— */}
-        <section className="relative overflow-hidden border-b border-line bg-[#040816] pb-20 pt-36 md:pt-44">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[420px] bg-[radial-gradient(70%_80%_at_50%_100%,rgba(26,77,255,0.35),transparent_70%)]"
-          />
-          <div className="relative mx-auto max-w-6xl px-6">
-            <Reveal className="mx-auto max-w-3xl text-center">
-              <h1 className="font-display text-[clamp(2rem,4.6vw,3.4rem)] font-bold leading-[1.1] tracking-[-0.02em] text-white">
-                {t.why.title}
-              </h1>
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mist md:text-lg">{t.why.body}</p>
+        {/* ——— Cabecera (Figma): titular 52/54, entradilla y las tres fugas ——— */}
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)] pb-u-160 pt-u-215">
+          <div className="relative mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+            <Reveal className="mx-auto flex flex-col items-center text-center">
+              <h1 className="max-w-u-768 font-display fs-u-52 lh-u-54 font-bold text-white text-balance">{t.why.headline}</h1>
+              <p className="mt-u-35 max-w-u-1002 fs-u-20 lh-u-28 text-cloud">{t.why.lede}</p>
             </Reveal>
 
-            <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
-              {t.why.items.map((item, i) => (
-                <Reveal key={item.title} delay={0.08 * i} className="flex gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-electric font-display text-xl font-medium text-neon">
+            <div className="mt-u-103 grid gap-10 md:grid-cols-3 md:gap-u-100">
+              {t.why.leaks.map((item, i) => (
+                <Reveal key={item.title} delay={0.08 * i} className="flex gap-u-30">
+                  {/* Figma: cuadrado azul de 52 con la cifra en lima */}
+                  <span className="flex size-u-52 shrink-0 items-center justify-center rounded-u-10 bg-electric font-display fs-u-28 font-semibold text-neon">
                     {i + 1}
                   </span>
-                  <div>
-                    <h3 className="font-display text-[17px] font-semibold leading-snug text-[#4d7dff]">{item.title}</h3>
-                    <p className="mt-3 text-[13px] leading-relaxed text-mist">{item.body}</p>
-                  </div>
+                  <p className="fs-u-20 lh-u-30 text-white">
+                    <span className="font-display fs-u-25 font-semibold text-electric">{item.title}</span> {item.body}
+                  </p>
                 </Reveal>
               ))}
-            </div>
-
-            {/* El isotipo en su orbe — el detalle del Figma a la derecha */}
-            <div aria-hidden className="pointer-events-none absolute -right-24 bottom-4 hidden 2xl:block">
-              <span className="relative flex h-40 w-40 items-center justify-center rounded-full bg-electric/25">
-                <span className="animate-float flex h-28 w-28 items-center justify-center rounded-full bg-electric shadow-[0_0_60px_-10px_rgba(26,77,255,0.9)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`${BASE}/isotipo.png`} alt="" className="h-12 w-12 brightness-0 invert" />
-                </span>
-              </span>
             </div>
           </div>
         </section>
 
-        {/* ——— Cabecera de la calculadora ——— */}
-        <header className="mx-auto max-w-3xl px-6 pb-14 pt-24 text-center md:pt-28">
-          <Reveal>
-            <p className="eyebrow">{t.header.eyebrow}</p>
-            <h2 className="mx-auto mt-5 font-display text-[clamp(1.6rem,3.2vw,2.4rem)] font-light leading-[1.2] text-white">
-              {t.header.titleA} {t.header.titleB}
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mist">{t.header.lede}</p>
+        {/* ——— Intro «//CALCULADORA» ——— */}
+        <header className="mx-auto flex max-w-[1920px] flex-col items-center px-5 pt-u-157 text-center md:px-10 xl:px-[12.5%]">
+          <Reveal className="flex flex-col items-center">
+            <p className="eyebrow">{t.intro.eyebrow}</p>
+            <h2 className="mt-u-65 max-w-u-946 font-display fs-u-35 lh-u-46 font-normal text-white text-balance">{t.intro.title}</h2>
+            <p className="mt-u-25 max-w-u-1007 fs-u-20 lh-u-28 text-cloud">{t.intro.body}</p>
           </Reveal>
         </header>
 
-        {/* ——— Formulario + resultado ——— */}
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 lg:grid-cols-[1fr_minmax(320px,380px)] lg:items-start">
-          {/* — columna izquierda: la tarjeta azul marino — */}
-          <Reveal className="rounded-[26px] border border-pulse/30 bg-gradient-to-b from-[#0e2a8c] via-[#0c1d5e] to-[#0a1440] p-6 shadow-[0_50px_100px_-50px_rgba(26,77,255,0.7)] md:p-9">
-            <StepHead n={t.form.step1} />
-            <p className="font-display text-[13px] font-semibold text-white">{t.form.sectorLabel}</p>
-            <p className="mt-1 text-[12px] text-pulse/75">{t.form.sectorHint}</p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {t.form.sectors.map((s) => (
+        {/* ——— Formulario + cuenta (Figma: tarjeta 947 + módulo 462, hueco 33) ——— */}
+        <div className="mx-auto mt-u-130 grid max-w-[1920px] gap-8 px-5 md:px-10 lg:grid-cols-[minmax(0,947fr)_minmax(0,462fr)] lg:items-start lg:gap-u-33 xl:px-[12.5%]">
+          {/* — la gran tarjeta azul marino con los tres pasos — */}
+          <Reveal>
+            <div
+              style={{ ["--ring-w" as string]: "0.5px" }}
+              className="ring-conic rounded-u-35 bg-[linear-gradient(180deg,rgba(16,26,62,0.5)_0%,rgba(26,59,169,0.5)_100%)] p-4 pb-u-56 sm:p-u-46"
+            >
+              {/* 1 · Tu negocio */}
+              <StepCard>
+                <StepHead title={t.form.step1Title} />
+                <p className="mt-u-40 font-display fs-u-16 lh-u-30 font-semibold text-white">{t.form.sectorLabel}</p>
+                <p className="mt-u-2 fs-u-15 lh-u-22 text-white">{t.form.sectorHint}</p>
+                {/* Figma: pastillas de 37 px en #779eff con el texto SemiBold 15 negro */}
+                <div className="mt-u-28 flex flex-wrap gap-x-u-15 gap-y-u-25">
+                  {t.form.sectors.map((s) => (
+                    <button
+                      key={s.k}
+                      type="button"
+                      aria-pressed={sector === s.k}
+                      onClick={() => pickSector(s.k, s.visits)}
+                      className={cn(
+                        "h-u-37 cursor-pointer rounded-full px-u-22 font-display fs-u-15 font-semibold transition-all duration-200",
+                        sector === s.k ? "bg-electric text-white shadow-[0_10px_24px_-12px_rgba(26,77,255,1)]" : "bg-[#779eff] text-black hover:bg-cloud"
+                      )}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-u-46 grid gap-6 sm:grid-cols-2 sm:gap-x-u-31">
+                  <Field label={t.form.ticketLabel} hint={t.form.ticketHint} value={fields.ticket} onChange={set("ticket")} suffix="€" />
+                  <Field
+                    label={t.form.visitsLabel}
+                    hint={t.form.visitsHint}
+                    value={fields.visits}
+                    onChange={set("visits")}
+                    suffix={locale === "es" ? "Al año" : "A year"}
+                  />
+                </div>
+                {r.clientValue > 0 && (
+                  <p className="mt-u-24 rounded-u-16 bg-white/[0.08] px-u-20 py-u-14 fs-u-15 text-cloud">
+                    {t.result.clientValueLabel}{" "}
+                    <strong className="font-display font-semibold text-neon">{eur(r.clientValue)}</strong>
+                  </p>
+                )}
+              </StepCard>
+
+              {/* 2 · Lo que se escapa hoy */}
+              <StepCard className="mt-u-30">
+                <StepHead title={t.form.step2Title} body={t.form.step2Body} />
+                <div className="mt-u-38 grid gap-6 sm:grid-cols-2 sm:gap-x-u-31">
+                  <Field
+                    label={t.form.missedLabel}
+                    hint={t.form.missedHint}
+                    value={fields.missed}
+                    onChange={set("missed")}
+                    suffix={locale === "es" ? "/ Sem" : "/ wk"}
+                  />
+                  <Field
+                    label={t.form.noShowsLabel}
+                    hint={t.form.noShowsHint}
+                    value={fields.noShows}
+                    onChange={set("noShows")}
+                    suffix={locale === "es" ? "/ Mes" : "/ mo"}
+                  />
+                </div>
+              </StepCard>
+
+              {/* 3 · Con qué plan lo comparo */}
+              <StepCard className="mt-u-30">
+                <StepHead title={t.form.step3Title} body={t.form.step3Body} />
+                {/* Figma: tarjetas de 246×205, radio 15; la elegida en degradado azul, las otras claras */}
+                <div className="mt-u-40 grid gap-u-15 sm:grid-cols-3">
+                  {t.form.plans.map((p) => {
+                    const data = CALC_PLANS.find((c) => c.k === p.k) ?? CALC_PLANS[0];
+                    const active = planKey === p.k;
+                    return (
+                      <button
+                        key={p.k}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setPlanKey(p.k)}
+                        className={cn(
+                          "min-h-u-205 cursor-pointer rounded-u-15 px-u-22 pb-u-24 pt-u-21 text-left transition-all duration-300",
+                          active
+                            ? "bg-[linear-gradient(0deg,#0f1f60_0%,#103acf_100%)] text-white shadow-[0_20px_50px_-20px_rgba(26,77,255,0.9)]"
+                            : "bg-[linear-gradient(180deg,#ffffff_0%,#c7d7ff_100%)] text-black hover:brightness-105"
+                        )}
+                      >
+                        <p className="font-display fs-u-22 lh-u-30 font-semibold">{p.name}</p>
+                        <p className={cn("mt-u-2 fs-u-14 lh-u-16 font-medium", active ? "text-cloud" : "text-void")}>{p.desc}</p>
+                        <p className={cn("mt-u-48 font-display fs-u-18 lh-u-21 font-semibold", active ? "text-neon" : "text-electric")}>
+                          {eur(data.mrr)}
+                          {t.form.perMonth}
+                        </p>
+                        <p className={cn("fs-u-16 lh-u-21", active ? "text-white" : "text-black")}>
+                          + {eur(data.setup)} {t.form.setupNote}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </StepCard>
+
+              {/* Figma: «Ver un ejemplo» 246×66 en #c7d7ff · «Empezar de cero» oscuro con borde azul */}
+              <div className="mt-u-50 flex flex-wrap justify-center gap-u-32">
                 <button
-                  key={s.k}
                   type="button"
-                  aria-pressed={sector === s.k}
-                  onClick={() => pickSector(s.k, s.visits)}
-                  className={cn(
-                    "cursor-pointer rounded-full px-4 py-2 text-[13px] font-medium transition-all duration-200",
-                    sector === s.k ? "bg-electric text-white shadow-[0_10px_24px_-12px_rgba(26,77,255,1)]" : "bg-[#dfe6ff] text-ink hover:bg-white"
-                  )}
+                  onClick={loadExample}
+                  className="btn-light-sm inline-flex h-u-66 min-w-u-246 cursor-pointer items-center justify-center rounded-full px-u-30 font-display fs-u-15 font-semibold text-black"
                 >
-                  {s.label}
+                  {t.form.example}
                 </button>
-              ))}
-            </div>
-
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              <Field label={t.form.ticketLabel} hint={t.form.ticketHint} value={fields.ticket} onChange={set("ticket")} suffix="€" />
-              <Field
-                label={t.form.visitsLabel}
-                hint={t.form.visitsHint}
-                value={fields.visits}
-                onChange={set("visits")}
-                suffix={locale === "es" ? "Al año" : "A year"}
-              />
-            </div>
-            {r.clientValue > 0 && (
-              <p className="mt-5 rounded-xl bg-white/[0.08] px-4 py-3 text-sm text-pulse">
-                {t.result.clientValueLabel}{" "}
-                <strong className="font-display font-semibold text-neon">{eur(r.clientValue)}</strong>
-              </p>
-            )}
-
-            <div className="my-10 h-px bg-pulse/25" />
-
-            <StepHead n={t.form.step2} hint={t.form.step2Hint} />
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Field
-                label={t.form.missedLabel}
-                hint={t.form.missedHint}
-                value={fields.missed}
-                onChange={set("missed")}
-                suffix={locale === "es" ? "/ Sem" : "/ wk"}
-              />
-              <Field
-                label={t.form.noShowsLabel}
-                hint={t.form.noShowsHint}
-                value={fields.noShows}
-                onChange={set("noShows")}
-                suffix={locale === "es" ? "/ Mes" : "/ mo"}
-              />
-            </div>
-
-            <div className="my-10 h-px bg-pulse/25" />
-
-            <StepHead n={t.form.step3} hint={t.form.planHint} />
-            <div className="grid gap-4 sm:grid-cols-2">
-              {t.form.plans.map((p) => {
-                const data = CALC_PLANS.find((c) => c.k === p.k) ?? CALC_PLANS[0];
-                const active = planKey === p.k;
-                return (
-                  <button
-                    key={p.k}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => setPlanKey(p.k)}
-                    className={cn(
-                      "cursor-pointer rounded-2xl p-5 text-left transition-all duration-300",
-                      active
-                        ? "card-blue text-white shadow-[0_20px_50px_-20px_rgba(26,77,255,0.9)] ring-2 ring-pulse"
-                        : "bg-[#e9edff] text-ink hover:bg-white"
-                    )}
-                  >
-                    <p className="font-display text-lg font-semibold">{p.name}</p>
-                    <p className={cn("mt-1 text-[12.5px] leading-relaxed", active ? "text-white/85" : "text-ink/70")}>{p.desc}</p>
-                    <p className={cn("mt-4 font-display text-[17px] font-semibold", active ? "text-white" : "text-electric")}>
-                      {eur(data.mrr)}
-                      {t.form.perMonth}
-                    </p>
-                    <p className={cn("text-[12px]", active ? "text-white/80" : "text-ink/70")}>
-                      + {eur(data.setup)} {t.form.setupNote}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setFields(EXAMPLE);
-                  setSector("belleza");
-                }}
-                className="btn-blue inline-flex cursor-pointer items-center rounded-full px-8 py-3 font-display text-sm font-semibold"
-              >
-                {t.form.example}
-              </button>
-              <button
-                type="button"
-                onClick={reset}
-                className="inline-flex cursor-pointer items-center rounded-full border border-pulse/60 px-8 py-3 font-display text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10"
-              >
-                {t.form.reset}
-              </button>
+                <button
+                  type="button"
+                  onClick={reset}
+                  className="btn-outline inline-flex h-u-66 min-w-u-246 cursor-pointer items-center justify-center gap-u-10 rounded-full px-u-30 font-display fs-u-15 font-semibold text-white"
+                >
+                  {t.form.reset}
+                  <RefreshCcw className="size-u-18" strokeWidth={2} />
+                </button>
+              </div>
             </div>
           </Reveal>
 
-          {/* — columna derecha: el resultado, pegado arriba — */}
+          {/* — el módulo claro de la cuenta, pegado arriba — */}
           <div className="grid gap-6 lg:sticky lg:top-24">
-            <Reveal delay={0.1} className="rounded-[26px] bg-[#eef1fe] p-7 text-ink">
-              <p className="eyebrow">{t.result.eyebrow}</p>
+            <Reveal delay={0.1}>
               {!hasData && (
-                <>
-                  <h2 className="mt-4 font-display text-[22px] font-bold tracking-tight text-ink">{t.result.idleTitle}</h2>
-                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.idleBody}</p>
+                // Figma: módulo de 459×362 con la invitación a rellenar
+                <LightModule className="px-u-42 pb-u-40 pt-u-40">
+                  <p className="eyebrow">{t.result.eyebrow}</p>
+                  <h2 className="mt-u-31 font-display fs-u-25 lh-u-30 font-bold">{t.result.idleTitle}</h2>
+                  <p className="mt-u-8 fs-u-16 lh-u-22">{t.result.idleBody}</p>
                   <button
                     type="button"
-                    onClick={() => {
-                      setFields(EXAMPLE);
-                      setSector("belleza");
-                    }}
-                    className="btn-blue mt-6 w-full cursor-pointer rounded-full py-3.5 font-display text-sm font-semibold"
+                    onClick={loadExample}
+                    className="mx-auto mt-u-32 flex h-u-66 w-u-298 max-w-full cursor-pointer items-center justify-center rounded-full border border-pulse bg-electric font-display fs-u-15 font-semibold text-white transition-colors hover:bg-[#2557ff]"
                   >
-                    {t.form.example}
+                    {t.form.calcCta}
                   </button>
-                </>
-              )}
-
-              {hasData && !worksOut && (
-                <>
-                  <h2 className="mt-4 font-display text-[22px] font-bold tracking-tight text-ink">{t.result.negTitle}</h2>
-                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.negBody}</p>
-                </>
-              )}
-
-              {worksOut && (
-                <>
-                  <p className="mt-4 font-display text-[13px] font-semibold text-ink">{t.result.paybackLabel}</p>
-                  <p className="mt-1 font-display text-[clamp(2.4rem,5vw,3rem)] font-bold leading-none tracking-[-0.03em] text-ink">
-                    {months(r.payback)}
-                    <span className="ml-2 font-display text-xl font-semibold tracking-normal">{t.result.months}</span>
-                  </p>
-                  <p className="mt-3 text-[13.5px] leading-relaxed text-ink/70">{t.result.paybackBody}</p>
-
-                  {/* Barra: cuánto de la fuga se recupera y cuánto no */}
-                  <div className="mt-6">
-                    <div className="flex h-2 overflow-hidden rounded-full bg-[#d5dae9]">
-                      <div className="h-full bg-electric transition-[width] duration-500" style={{ width: `${gainPct}%` }} />
-                    </div>
-                    <div className="mt-2 flex justify-between text-[11px] text-ink/65">
-                      <span>
-                        {t.result.barGain} · <strong className="font-semibold text-electric">{eur(r.recovered)}</strong>
-                      </span>
-                      <span>
-                        {t.result.barLeak} · <strong className="font-semibold text-ink">{eur(r.leak - r.recovered)}</strong>
-                      </span>
-                    </div>
-                  </div>
-                </>
+                </LightModule>
               )}
 
               {hasData && (
-                <dl className="mt-7 grid gap-3.5 rounded-2xl bg-[#e2e7fb] p-5">
-                  {rows.map((row) => (
-                    <div key={row.k} className="flex items-start justify-between gap-4">
-                      <dt className="min-w-0">
-                        <span className={cn("block font-display text-[12.5px] font-semibold", row.tone === "net" ? "text-ink" : "text-ink")}>
-                          {row.label}
-                        </span>
-                        <span className="mt-0.5 block text-[11px] leading-snug text-ink/60">{row.note}</span>
-                      </dt>
-                      <dd
-                        className={cn(
-                          "shrink-0 font-display text-[13px] font-semibold tabular-nums",
-                          row.tone === "cost" && "text-ink/70",
-                          row.tone === "net" && (r.net < 0 ? "text-[#d0325f]" : "text-electric"),
-                          (!row.tone || row.tone === "gain") && "text-ink"
-                        )}
-                      >
-                        {row.value}
-                      </dd>
+                // Figma: módulo de 462 de ancho con la cuenta completa
+                <LightModule className="px-u-39 pb-u-53 pt-u-49">
+                  <p className="eyebrow">{t.result.eyebrow}</p>
+
+                  {!worksOut && (
+                    <>
+                      <h2 className="mt-u-31 font-display fs-u-25 lh-u-30 font-bold">{t.result.negTitle}</h2>
+                      <p className="mt-u-8 fs-u-16 lh-u-22">{t.result.negBody}</p>
+                    </>
+                  )}
+
+                  {worksOut && (
+                    <>
+                      <p className="mt-u-40 font-display leading-none">
+                        <span className="fs-u-20 font-semibold">{t.result.paybackLabel}</span>
+                        <span className="ml-u-16 fs-u-45 font-bold">{months(r.payback)}</span>
+                        <span className="ml-u-8 fs-u-25 font-bold">{t.result.months}</span>
+                      </p>
+                      <div className="mt-u-15 h-px bg-[#354d8e]/60" />
+                      <p className="mt-u-12 fs-u-16 lh-u-19">{t.result.paybackBody}</p>
+
+                      {/* Barra: cuánto de la fuga se recupera y cuánto no */}
+                      <div className="mt-u-70">
+                        <div className="flex h-u-11 overflow-hidden rounded-u-15 bg-cloud/50">
+                          <div className="h-full rounded-u-15 bg-[linear-gradient(90deg,#779eff_37%,#1a4dff_100%)] transition-[width] duration-500" style={{ width: `${gainPct}%` }} />
+                        </div>
+                        <div className="mt-u-11 flex justify-between gap-4 fs-u-15 lh-u-19">
+                          <span>
+                            {t.result.barGain}
+                            <strong className="block font-display font-bold text-electric">{eur(r.recovered)}</strong>
+                          </span>
+                          <span className="text-right">
+                            {t.result.barLeak}
+                            <strong className="block font-display font-bold text-electric">{eur(r.leak - r.recovered)}</strong>
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Figma: bloque de filas 383×441, radio 15, #c7d7ff al 50 % */}
+                  <dl className="mt-u-30 grid gap-u-18 rounded-u-15 bg-cloud/50 px-u-32 py-u-30">
+                    {rows.map((row) => (
+                      <div key={row.k} className="flex items-start justify-between gap-4">
+                        <dt className="min-w-0 fs-u-15 lh-u-18">
+                          <span className="block font-display font-semibold">{row.label}</span>
+                          <span className="block">{row.note}</span>
+                        </dt>
+                        <dd
+                          className={cn(
+                            "shrink-0 font-display fs-u-16 font-bold tabular-nums",
+                            row.tone === "net" && r.net < 0 ? "text-[#d0325f]" : "text-black"
+                          )}
+                        >
+                          {row.value}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+
+                  {worksOut && (
+                    // Figma: bloque de retorno 383×105, radio 15, #9aa5c0 al 80 %
+                    <div className="mt-u-18 flex items-center justify-between gap-4 rounded-u-15 bg-[rgba(154,165,192,0.8)] px-u-32 py-u-23">
+                      <span className="fs-u-14 lh-u-18">
+                        <span className="block font-display font-semibold">{t.result.roiLabel}</span>
+                        {t.result.roiNote}
+                      </span>
+                      <span className="font-display fs-u-20 font-bold tabular-nums text-electric">{nf.format(Math.round(r.roi))} %</span>
                     </div>
-                  ))}
-                </dl>
-              )}
+                  )}
 
-              {worksOut && (
-                <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-[#c9d0e6] px-5 py-4">
-                  <span className="text-[12.5px] font-semibold text-ink">
-                    {t.result.roiLabel}
-                    <span className="mt-0.5 block text-[11px] font-normal text-ink/65">{t.result.roiNote}</span>
-                  </span>
-                  <span className="font-display text-[15px] font-bold tabular-nums text-ink">{nf.format(Math.round(r.roi))} %</span>
-                </div>
-              )}
+                  <p className="mt-u-30 fs-u-14 lh-u-19">{t.assumptions.warning}</p>
 
-              {hasData && <p className="mt-5 text-[12px] leading-relaxed text-ink/70">{t.assumptions.warning}</p>}
-
-              {hasData && (
-                <a href="#desglose" className="btn-blue mt-6 flex w-full cursor-pointer items-center justify-center rounded-full py-3.5 font-display text-sm font-semibold">
-                  {!worksOut ? t.result.negCta : t.lead.submit}
-                </a>
+                  <a
+                    href="#desglose"
+                    className="mx-auto mt-u-36 flex h-u-66 w-u-250 max-w-full cursor-pointer items-center justify-center rounded-full bg-electric font-display fs-u-15 font-semibold text-white transition-colors hover:bg-[#2557ff]"
+                  >
+                    {!worksOut ? t.result.negCta : t.lead.submit}
+                  </a>
+                </LightModule>
               )}
             </Reveal>
           </div>
         </div>
 
-        {/* ——— Cómo hacemos los cálculos ——— */}
-        <section className="mx-auto max-w-4xl px-6 pt-28 text-center md:pt-36">
-          <Reveal>
-            <p className="eyebrow">{locale === "es" ? "Cómo hacemos los cálculos" : "How we do the maths"}</p>
-            <h2 className="mt-5 font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold leading-[1.15] tracking-[-0.02em] text-white">
-              {t.assumptions.title}
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-mist">{t.assumptions.body}</p>
-          </Reveal>
-          <div className="mt-12 grid gap-8 sm:grid-cols-3">
-            {t.assumptions.stats.map((s, i) => (
-              <Reveal key={s.label} delay={0.08 * i}>
-                <p className="font-display text-[clamp(2.4rem,4.5vw,3.2rem)] font-bold leading-none text-electric">{s.value}</p>
-                <p className="mt-2 text-[13px] text-frost/85">{s.label}</p>
-              </Reveal>
-            ))}
+        {/* ——— Cómo se recupera (Figma): tres tarjetas con su cifra ——— */}
+        <section className="mt-u-87 bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)] pb-u-100 pt-u-71">
+          <div className="mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+            <Reveal className="flex flex-col items-center text-center">
+              <p className="eyebrow">{t.solutions.eyebrow}</p>
+              <h2 className="mt-u-50 max-w-u-946 font-display fs-u-35 lh-u-46 font-normal text-white text-balance">{t.solutions.title}</h2>
+            </Reveal>
+            <div className="mx-auto mt-u-150 grid max-w-u-1196 gap-6 md:grid-cols-3 md:gap-u-43">
+              {t.solutions.cards.map((c, i) => {
+                const Icon = SOLUTION_ICONS[i];
+                return (
+                  <Reveal
+                    key={c.title}
+                    delay={0.08 * i}
+                    className={cn(
+                      "ring-conic relative flex flex-col items-center rounded-u-20 px-u-32 pb-u-28 pt-u-25 text-center",
+                      i === 0 ? "bg-electric/10" : "bg-[linear-gradient(237deg,#101837_0%,#050b21_100%)]"
+                    )}
+                  >
+                    {/* Figma: las tres tarjetas van unidas por una línea a la altura del título */}
+                    {i < t.solutions.cards.length - 1 && (
+                      <span aria-hidden className="absolute right-[calc(-1*max(26px,43*var(--u)))] top-u-132 hidden h-px w-u-43 bg-[#354d8e] md:block" />
+                    )}
+                    <span className="flex size-u-52 items-center justify-center rounded-u-18 bg-electric">
+                      <Icon className="size-u-29 text-[#101837]" strokeWidth={2} />
+                    </span>
+                    <h3 className="mt-u-15 font-display fs-u-24 lh-u-30 font-semibold text-white">{c.title}</h3>
+                    {/* Dos líneas reservadas: así la raya y la cifra quedan a la misma altura en las tres */}
+                    <p className="mt-u-9 min-h-u-44 fs-u-15 lh-u-22 text-cloud text-balance">{c.sub}</p>
+                    <div className="mt-u-21 h-px w-full bg-[#354d8e]" />
+                    <p className="mt-u-19 flex flex-wrap items-baseline justify-center gap-x-u-8">
+                      <span className="whitespace-nowrap font-display fs-u-28 font-semibold text-neon">{c.stat}</span>
+                      <span className="fs-u-15 text-white">{c.statLabel}</span>
+                    </p>
+                  </Reveal>
+                );
+              })}
+            </div>
+            <Reveal delay={0.2} className="mt-u-119 text-center">
+              <p className="font-display fs-u-18 lh-u-24 font-medium text-frost">
+                {t.solutions.linkLead}{" "}
+                <Link href="/contacto" className="text-mint transition-colors hover:text-white">
+                  {t.solutions.link}
+                </Link>
+              </p>
+              <p className="mx-auto mt-u-40 max-w-[80ch] fs-u-13 lh-u-20 text-mist">
+                <Rich text={t.assumptions.math} strongClass="font-semibold text-frost/90" />
+              </p>
+            </Reveal>
           </div>
-          <Reveal delay={0.2} className="mt-12 grid gap-4 text-left md:grid-cols-3">
-            {t.assumptions.items.map((item, i) => (
-              <div key={i} className="rounded-2xl border border-pulse/25 bg-[#070f2c] p-5 text-[13px] leading-relaxed text-mist">
-                <Rich text={item} />
-              </div>
-            ))}
-          </Reveal>
-          <Reveal delay={0.25}>
-            <p className="mx-auto mt-6 max-w-[80ch] text-[12.5px] leading-relaxed text-mist/80">
-              <Rich text={t.assumptions.math} strongClass="font-semibold text-frost/90" />
-            </p>
-          </Reveal>
         </section>
 
-        {/* ——— Preguntas ——— */}
-        <section className="mx-auto max-w-3xl px-6 pt-28 md:pt-36">
-          <Reveal className="text-center">
+        {/* ——— Dudas razonables (Figma): filas de 703×78 ——— */}
+        <section className="mx-auto max-w-[1920px] px-5 pt-u-100 md:px-10 xl:px-[12.5%]">
+          <Reveal className="flex flex-col items-center text-center">
             <p className="eyebrow">{t.faq.eyebrow}</p>
-            <h2 className="mt-5 font-display text-[clamp(1.8rem,3.8vw,2.8rem)] font-bold leading-tight tracking-[-0.02em] text-white">
-              {t.faq.title}
-            </h2>
+            <h2 className="mt-u-74 max-w-u-704 font-display fs-u-48 lh-u-52 font-bold text-white">{t.faq.title}</h2>
           </Reveal>
-          <Reveal delay={0.1} className="mt-10 space-y-3">
+          <Reveal delay={0.1} className="mx-auto mt-u-65 flex max-w-u-703 flex-col gap-u-14">
             {t.faq.items.map((item) => (
-              <details key={item.q} className="group/faq rounded-[22px] border border-pulse/30 bg-[#0b1435]/70 px-6 py-4 transition-colors open:bg-[#0e1a44]">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-[13px] font-medium text-white [&::-webkit-details-marker]:hidden">
+              <details
+                key={item.q}
+                className="group/faq rounded-u-20 border-[0.5px] border-cloud/25 bg-cloud/5 px-u-31 py-u-18 transition-colors open:bg-cloud/10"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display fs-u-16 lh-u-23 font-medium text-white [&::-webkit-details-marker]:hidden">
                   {item.q}
-                  <span aria-hidden className="shrink-0 text-xl font-medium leading-none text-[#4d7dff] transition-transform duration-300 group-open/faq:rotate-45">
+                  <span aria-hidden className="shrink-0 fs-u-36 font-normal leading-none text-electric transition-transform duration-300 group-open/faq:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-3 max-w-[70ch] text-sm leading-relaxed text-mist">
+                <p className="mt-u-14 max-w-[70ch] fs-u-15 lh-u-22 text-cloud">
                   <Rich text={item.a} />
                 </p>
               </details>
@@ -589,82 +644,92 @@ export default function CalculatorPage() {
           </Reveal>
         </section>
 
-        {/* ——— Captura: el desglose por escrito ——— */}
-        <section id="desglose" className="mx-auto mt-28 max-w-5xl scroll-mt-24 px-6 md:mt-36">
-          <Reveal className="grid overflow-hidden rounded-[26px] border border-pulse/40 md:grid-cols-2">
-            <div className="bg-[#070f2c] p-8 md:p-10">
-              <h2 className="font-display text-[clamp(1.6rem,3vw,2.1rem)] font-semibold leading-tight text-white">{t.lead.title}</h2>
-              <p className="mt-4 text-[13.5px] leading-relaxed text-mist">{t.lead.body}</p>
-              <p className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#4d7dff]">
-                {t.lead.tags.map((tag, i) => (
-                  <span key={tag} className="inline-flex items-center gap-2">
-                    {tag}
-                    {i < t.lead.tags.length - 1 && <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.6} />}
-                  </span>
-                ))}
-              </p>
-
-              <div className="mt-8 rounded-2xl border border-pulse/40 bg-[#0e1a44]/60 p-5">
-                <p className="font-display text-[17px] font-medium text-white">{t.diag.badge}</p>
-                <p className="mt-2 text-[13px] leading-relaxed text-mist">
-                  <Rich text={t.diag.body} />
+        {/* ——— Captura (Figma): tarjeta 1196×568 con el formulario en el panel azul de la derecha ——— */}
+        <section id="desglose" className="mx-auto mt-u-216 max-w-[1920px] scroll-mt-24 px-5 md:px-10">
+          <Reveal>
+            <div
+              style={{ ["--ring-w" as string]: "1.3px" }}
+              className="ring-conic mx-auto grid max-w-u-1196 overflow-hidden rounded-u-35 bg-[linear-gradient(180deg,#09112d_0%,#0e1f5c_100%)] md:grid-cols-[minmax(0,582fr)_minmax(0,614fr)]"
+            >
+              <div className="px-6 pb-u-40 pt-u-51 md:pl-u-50 md:pr-u-47">
+                <h2 className="max-w-u-462 font-display fs-u-35 lh-u-40 font-semibold text-white">{t.lead.figTitle}</h2>
+                <p className="mt-u-65 max-w-u-485 fs-u-16 lh-u-22 text-white">{t.lead.figBody}</p>
+                {/* Figma: tres pastillas de 35 px con borde en degradado y flechas entre ellas */}
+                <p className="mt-u-32 flex flex-wrap items-center gap-u-6">
+                  {t.lead.tags.map((tag, i) => (
+                    <span key={tag} className="inline-flex items-center gap-u-6">
+                      <span className="eyebrow eyebrow-gradient before:content-none">{tag}</span>
+                      {i < t.lead.tags.length - 1 && <ArrowRight className="size-u-19 text-electric" strokeWidth={1.5} />}
+                    </span>
+                  ))}
                 </p>
-              </div>
-              <Link href="/precios" className="group mt-8 inline-flex items-center gap-1.5 font-display text-sm font-medium text-mint transition-colors hover:text-white">
-                {t.diag.cta}
-                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
-              </Link>
-            </div>
 
-            <div className="card-blue p-8 text-white md:p-10">
-              {status === "ok" ? (
-                <div className="flex h-full flex-col justify-center text-center">
-                  <p className="font-display text-2xl font-semibold">{t.lead.okTitle}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">{t.lead.okBody}</p>
+                {/* Figma: caja 485×186, radio 16, degradado #c7d7ff→#778199, texto negro */}
+                <div className="mt-u-33 max-w-u-485 rounded-u-16 bg-[linear-gradient(180deg,#c7d7ff_0%,#778199_100%)] px-u-20 pb-u-22 pt-u-20 text-black">
+                  <p className="font-display fs-u-18 lh-u-24 font-bold">{t.diag.badge}</p>
+                  <p className="mt-u-6 fs-u-15 lh-u-19">
+                    <Rich text={t.diag.body} strongClass="font-semibold" />
+                  </p>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="grid gap-5">
-                  <label className="grid gap-2">
-                    <span className="font-display text-[13px] font-semibold">{t.lead.nameLabel}</span>
-                    <input name="name" required maxLength={120} placeholder={t.lead.namePh} className={inputCls} />
-                  </label>
-                  <label className="grid gap-2">
-                    <span className="font-display text-[13px] font-semibold">{t.lead.contactLabel}</span>
-                    <input name="contact" required maxLength={160} placeholder={t.lead.contactPh} className={inputCls} />
-                  </label>
+                <Link href="/precios" className="group mt-u-25 inline-flex items-center gap-1.5 font-display fs-u-18 lh-u-24 font-medium text-mint transition-colors hover:text-white">
+                  {t.diag.cta}
+                  <ArrowRight className="size-u-18 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
+                </Link>
+              </div>
 
-                  {/* Honeypot anti-bots: fuera de pantalla y fuera del tab order */}
-                  <div aria-hidden className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
-                    <label>
-                      website
-                      <input name="website" type="text" tabIndex={-1} autoComplete="off" />
-                    </label>
+              {/* Panel azul: 614 de ancho, radio solo a la derecha, borde 1,3 azul claro */}
+              <div className="border-t border-pulse/50 bg-[linear-gradient(180deg,#1a4dff_0%,#0a1540_100%)] px-6 pb-u-40 pt-u-78 text-white md:border-l md:border-t-0 md:px-u-85">
+                {status === "ok" ? (
+                  <div className="flex h-full flex-col justify-center text-center">
+                    <p className="font-display fs-u-25 font-semibold">{t.lead.okTitle}</p>
+                    <p className="mt-3 fs-u-15 lh-u-22 text-white/85">{t.lead.okBody}</p>
                   </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="grid">
+                    <label className="grid gap-u-10">
+                      <span className="font-display fs-u-18 lh-u-25 font-semibold">{t.lead.nameLabel}</span>
+                      <input name="name" required maxLength={120} placeholder={t.lead.namePh} className={inputCls} />
+                    </label>
+                    <label className="mt-u-22 grid gap-u-10">
+                      <span className="font-display fs-u-18 lh-u-25 font-semibold">{t.lead.contactLabel}</span>
+                      <input name="contact" required maxLength={160} placeholder={t.lead.contactPh} className={inputCls} />
+                    </label>
 
-                  {status === "error" && (
-                    <p className="rounded-xl bg-white/15 px-4 py-3 text-sm">
-                      {t.lead.errorText}{" "}
-                      <a href={`mailto:${EMAIL}`} className="font-semibold underline">
-                        {EMAIL}
-                      </a>
-                    </p>
-                  )}
+                    {/* Honeypot anti-bots: fuera de pantalla y fuera del tab order */}
+                    <div aria-hidden className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+                      <label>
+                        website
+                        <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+                      </label>
+                    </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === "sending"}
-                    className="mx-auto mt-2 cursor-pointer rounded-full bg-white px-9 py-3.5 font-display text-sm font-semibold text-ink shadow-[0_14px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
-                  >
-                    {status === "sending" ? t.lead.sending : t.lead.submit}
-                  </button>
-                  <p className="text-center text-[11px] leading-relaxed text-white/75">{t.lead.privacyNote}</p>
-                </form>
-              )}
+                    {status === "error" && (
+                      <p className="mt-u-20 rounded-u-15 bg-white/15 px-4 py-3 fs-u-14">
+                        {t.lead.errorText}{" "}
+                        <a href={`mailto:${EMAIL}`} className="font-semibold underline">
+                          {EMAIL}
+                        </a>
+                      </p>
+                    )}
+
+                    {/* Figma: botón 271×66 en #c7d7ff con la flecha azul */}
+                    <button
+                      type="submit"
+                      disabled={status === "sending"}
+                      className="btn-light mx-auto mt-u-54 inline-flex h-u-66 min-w-u-271 cursor-pointer items-center justify-center gap-u-12 rounded-full px-u-30 font-display fs-u-15 font-semibold text-void transition-transform duration-300 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
+                    >
+                      {status === "sending" ? t.lead.sending : t.lead.submit}
+                      <ArrowRight className="size-u-19 text-electric" strokeWidth={3} />
+                    </button>
+                    <p className="mt-u-44 text-center fs-u-12 lh-u-22 font-medium text-cloud">{t.lead.privacyNote}</p>
+                  </form>
+                )}
+              </div>
             </div>
           </Reveal>
 
           <Reveal delay={0.1} className="mt-10 text-center">
-            <Link href="/precios" className="group inline-flex items-center gap-1.5 font-display text-[15px] font-medium text-mint transition-colors hover:text-white">
+            <Link href="/precios" className="group inline-flex items-center gap-1.5 font-display fs-u-15 font-medium text-mint transition-colors hover:text-white">
               {t.toPricing}
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
@@ -672,11 +737,11 @@ export default function CalculatorPage() {
         </section>
 
         {/* ——— Resumen fijo en móvil ———
-            El hueco de la derecha no es decorativo: ahí aterrizan los dos
-            botones flotantes de chat y voz, que taparían la cifra. */}
+            El hueco de la derecha no es decorativo: ahí aterriza el botón
+            flotante del chat, que taparía la cifra. */}
         {hasData && (
           <div className="sticky bottom-0 z-40 mt-16 border-t border-line bg-abyss/90 px-6 py-3 backdrop-blur-xl lg:hidden">
-            <div className="pr-[9.25rem]">
+            <div className="pr-[6rem]">
               <p className="truncate text-[10px] uppercase tracking-[0.16em] text-mist/70">{t.result.rows.net.label}</p>
               <p className="flex items-baseline gap-2 leading-tight">
                 <span className={cn("font-display text-lg font-bold", r.net < 0 ? "text-[#ff9bb5]" : "text-neon")}>
@@ -694,7 +759,7 @@ export default function CalculatorPage() {
           </div>
         )}
 
-        <div className="mt-28 md:mt-36">
+        <div className="mt-u-277">
           <FinalCTA />
         </div>
       </main>

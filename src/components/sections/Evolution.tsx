@@ -34,8 +34,10 @@ function DustText({ text, seed, spread }: { text: string; seed: number; spread: 
                 {
                   "--st": st.toFixed(3),
                   "--inv": (1 / (1 - st)).toFixed(3),
-                  "--dx": `${(r2 - 0.5) * spread * 0.4}px`,
-                  "--dy": `${-(0.6 + r1 * 0.4) * spread}px`,
+                  // Redondeado: Math.sin difiere en el último decimal entre Node y el navegador
+                  // y React se quejaba de hidratación por ese ruido
+                  "--dx": `${((r2 - 0.5) * spread * 0.4).toFixed(2)}px`,
+                  "--dy": `${(-(0.6 + r1 * 0.4) * spread).toFixed(2)}px`,
                 } as React.CSSProperties
               }
             >
