@@ -37,6 +37,7 @@ function DustText({ text, seed, spread }: { text: string; seed: number; spread: 
                 style={
                   {
                     "--st": st.toFixed(3),
+                    "--inv": (1 / (1 - st)).toFixed(3),
                     "--dx": `${(0.4 + r2) * spread}px`,
                     "--dy": `${-(0.3 + r3) * spread}px`,
                     "--rot": `${(r1 - 0.5) * 60}deg`,

@@ -266,6 +266,26 @@ body {
   border-radius: 4px;
 }
 
+/*
+ * Letra que se hace polvo (El futuro). El contenedor fija --tin (1→0 al entrar)
+ * y --tout (0→1 al salir) desde el scroll; cada letra trae su retardo (--st),
+ * su inversa 1/(1-st) ya calculada (--inv) y su rumbo (--dx, --dy, --rot).
+ * El nivel de polvo k va de 0 (letra entera) a 1 (desintegrada) y se resuelve
+ * en CSS puro, sin JavaScript por letra. Va fuera de @layer para que el
+ * compilador no toque las expresiones.
+ */
+.dust-letter {
+  display: inline-block;
+  opacity: calc(1 - max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1)));
+  transform: translate(
+      calc(var(--dx, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))),
+      calc(var(--dy, 0px) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1)))
+    )
+    rotate(calc(var(--rot, 0deg) * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))));
+  filter: blur(calc(10px * max(clamp(0, (var(--tin, 0) - var(--st, 0)) * var(--inv, 1), 1), clamp(0, (var(--tout, 0) - var(--st, 0)) * var(--inv, 1), 1))));
+  will-change: transform, opacity, filter;
+}
+
 @layer components {
   /* Frosted glass surface */
   .glass {
@@ -474,22 +494,6 @@ body {
   }
   @keyframes spin-ring {
     to { --spin-angle: 360deg; }
-  }
-
-  /* Letra que se hace polvo (El futuro). El contenedor fija --tin (1→0 al entrar) y
-     --tout (0→1 al salir) desde el scroll; cada letra trae su retardo (--st) y su
-     rumbo (--dx, --dy, --rot). k es cuánto polvo es la letra ahora mismo: 0 entera,
-     1 desintegrada. Todo se resuelve en CSS, sin JavaScript por letra. */
-  .dust-letter {
-    --kin: clamp(0, (var(--tin, 0) - var(--st, 0)) / (1 - var(--st, 0)), 1);
-    --kout: clamp(0, (var(--tout, 0) - var(--st, 0)) / (1 - var(--st, 0)), 1);
-    --k: max(var(--kin), var(--kout));
-    display: inline-block;
-    opacity: calc(1 - var(--k));
-    transform: translate(calc(var(--dx, 0px) * var(--k)), calc(var(--dy, 0px) * var(--k)))
-      rotate(calc(var(--rot, 0deg) * var(--k)));
-    filter: blur(calc(10px * var(--k)));
-    will-change: transform, opacity, filter;
   }
 
   /* Titular de la casa: Montserrat Bold. El Figma no aprieta el tracking
