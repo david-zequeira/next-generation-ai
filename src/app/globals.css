@@ -476,6 +476,22 @@ body {
     to { --spin-angle: 360deg; }
   }
 
+  /* Letra que se hace polvo (El futuro). El contenedor fija --tin (1→0 al entrar) y
+     --tout (0→1 al salir) desde el scroll; cada letra trae su retardo (--st) y su
+     rumbo (--dx, --dy, --rot). k es cuánto polvo es la letra ahora mismo: 0 entera,
+     1 desintegrada. Todo se resuelve en CSS, sin JavaScript por letra. */
+  .dust-letter {
+    --kin: clamp(0, (var(--tin, 0) - var(--st, 0)) / (1 - var(--st, 0)), 1);
+    --kout: clamp(0, (var(--tout, 0) - var(--st, 0)) / (1 - var(--st, 0)), 1);
+    --k: max(var(--kin), var(--kout));
+    display: inline-block;
+    opacity: calc(1 - var(--k));
+    transform: translate(calc(var(--dx, 0px) * var(--k)), calc(var(--dy, 0px) * var(--k)))
+      rotate(calc(var(--rot, 0deg) * var(--k)));
+    filter: blur(calc(10px * var(--k)));
+    will-change: transform, opacity, filter;
+  }
+
   /* Titular de la casa: Montserrat Bold. El Figma no aprieta el tracking
      (0) salvo en dos titulares grandes, que lo ajustan en su sitio. */
   .display {

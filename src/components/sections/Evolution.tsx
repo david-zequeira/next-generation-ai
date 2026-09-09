@@ -4,11 +4,63 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useDict } from "@/i18n/LocaleContext";
 
+/** Pseudoaleatorio determinista (0–1) para que cada letra tenga siempre el mismo rumbo. */
+function rand(seed: number) {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+/**
+ * Texto que se hace polvo: cada letra es un span con su retardo y su rumbo
+ * (el viento sopla hacia arriba y a la derecha). El polvo lo pinta CSS
+ * (.dust-letter) a partir de --tin/--tout, que fija el contenedor.
+ */
+function DustText({ text, seed, spread }: { text: string; seed: number; spread: number }) {
+  const words = text.split(" ");
+  let n = 0;
+  const total = text.replace(/ /g, "").length;
+  return (
+    <>
+      {words.map((word, w) => (
+        <span key={`${w}-${word}`} className="inline-block whitespace-nowrap">
+          {[...word].map((ch, i) => {
+            const idx = n++;
+            const r1 = rand(seed + idx * 7.1);
+            const r2 = rand(seed + idx * 3.7 + 1);
+            const r3 = rand(seed + idx * 5.3 + 2);
+            // Retardo: las letras de la izquierda se van antes, con algo de azar
+            const st = 0.35 * (idx / Math.max(1, total - 1)) + 0.35 * r1;
+            return (
+              <span
+                key={`${i}-${ch}`}
+                className="dust-letter"
+                style={
+                  {
+                    "--st": st.toFixed(3),
+                    "--dx": `${(0.4 + r2) * spread}px`,
+                    "--dy": `${-(0.3 + r3) * spread}px`,
+                    "--rot": `${(r1 - 0.5) * 60}deg`,
+                  } as React.CSSProperties
+                }
+              >
+                {ch}
+              </span>
+            );
+          })}
+          {w < words.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </>
+  );
+}
+
 /**
  * Una frase del viaje, atada al scroll («scrub»): no hay estados ni retardos.
- * Cada frase tiene su tramo del recorrido; entra en el primer tercio del tramo,
- * se mantiene en el centro y sale en el último tercio, encadenada con la
- * siguiente. Solo opacidad, un leve desplazamiento y escala: nada de desenfoque. La primera ya está en pantalla al llegar y la última se queda.
+ * Cada frase tiene su tramo del recorrido: en el primer 30 % sus letras se
+ * recomponen desde el polvo, se mantiene en el centro y en el último 30 % se
+ * desintegra del todo. Los tramos no se solapan: la saliente ha desaparecido
+ * por completo cuando la siguiente empieza a formarse. La primera ya está
+ * entera al llegar y la última se queda.
  */
 function Stage({
   progress,
@@ -30,25 +82,24 @@ function Stage({
   const first = index === 0;
   const last = index === total - 1;
 
-  // Puntos clave del tramo: [entra … llega | se mantiene | se va … fuera]. Siempre
-  // crecientes (framer no admite repetidos); la primera y la última frase se
-  // distinguen por los valores de salida, no por los puntos.
-  const keys = [start, start + fade, end - fade, end];
-  const opacity = useTransform(progress, keys, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
-  const y = useTransform(progress, keys, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
-  const scale = useTransform(progress, keys, [first ? 1 : 0.96, 1, 1, last ? 1 : 1.03]);
+  // Nivel de polvo al entrar (1 → 0) y al salir (0 → 1)
+  const tin = useTransform(progress, [start, start + fade], [first ? 0 : 1, 0]);
+  const tout = useTransform(progress, [end - fade, end], [0, last ? 0 : 1]);
+  // Fuera de su tramo la frase no existe (evita que la última letra en polvo asome)
+  const visible = useTransform(progress, (p) => (p >= start - 0.0005 && p <= end + 0.0005) || (first && p < start) || (last && p > end) ? 1 : 0);
 
   return (
-    // Sin desenfoque: las frases se funden limpias, no se deshacen en polvo
     <motion.div
-      style={{ opacity, y, scale }}
-      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center will-change-transform"
+      style={{ ["--tin" as string]: tin, ["--tout" as string]: tout, opacity: visible }}
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
     >
       {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
       <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
-        {label}
+        <DustText text={label} seed={index * 100 + 1} spread={160} />
       </h3>
-      <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">{sub}</p>
+      <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">
+        <DustText text={sub} seed={index * 100 + 50} spread={90} />
+      </p>
     </motion.div>
   );
 }
