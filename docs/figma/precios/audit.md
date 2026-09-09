@@ -53,7 +53,7 @@ Fuente: `spec.md` (bandas de `sections.json`) y `tokens.md`. Todo lo de abajo es
 | Banda | 1268×220 radio 25 #d5dae9 | `max-w-u-1268 rounded-u-25 bg-[#d5dae9]` | ok |
 | Precio | «490 €» 600 38 azul + «Diagnóstico de IA» 15 | «0 €» — decisión de negocio del 25/08 (Diagnóstico gratis); mismas medidas | ok (dato distinto a propósito) |
 | Botón | «Contactar» 183×58 radio 50 azul borde #94b2fc | `h-u-58 min-w-u-183 rounded-full border-pulse bg-electric` | ok |
-| Notas «Antes de mirar precios» y «En pruebas» | no están en el Figma | tarjetas blancas con borde en degradado, mismo lenguaje que los módulos | añadido (sostienen la calculadora y la voz en espera) |
+| Nota «Antes de mirar precios» | no está en el Figma | tarjeta blanca con borde en degradado, mismo lenguaje que los módulos; la nota del agente de voz «en pruebas» se retiró (ya está disponible) | añadido |
 
 ## 05 · Comparativa
 
@@ -70,7 +70,7 @@ Fuente: `spec.md` (bandas de `sections.json`) y `tokens.md`. Todo lo de abajo es
 |---|---|---|---|
 | Fondo | #f4f6ff → rgba(213,218,233,.74) | idem | ok |
 | Tarjeta | 459×244 radio 25 blanca, borde #94b2fc→#c7d7ff, sombra 0 0 15 rgba(0,0,0,.2); gaps 32 | `min-h-u-244 rounded-u-25 ring-conic`, `gap-u-32` | ok |
-| Icono | 57×57 radio 15 #1a4dff→#1036ba arriba a la derecha | idem, glifos lucide (el Figma no tiene SVG propios) | ok |
+| Icono | 57×57 radio 15 #1a4dff→#1036ba arriba a la derecha; la descripción empieza a 98 px, por debajo del icono | idem, glifos lucide (el Figma no tiene SVG propios); el título reserva `min-h-u-57 pr-u-70` para que el texto no pise el icono | ok |
 | Textos | título 700 22/24; desc 400 15/17 (388); precio 600 25/30 negro/azul; flecha #556a9e | idem | ok |
 
 ## 07 · Formas de pago

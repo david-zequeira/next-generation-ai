@@ -280,40 +280,28 @@ export default function PricingPage() {
               </div>
             </Reveal>
 
-            {/* Dos notas que el Figma no dibuja pero que sostienen decisiones de tarifa:
-                la cuenta antes que el precio, y la voz en lista de espera */}
-            <div className="mx-auto mt-u-24 grid max-w-u-1268 gap-6 md:grid-cols-2">
-              <Reveal delay={0.05}>
-                <div
-                  style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
-                  className="ring-conic flex h-full flex-col rounded-u-25 bg-white px-u-36 py-u-32 shadow-[0_0_15px_rgba(0,0,0,0.12)]"
-                >
+            {/* Una nota que el Figma no dibuja pero que sostiene la tarifa: la cuenta antes que el precio */}
+            <Reveal delay={0.05} className="mx-auto mt-u-24 max-w-u-1268">
+              <div
+                style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
+                className="ring-conic flex flex-col gap-4 rounded-u-25 bg-white px-u-36 py-u-32 shadow-[0_0_15px_rgba(0,0,0,0.12)] md:flex-row md:items-center md:gap-u-40"
+              >
+                <div className="flex-1">
                   <p className="font-display fs-u-14 font-bold uppercase tracking-[0.1em] text-electric">{t.calc.badge}</p>
-                  <p className="mt-u-12 flex-1 fs-u-15 lh-u-22 text-black">
+                  <p className="mt-u-12 fs-u-15 lh-u-22 text-black">
                     <Rich text={t.calc.body} />
                   </p>
-                  <Link
-                    href="/calculadora"
-                    onClick={() => trackEvent("cta_calculadora_precios")}
-                    className="group mt-u-16 inline-flex items-center gap-1.5 font-display fs-u-15 font-semibold text-electric"
-                  >
-                    {t.calc.cta}
-                    <ArrowRight className="size-u-16 transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </Link>
                 </div>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <div
-                  style={{ ["--ring-bg" as string]: "linear-gradient(0deg, #94b2fc, #c7d7ff)" }}
-                  className="ring-conic h-full rounded-u-25 bg-white px-u-36 py-u-32 shadow-[0_0_15px_rgba(0,0,0,0.12)]"
+                <Link
+                  href="/calculadora"
+                  onClick={() => trackEvent("cta_calculadora_precios")}
+                  className="group inline-flex shrink-0 items-center gap-1.5 font-display fs-u-15 font-semibold text-electric"
                 >
-                  <p className="font-display fs-u-14 font-bold uppercase tracking-[0.1em] text-black/55">{t.voice.badge}</p>
-                  <p className="mt-u-12 fs-u-15 lh-u-22 text-black">
-                    <Rich text={t.voice.body} />
-                  </p>
-                </div>
-              </Reveal>
-            </div>
+                  {t.calc.cta}
+                  <ArrowRight className="size-u-16 transition-transform duration-300 group-hover:translate-x-0.5" />
+                </Link>
+              </div>
+            </Reveal>
           </section>
 
           {/* ——— Comparativa (Figma): tarjeta de 1440×1128, radio 35, columna Starter destacada ——— */}
@@ -397,11 +385,11 @@ export default function PricingPage() {
                         <span className="absolute right-u-25 top-u-37 flex size-u-57 items-center justify-center rounded-u-15 bg-[linear-gradient(180deg,#1a4dff_0%,#1036ba_100%)] text-white">
                           <Icon className="size-u-25" strokeWidth={2} />
                         </span>
-                        <h4 className="max-w-u-297 font-display fs-u-22 lh-u-24 font-bold text-black">
+                        <h4 className="min-h-u-57 max-w-u-297 pr-u-70 font-display fs-u-22 lh-u-24 font-bold text-black">
                           {addon.name}
                           {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
                         </h4>
-                        <p className="mt-u-16 max-w-u-388 flex-1 fs-u-15 lh-u-17 text-black">{addon.desc}</p>
+                        <p className="max-w-u-388 flex-1 fs-u-15 lh-u-17 text-black">{addon.desc}</p>
                         <div className="mt-u-20 flex items-end justify-between gap-3">
                           <p className="font-display fs-u-25 lh-u-30 font-semibold text-black">
                             {addon.price && <span>{addon.price} </span>}

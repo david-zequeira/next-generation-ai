@@ -12,12 +12,8 @@
  * **Regla que ordena esta página (23/08/2026).** Aquí solo se publica lo que el
  * sistema entrega hoy. Lo que se quitó en la limpieza y por qué:
  *
- * - **Agente de voz** (Orbit y add-on): construido, pero falta la telefonía +34 y
- *   los DPA de Retell/Twilio sin firmar. Además `ng-agent/src/tenants.ts` impide
- *   contratar bloques de voz en un plan sin voz, así que el add-on sobre Core no
- *   era ni aprovisionable. Vive ahora en `voice`, como lista de espera.
- * - **Plan Orbit**: su diferencial era la voz. Sin voz no es un peldaño, es un
- *   Core más caro. Vuelve cuando la voz se pueda entregar.
+ * - **Plan Orbit**: su diferencial era la voz. Se retiró como plan; el agente de
+ *   voz ya está disponible (09/2026) y se contrata aparte, no hay nota de espera.
  * - **"Se integra con tu sistema de reservas actual"**: solo existe Google
  *   Calendar. Ni Booksy, ni Fresha, ni Doctoralia, ni CoverManager.
  * - **Campañas de reactivación**: el panel guarda fichas de campaña, pero no hay
@@ -86,8 +82,6 @@ export type PricingDict = {
   /** Puente a /calculadora: la cuenta antes que la tarifa, para quien duda. */
   calc: { badge: string; body: string; cta: string };
   diag: { badge: string; body: string };
-  /** Agente de voz: construido, aún no entregable. Lista de espera, no venta. */
-  voice: { badge: string; body: string };
   compare: {
     eyebrow: string;
     title: string;
@@ -205,10 +199,6 @@ const es: PricingDict = {
     badge: "Gratis, antes de decidir",
     body: "**Diagnóstico de IA — 0 €.** Dos semanas. Mapeamos tus procesos, medimos por dónde se te escapan clientes (llamadas sin contestar, mensajes fuera de horario, huecos sin revender) y te entregamos las oportunidades ordenadas por retorno, con las cifras de tu negocio. **Corre de nuestra cuenta**: preferimos enseñarte el número antes de pedirte una decisión. El informe es tuyo, lo contrates o no.",
   },
-  voice: {
-    badge: "En pruebas",
-    body: "**Agente de voz — todavía no está a la venta.** El agente que coge el teléfono, responde y reserva hablando está construido y funcionando en pruebas internas. No lo vendemos hasta cerrar la telefonía española y firmar los acuerdos de tratamiento de datos con los proveedores de voz: prometer una fecha antes de eso sería vender humo. **Cuando esté, los clientes que ya estén con nosotros entran primero** — dilo en la llamada y te apuntamos a la lista.",
-  },
   compare: {
     eyebrow: "Comparativa",
     title: "Qué incluye cada nivel",
@@ -276,7 +266,6 @@ const es: PricingDict = {
       { q: "¿Qué estoy pagando exactamente en la cuota mensual?", a: "No es «mantenimiento». Es un servicio gestionado: las conversaciones incluidas, el ajuste continuo del agente con lo que se ve en las conversaciones reales, tu panel de métricas, la infraestructura y la seguridad, los informes y el soporte con SLA. Un asistente humano atendiendo 1.000 conversaciones al mes son unos 1.400 € de nómina; la cuota es una cuarta parte de eso." },
       { q: "Ya tengo web. ¿Puedo contratar solo el asistente?", a: "Sí, y es exactamente el **Starter**: 2.900 € de puesta en marcha y 349 €/mes. El asistente se instala sobre la web que ya tienes y sobre tu WhatsApp, sin rehacer nada. Es lo que contrata la mayoría, y está funcionando en **7 días**." },
       { q: "Empiezo por el Starter. ¿Y si luego quiero la web?", a: "Se añade cuando quieras por **3.000 €**, que es la diferencia exacta de puesta en marcha con Core, y la cuota pasa de 349 a **449 €/mes**: la web y su posicionamiento también hay que mantenerlos. Lo que ya tienes montado no se rehace: el asistente, tu historial de conversaciones y tus citas siguen igual, y la web se construye alrededor." },
-      { q: "¿Y el agente de voz que coge el teléfono?", a: "Está construido y funcionando en pruebas internas, pero **todavía no lo vendemos**: antes hay que cerrar la telefonía española y firmar los acuerdos de tratamiento de datos con los proveedores de voz. Prometer una fecha antes de tener eso resuelto sería vender humo. Cuando esté disponible, los clientes que ya estén con nosotros entran primero." },
       { q: "¿Con qué agenda funciona?", a: "Con **Google Calendar**, que es lo que usa la mayoría de negocios pequeños y lo que hoy podemos garantizar de verdad. Si llevas la agenda en otro programa, lo miramos antes de firmar nada y te decimos si tiene solución — sin vender integraciones que no existan." },
       { q: "¿Y si la IA se equivoca o se inventa algo?", a: "El agente solo responde con la información que tú apruebas: tus servicios, tus precios, tus horarios, tus FAQs. Lo que no sabe, no se lo inventa — te lo pasa a ti con el contexto de la conversación. Las dos primeras semanas lo supervisamos juntos y lo ajustamos." },
       { q: "¿Qué pasa si me paso de las conversaciones incluidas?", a: "No se corta nada. Te avisamos al 80 % y al 100 % del consumo, sigues atendiendo con normalidad y hablamos de ampliar el bloque. Apagarte el WhatsApp porque has tenido un mes bueno sería lo contrario de lo que te hemos vendido." },
@@ -389,10 +378,6 @@ const en: PricingDict = {
     badge: "Free, before you decide",
     body: "**AI Diagnostic — €0.** Two weeks. We map your processes, measure where clients slip away (unanswered calls, after-hours messages, unsold slots) and hand you the opportunities ranked by return, using your business's own numbers. **It's on us**: we'd rather show you the number before asking you for a decision. The report is yours, whether you sign up or not.",
   },
-  voice: {
-    badge: "In testing",
-    body: "**Voice agent — not on sale yet.** The agent that picks up the phone, answers and books by talking is built and running in internal testing. We won't sell it until Spanish telephony is in place and the data processing agreements with the voice providers are signed: promising a date before that would be selling smoke. **When it's ready, clients already with us go first** — mention it on the call and we'll add you to the list.",
-  },
   compare: {
     eyebrow: "Comparison",
     title: "What each level includes",
@@ -460,7 +445,6 @@ const en: PricingDict = {
       { q: "What exactly am I paying for in the monthly fee?", a: "It's not \"maintenance\". It's a managed service: the conversations included, continuous tuning of the agent based on what real conversations show, your metrics dashboard, infrastructure and security, the reports and SLA-backed support. A human assistant handling 1,000 conversations a month is about €1,400 in payroll; the fee is a quarter of that." },
       { q: "I already have a website. Can I get just the assistant?", a: "Yes, and that's exactly **Starter**: €2,900 setup and €349/mo. The assistant installs on the website you already have and on your WhatsApp, with nothing rebuilt. It's what most clients take, and it's running in **7 days**." },
       { q: "I start with Starter. What if I want the website later?", a: "It can be added whenever you like for **€3,000**, the exact setup difference with Core, and the fee goes from €349 to **€449/mo**: the website and its ranking need maintaining too. What's already running doesn't get rebuilt: the assistant, your conversation history and your bookings stay as they are, and the website gets built around them." },
-      { q: "What about the voice agent that answers the phone?", a: "It's built and running in internal testing, but **we're not selling it yet**: first we need Spanish telephony in place and the data processing agreements signed with the voice providers. Promising a date before that is settled would be selling smoke. When it's available, clients already with us go first." },
       { q: "Which calendar does it work with?", a: "**Google Calendar**, which is what most small businesses use and what we can genuinely guarantee today. If you keep your calendar in another system, we look at it before signing anything and tell you whether it has a solution — without selling integrations that don't exist." },
       { q: "What if the AI gets something wrong or makes things up?", a: "The agent only answers with information you approve: your services, your prices, your hours, your FAQs. What it doesn't know, it doesn't invent — it hands it to you with the context of the conversation. For the first two weeks we supervise it together and tune it." },
       { q: "What happens if I go over the included conversations?", a: "Nothing gets cut. We alert you at 80% and 100% of usage, you keep serving clients as normal and we talk about expanding the block. Switching off your WhatsApp because you had a good month would be the opposite of what we sold you." },
