@@ -8,7 +8,7 @@ import { useDict } from "@/i18n/LocaleContext";
  * Una frase del viaje, atada al scroll («scrub»): no hay estados ni retardos.
  * Cada frase tiene su tramo del recorrido; entra en el primer tercio del tramo,
  * se mantiene en el centro y sale en el último tercio, encadenada con la
- * siguiente. La primera ya está en pantalla al llegar y la última se queda.
+ * siguiente. Solo opacidad, un leve desplazamiento y escala: nada de desenfoque. La primera ya está en pantalla al llegar y la última se queda.
  */
 function Stage({
   progress,
@@ -36,13 +36,12 @@ function Stage({
   const keys = [start, start + fade, end - fade, end];
   const opacity = useTransform(progress, keys, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
   const y = useTransform(progress, keys, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
-  const scale = useTransform(progress, keys, [first ? 1 : 0.92, 1, 1, last ? 1 : 1.06]);
-  const blur = useTransform(progress, keys, [first ? 0 : 12, 0, 0, last ? 0 : 12]);
-  const filter = useTransform(blur, (b) => `blur(${b.toFixed(1)}px)`);
+  const scale = useTransform(progress, keys, [first ? 1 : 0.96, 1, 1, last ? 1 : 1.03]);
 
   return (
+    // Sin desenfoque: las frases se funden limpias, no se deshacen en polvo
     <motion.div
-      style={{ opacity, y, scale, filter }}
+      style={{ opacity, y, scale }}
       className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center will-change-transform"
     >
       {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
