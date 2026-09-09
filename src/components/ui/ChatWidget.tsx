@@ -132,7 +132,8 @@ export default function ChatWidget() {
   return (
     <>
       {/* Botón flotante — Figma (Frame 164): halo, disco con degradado #1a4dff→#102e99
-          e isotipo en blanco. El diseño lo dibuja a 176 px; aquí va a 112 (el 176 se veía enorme) */}
+          e isotipo en blanco a la misma escala que el de la barra (el PNG lleva aire, por eso
+          va a 64 y no a 45). El diseño lo dibuja a 176 px; aquí va a 112 (el 176 se veía enorme) */}
       <motion.button
         type="button"
         aria-label={open ? t.ariaClose : t.ariaOpen}
@@ -148,7 +149,7 @@ export default function ChatWidget() {
             <X className="size-[max(18px,28*var(--u))]" strokeWidth={1.8} />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={`${BASE}/isotipo.png`} alt="" className="w-[max(16px,30*var(--u))] brightness-0 invert" draggable={false} />
+            <img src={`${BASE}/isotipo.png`} alt="" className="h-[max(28px,64*var(--u))] w-auto brightness-0 invert" draggable={false} />
           )}
         </span>
       </motion.button>
