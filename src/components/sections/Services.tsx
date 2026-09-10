@@ -86,7 +86,7 @@ function Tile({ icon, label, index }: { icon: TileIcon; label: string; index: nu
             return <Icon className="size-u-46 text-pulse transition-colors duration-300 group-hover:text-neon" strokeWidth={1.3} />;
           })()
         )}
-        <span className="fs-u-12 lh-u-14 text-frost">{label}</span>
+        <span className="fs-u-12 leading-[1.35] text-frost">{label}</span>
       </div>
     </motion.div>
   );

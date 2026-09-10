@@ -34,6 +34,7 @@
   --animate-marquee-reverse: marquee-reverse 56s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
   --animate-float-slow: float 11s ease-in-out infinite;
+  --animate-breathe: breathe 18s ease-in-out infinite;
   --animate-orbit: orbit 24s linear infinite;
   --animate-pulse-glow: pulse-glow 4s ease-in-out infinite;
   --animate-jitter: jitter 3.2s ease-in-out infinite;
@@ -60,6 +61,11 @@
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-16px); }
+  }
+  /* Respiración del último fotograma del vídeo del hero */
+  @keyframes breathe {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.06) translateY(-1%); }
   }
   @keyframes orbit {
     from { transform: rotate(0deg); }

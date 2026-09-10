@@ -172,9 +172,8 @@ export default function Ecosystem() {
         <p className="eyebrow mx-auto flex w-fit">{t.eyebrow}</p>
 
         {/* Escritorio: rejilla orbital. El eslogan va en una sola fila, centrado en la altura
-            del planeta, sobre una banda oscura (Figma: 1349×59, #04071a) */}
+            del planeta, directamente sobre el fondo de la sección (la banda oscura del Figma se retiró) */}
         <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max(300px,464*var(--u))_minmax(0,1fr)] lg:items-stretch lg:gap-x-u-30">
-          <div aria-hidden className="absolute inset-x-0 top-1/2 z-0 h-u-59 -translate-y-1/2 bg-[#04071a]" />
 
           {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
           <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-110">
