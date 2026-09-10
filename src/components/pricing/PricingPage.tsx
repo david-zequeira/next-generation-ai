@@ -323,7 +323,7 @@ export default function PricingPage() {
                           key={col}
                           className={cn(
                             "px-4 pb-u-32 pt-u-41 text-center font-display fs-u-24 lh-u-30 text-black",
-                            i === 0 ? "bg-cloud/20 font-semibold" : "font-bold"
+                            i === 1 ? "bg-cloud/20 font-semibold" : "font-bold"
                           )}
                         >
                           {col}
@@ -349,12 +349,12 @@ export default function PricingPage() {
                             key={ci}
                             className={cn(
                               "h-u-45 px-4 text-center fs-u-16",
-                              ci === 0 && "bg-cloud/20",
+                              ci === 1 && "bg-cloud/20",
                               row.strong ? "font-bold text-black" : "font-medium text-black",
                               row.accent && "font-bold text-electric"
                             )}
                           >
-                            <CellValue value={cell} star={ci === 0} />
+                            <CellValue value={cell} star={ci === 1} />
                           </td>
                         ))}
                       </tr>

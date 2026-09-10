@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import {
   motion,
   useMotionValue,
@@ -12,20 +11,17 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import TextReveal from "@/components/ui/TextReveal";
+import Starfield from "@/components/ui/Starfield";
 import { useLocale } from "@/i18n/LocaleContext";
 import { warmUpVoice } from "@/lib/voice-warmup";
 
 const AGENT_URL = process.env.NEXT_PUBLIC_AGENT_URL ?? "";
 
-const AICore = dynamic(() => import("@/components/three/AICore"), {
-  ssr: false,
-});
-
 /**
  * Hero del Figma: titular centrado en Montserrat Bold, subtítulo y dos
- * pastillas (clara + contorno). Debajo siguen viviendo el vídeo, el barrido
- * de luz y el núcleo 3D que se disuelve al avanzar: el diseño deja ese hueco
- * entre el titular y los botones a propósito.
+ * pastillas (clara + contorno). Debajo siguen viviendo el vídeo y el barrido
+ * de luz: el diseño deja ese hueco entre el titular y los botones a propósito
+ * para que el vídeo (la película de marca) se vea.
  */
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,22 +36,35 @@ export default function Hero() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
 
-  // Rendimiento percibido: el póster pinta al instante y el vídeo funde encima;
-  // el núcleo 3D (Three.js) se monta cuando el hilo principal queda libre.
+  // Rendimiento percibido: el póster pinta al instante y el vídeo funde encima.
   const [videoReady, setVideoReady] = useState(false);
-  const [showCore, setShowCore] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // La película se reproduce una sola vez al cargar (sin bucle). Al terminar
+  // se queda en su último fotograma respirando despacio y el cielo de
+  // estrellas toma el relevo para que la portada nunca quede quieta.
+  const [ended, setEnded] = useState(false);
 
   useEffect(() => {
     if ((videoRef.current?.readyState ?? 0) >= 2) setVideoReady(true);
   }, []);
 
+  // Sonido: el autoplay solo se permite en silencio, así que activamos el
+  // audio con el primer clic, toque o tecla del visitante (un gesto real),
+  // siempre que la película siga en marcha.
   useEffect(() => {
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+    const unmute = () => {
+      const v = videoRef.current;
+      if (v && !v.paused && !v.ended) v.muted = false;
+      window.removeEventListener("pointerdown", unmute);
+      window.removeEventListener("keydown", unmute);
     };
-    if (w.requestIdleCallback) w.requestIdleCallback(() => setShowCore(true), { timeout: 1500 });
-    else setTimeout(() => setShowCore(true), 900);
+    window.addEventListener("pointerdown", unmute, { passive: true });
+    window.addEventListener("keydown", unmute);
+    return () => {
+      window.removeEventListener("pointerdown", unmute);
+      window.removeEventListener("keydown", unmute);
+    };
   }, []);
 
   // Parallax del titular: se mueve suavemente al contrario que el núcleo
@@ -93,20 +102,20 @@ export default function Hero() {
           src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero-poster.jpg`}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover opacity-40"
+          className="h-full w-full object-cover opacity-70"
         />
         <video
           ref={videoRef}
           autoPlay
           muted
-          loop
           playsInline
           preload="metadata"
           aria-hidden
           onLoadedData={() => setVideoReady(true)}
+          onEnded={() => setEnded(true)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-            videoReady ? "opacity-40" : "opacity-0"
-          }`}
+            videoReady ? "opacity-70" : "opacity-0"
+          } ${ended ? "animate-breathe" : ""}`}
         >
           <source src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/hero.mp4`} type="video/mp4" />
         </video>
@@ -115,6 +124,18 @@ export default function Hero() {
       {/* Etalonaje: el vídeo se funde con el azul noche del Figma */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(3,6,23,0.6)_65%,#030617_100%)]" />
       <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/20 to-void" />
+
+      {/* Cielo de estrellas: entra en fundido cuando la película termina.
+          Va por encima del etalonaje para que el viñeteado no lo apague. */}
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{ opacity: ended ? 1 : 0 }}
+        transition={{ duration: 3, ease: "easeOut" }}
+        className="absolute inset-0 z-[5]"
+      >
+        <Starfield active={ended} count={260} />
+      </motion.div>
 
       {/* Barrido de luz de apertura — la firma lumínica de la marca */}
       <motion.div
@@ -128,9 +149,6 @@ export default function Hero() {
             "linear-gradient(90deg, transparent, rgba(148,178,252,0.12) 45%, rgba(26,77,255,0.2) 50%, rgba(148,178,252,0.12) 55%, transparent)",
         }}
       />
-
-      {/* Núcleo 3D — se disuelve en partículas conforme el visitante avanza */}
-      {showCore && <AICore className="z-10 opacity-80" dissolve={scrollYProgress} />}
 
       {/* Marcas de esquina — detalle de composición propio */}
       <motion.div

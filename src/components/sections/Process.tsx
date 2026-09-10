@@ -261,10 +261,12 @@ const BOOK = {
   orbR: 67,
   client: { x: 262, y: 52 },
   orb: { x: 262, y: 192 },
-  billing: { x: 262, y: 300 },
-  crm: { x: 157, y: 380 },
-  calendar: { x: 367, y: 380 },
-  followup: { x: 262, y: 480 },
+  // Nodos más separados entre sí (antes CRM y agenda casi se tocaban) y con
+  // más recorrido vertical: el gráfico respira dentro de la tarjeta.
+  billing: { x: 262, y: 292 },
+  crm: { x: 128, y: 400 },
+  calendar: { x: 396, y: 400 },
+  followup: { x: 262, y: 505 },
 };
 const BOOK_PATHS = [
   `M 262 ${BOOK.client.y + BOOK.node.h / 2} L 262 ${BOOK.orb.y - BOOK.orbR}`, // cliente → orbe

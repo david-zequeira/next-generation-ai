@@ -124,7 +124,6 @@ const es: PricingDict = {
     {
       name: "Starter",
       glyph: "◇",
-      star: true,
       tag: "Funcionando en 7 días",
       who: "Para que tu web y tu WhatsApp de hoy dejen de perder clientes.",
       setup: "2.900 €",
@@ -148,6 +147,8 @@ const es: PricingDict = {
     {
       name: "Core",
       glyph: "◆",
+      star: true,
+      tag: "El más elegido",
       who: "Para el negocio que además necesita una cara digital a la altura de lo que cobra — y que la encuentren.",
       setup: "5.900 €",
       setupNote: "de puesta en marcha",
@@ -264,7 +265,7 @@ const es: PricingDict = {
     titleB: "antes de firmar",
     items: [
       { q: "¿Qué estoy pagando exactamente en la cuota mensual?", a: "No es «mantenimiento». Es un servicio gestionado: las conversaciones incluidas, el ajuste continuo del agente con lo que se ve en las conversaciones reales, tu panel de métricas, la infraestructura y la seguridad, los informes y el soporte con SLA. Un asistente humano atendiendo 1.000 conversaciones al mes son unos 1.400 € de nómina; la cuota es una cuarta parte de eso." },
-      { q: "Ya tengo web. ¿Puedo contratar solo el asistente?", a: "Sí, y es exactamente el **Starter**: 2.900 € de puesta en marcha y 349 €/mes. El asistente se instala sobre la web que ya tienes y sobre tu WhatsApp, sin rehacer nada. Es lo que contrata la mayoría, y está funcionando en **7 días**." },
+      { q: "Ya tengo web. ¿Puedo contratar solo el asistente?", a: "Sí, y es exactamente el **Starter**: 2.900 € de puesta en marcha y 349 €/mes. El asistente se instala sobre la web que ya tienes y sobre tu WhatsApp, sin rehacer nada. Está funcionando en **7 días**." },
       { q: "Empiezo por el Starter. ¿Y si luego quiero la web?", a: "Se añade cuando quieras por **3.000 €**, que es la diferencia exacta de puesta en marcha con Core, y la cuota pasa de 349 a **449 €/mes**: la web y su posicionamiento también hay que mantenerlos. Lo que ya tienes montado no se rehace: el asistente, tu historial de conversaciones y tus citas siguen igual, y la web se construye alrededor." },
       { q: "¿Con qué agenda funciona?", a: "Con **Google Calendar**, que es lo que usa la mayoría de negocios pequeños y lo que hoy podemos garantizar de verdad. Si llevas la agenda en otro programa, lo miramos antes de firmar nada y te decimos si tiene solución — sin vender integraciones que no existan." },
       { q: "¿Y si la IA se equivoca o se inventa algo?", a: "El agente solo responde con la información que tú apruebas: tus servicios, tus precios, tus horarios, tus FAQs. Lo que no sabe, no se lo inventa — te lo pasa a ti con el contexto de la conversación. Las dos primeras semanas lo supervisamos juntos y lo ajustamos." },
@@ -303,7 +304,6 @@ const en: PricingDict = {
     {
       name: "Starter",
       glyph: "◇",
-      star: true,
       tag: "Live in 7 days",
       who: "So the website and WhatsApp you already have stop losing you clients.",
       setup: "€2,900",
@@ -327,6 +327,8 @@ const en: PricingDict = {
     {
       name: "Core",
       glyph: "◆",
+      star: true,
+      tag: "Most popular",
       who: "For the business that also needs a digital face worthy of what it charges — and to be found.",
       setup: "€5,900",
       setupNote: "setup",
@@ -443,7 +445,7 @@ const en: PricingDict = {
     titleB: "before signing",
     items: [
       { q: "What exactly am I paying for in the monthly fee?", a: "It's not \"maintenance\". It's a managed service: the conversations included, continuous tuning of the agent based on what real conversations show, your metrics dashboard, infrastructure and security, the reports and SLA-backed support. A human assistant handling 1,000 conversations a month is about €1,400 in payroll; the fee is a quarter of that." },
-      { q: "I already have a website. Can I get just the assistant?", a: "Yes, and that's exactly **Starter**: €2,900 setup and €349/mo. The assistant installs on the website you already have and on your WhatsApp, with nothing rebuilt. It's what most clients take, and it's running in **7 days**." },
+      { q: "I already have a website. Can I get just the assistant?", a: "Yes, and that's exactly **Starter**: €2,900 setup and €349/mo. The assistant installs on the website you already have and on your WhatsApp, with nothing rebuilt. It's running in **7 days**." },
       { q: "I start with Starter. What if I want the website later?", a: "It can be added whenever you like for **€3,000**, the exact setup difference with Core, and the fee goes from €349 to **€449/mo**: the website and its ranking need maintaining too. What's already running doesn't get rebuilt: the assistant, your conversation history and your bookings stay as they are, and the website gets built around them." },
       { q: "Which calendar does it work with?", a: "**Google Calendar**, which is what most small businesses use and what we can genuinely guarantee today. If you keep your calendar in another system, we look at it before signing anything and tell you whether it has a solution — without selling integrations that don't exist." },
       { q: "What if the AI gets something wrong or makes things up?", a: "The agent only answers with information you approve: your services, your prices, your hours, your FAQs. What it doesn't know, it doesn't invent — it hands it to you with the context of the conversation. For the first two weeks we supervise it together and tune it." },

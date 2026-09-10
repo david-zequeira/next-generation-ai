@@ -38,7 +38,7 @@ src/
       CursorGlow.tsx      # halo que sigue el cursor (rAF + lerp)
       MagneticButton.tsx  # CTA magnético con brillo y sheen
       TextReveal.tsx      # titulares palabra a palabra con máscara
-    three/AICore.tsx      # núcleo 3D (esfera distorsionada + partículas + anillos)
+    three/AICore.tsx      # núcleo 3D (ya no se usa en el hero: lo sustituye el vídeo de marca)
     layout/               # Navbar de cristal flotante, Footer
     sections/             # Hero, Evolution, Services, Ecosystem, CaseStudies,
                           # Transformation, Process, Technology, Testimonials, FinalCTA
