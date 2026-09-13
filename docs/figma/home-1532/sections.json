@@ -1,0 +1,17 @@
+{
+  "_doc": "Bandas verticales del marco 1532:2424 «Asenix HOME» (y relativo al marco, en px a 1920). Límites tomados de los divisores (Vector 31/20/17), de los rectángulos de fondo (Rectangle 162 de Pruebas, Frame 254 de Hablemos) y del inicio de cada tarjeta. Ver plans/01-home-pixel-perfect-figma-1532.md §0.4.",
+  "bands": [
+    { "name": "Header", "y0": 0, "y1": 120, "component": "src/components/layout/Navbar.tsx" },
+    { "name": "Hero", "y0": 120, "y1": 1080, "component": "src/components/sections/Hero.tsx" },
+    { "name": "El futuro", "y0": 1080, "y1": 2169, "component": "src/components/sections/Evolution.tsx" },
+    { "name": "Servicios", "y0": 2169, "y1": 3533, "component": "src/components/sections/Services.tsx" },
+    { "name": "Cómo trabajamos", "y0": 3533, "y1": 4570, "component": "src/components/sections/Ecosystem.tsx" },
+    { "name": "Proceso", "y0": 4570, "y1": 7585, "component": "src/components/sections/Process.tsx" },
+    { "name": "Tecnología", "y0": 7585, "y1": 8389, "component": "src/components/sections/Technology.tsx" },
+    { "name": "Pruebas no promesas", "y0": 8389, "y1": 9400, "component": "src/components/sections/CaseStudies.tsx" },
+    { "name": "Calculadora", "y0": 9400, "y1": 10070, "component": "src/components/sections/Roi.tsx" },
+    { "name": "Planes 2026", "y0": 10070, "y1": 10824, "component": "src/components/sections/Plans.tsx" },
+    { "name": "Hablemos", "y0": 10824, "y1": 11360, "component": "src/components/sections/FinalCTA.tsx" },
+    { "name": "Footer", "y0": 11360, "y1": 11618, "component": "src/components/layout/Footer.tsx" }
+  ]
+}

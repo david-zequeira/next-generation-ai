@@ -248,6 +248,11 @@ comparar la web con él. El fichero es otro —
 Web»), marco del home desktop `541:168` — y **no** comparte variables ni
 paleta con los scripts de importación de arriba (esos usan tokens viejos).
 
+**Marco vigente:** Home `1532:2424` → `docs/figma/home-1532/`; `docs/figma/home/`
+es el marco anterior (`541:168`, ya no existe en el fichero), solo histórico.
+Captura de la web a 1920 para comparar: `npm run figma:shot [url]` →
+`docs/figma/home-1532/shots/` (no se versiona).
+
 Se hace por la API REST y no por el MCP porque el plan Starter da 20 llamadas
 al MCP al mes; la REST va aparte (10 peticiones/min con asiento Full) y el
 script gasta 4.

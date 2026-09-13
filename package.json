@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "figma:pull": "node scripts/figma/pull-home.mjs",
-    "figma:spec": "node scripts/figma/spec-home.mjs"
+    "figma:spec": "node scripts/figma/spec-home.mjs",
+    "figma:shot": "node scripts/figma/shot-home.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -34,6 +35,7 @@
     "@types/three": "^0.185.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.20",
+    "playwright-core": "^1.63.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

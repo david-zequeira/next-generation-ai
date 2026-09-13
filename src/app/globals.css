@@ -25,7 +25,9 @@
   --color-cyan: #38d4ff;      /* cian de los degradados verde→cian */
   --color-frost: #eceFFF;     /* texto principal */
   --color-mist: #a7b2d1;      /* texto secundario apagado */
-  --color-paper: #f1f3fe;     /* cierre claro: contacto y pie */
+  --color-periwinkle: #779eff; /* tag-pills, historias de Pruebas, icono de nota */
+  --color-slate: #586a96;      /* © del pie */
+  --color-paper: #f0f2ff;      /* Figma «Rectangle 12» de Hablemos/Footer (antes #f1f3fe) */
   --color-ink: #0b1226;       /* texto sobre fondos claros */
   --color-line: rgba(105, 148, 255, 0.5); /* línea de 0,5 px entre secciones */
 
@@ -399,70 +401,43 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Etiqueta de sección — siempre precedida por la firma "//" de la marca.
-     Figma: pastilla de 35 px con borde azul y un brillo azul tenue dentro;
-     Montserrat Bold 14 px, mayúsculas, tracking 0,25 em, azul. */
+  /* Etiqueta de sección (Figma 1532:2424, nodos «Frame 239/240/251/292/294»):
+     pastilla de 28 px, radio 50, fondo rgba(213,218,233,.08), borde 0,3 px
+     #94b2fc; Montserrat SemiBold 12/22, mayúsculas, tracking 0,05 em, lima. */
   .eyebrow {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    height: max(26px, 35 * var(--u));
-    padding-inline: max(12px, 20 * var(--u));
+    display: inline-flex; align-items: center; justify-content: center;
+    height: max(22px, 28 * var(--u));
+    padding-inline: max(8px, 10 * var(--u));
     border-radius: 999px;
-    border: 1px solid var(--color-electric);
-    overflow: hidden;
-    isolation: isolate;
-    font-family: var(--font-montserrat), sans-serif;
-    font-size: max(11px, 14 * var(--u));
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--color-electric);
+    background: rgba(213, 218, 233, 0.08);
+    border: 0.3px solid var(--color-pulse);          /* Figma: 0.3 px #94b2fc */
+    font-family: var(--font-montserrat), system-ui, sans-serif;
+    font-size: max(10px, 12 * var(--u));
+    font-weight: 600; line-height: 1; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--color-neon);                          /* #b8f21e */
     white-space: nowrap;
   }
-  .eyebrow::before {
-    content: "//";
-    letter-spacing: 0.05em;
-    margin-right: 0.15em;
-  }
-  .eyebrow::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(70% 220% at 50% -80%, rgba(26, 77, 255, 0.55), rgba(46, 107, 255, 0.08) 70%, transparent 100%);
-    filter: blur(7px);
-    pointer-events: none;
-  }
-  /* Variante con borde en degradado (tecnología, calculadora, planes) */
+  /* Variante con borde en degradado (calculadora): mismo alto y tipografía,
+     solo cambian fondo y borde. */
   .eyebrow-gradient {
     border-color: transparent;
     background:
       linear-gradient(var(--color-void), var(--color-void)) padding-box,
       linear-gradient(128deg, #1a4dff 0%, #102e99 100%) border-box;
   }
-  /* La misma pastilla sobre fondo claro (/precios): caja blanca, borde en degradado */
+  /* La misma pastilla sobre fondo claro (/precios): caja blanca, borde en
+     degradado y texto azul (la lima no se lee sobre blanco). */
   .eyebrow-light {
     border-color: transparent;
     background:
       linear-gradient(#ffffff, #ffffff) padding-box,
       linear-gradient(124deg, #1a4dff 0%, #102e99 100%) border-box;
+    color: var(--color-electric);
   }
-  .eyebrow-light::after {
-    background: radial-gradient(70% 220% at 50% -80%, rgba(26, 77, 255, 0.35), rgba(46, 107, 255, 0.06) 70%, transparent 100%);
-  }
-  /* Sobre la tarjeta azul del cierre: borde y texto blancos, sin brillo */
+  /* Sobre la tarjeta azul del cierre (/precios): borde y texto blancos */
   .eyebrow-white {
     border-color: #ffffff;
     color: #ffffff;
-  }
-  .eyebrow-white::after {
-    display: none;
-  }
-  .eyebrow-muted {
-    color: var(--color-mist);
-    border-color: var(--color-mist);
   }
 
   /* Titular de sección (Figma: Montserrat Bold 52/54, sin tracking, centrado) */
@@ -475,13 +450,34 @@ body {
     color: #ffffff;
     text-wrap: balance;
   }
-  /* Subtítulo de sección (Figma: Montserrat Regular 20/28, #c7d7ff, ≤ 952 px) */
+  /* Subtítulo de sección (Figma: Montserrat Regular 20/28, #c7d7ff, ≤ 704 px;
+     Planes usa 950 por clase propia) */
   .sub-section {
     font-size: max(15px, 20 * var(--u));
     line-height: 1.4;
     color: var(--color-cloud);
-    max-width: max(36rem, 952 * var(--u));
+    max-width: max(36rem, 704 * var(--u));
     text-wrap: pretty;
+  }
+
+  /* Divisor «Vector 20» del Figma: trazo de 2,5–3 px con degradado radial
+     centrado (brilla en el centro, se apaga hacia los bordes). Se usa como
+     <hr>/<div> a todo el ancho. */
+  .divider-glow {
+    height: max(2px, 3 * var(--u));
+    border: 0;
+    background: radial-gradient(50% 100% at 50% 50%, #1a4dff 0%, #030617 100%);
+  }
+
+  /* Enlace «→» verde (Figma: 500 · 14/24 · #1cfcb9; Servicios, Pruebas, Planes) */
+  .link-mint {
+    font-weight: 500;
+    font-size: max(12px, 14 * var(--u));
+    line-height: max(16px, 24 * var(--u));
+    color: var(--color-mint);
+  }
+  .link-mint:hover {
+    color: #fff;
   }
 
   /* Firma tipográfica: texto hueco (solo contorno) para marcas de agua */
