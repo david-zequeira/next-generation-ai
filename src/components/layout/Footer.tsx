@@ -32,7 +32,6 @@ function GitHubIcon({ className }: IconProps) {
   );
 }
 
-const HREFS = ["/#future", "/#services", "/#ecosystem", "/#work", "/#process"];
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
@@ -46,26 +45,22 @@ void LinkedInIcon;
 void GitHubIcon;
 
 /**
- * Pie del Figma: sobre el mismo lavanda claro del cierre, el isotipo en
- * negro, la promesa de la marca, y a la derecha el copyright y los legales.
+ * Pie del Figma (1532:2424, «Frame 254»): sobre el mismo lavanda claro del
+ * cierre, el isotipo en negro, la promesa de la marca, y a la derecha las
+ * redes, los legales y el copyright. La lista de navegación vive arriba, en
+ * «Hablemos» (FinalCTA).
  */
 export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) {
   const dark = tone === "dark";
   const dict = useDict();
   const { locale } = useLocale();
   const t = dict.footer;
-  const links = [
-    ...dict.nav.links.map((label, i) => ({ label, href: HREFS[i] })),
-    { label: dict.nav.calc, href: "/calculadora" },
-    { label: dict.nav.pricing, href: "/precios" },
-    { label: t.contact, href: "/contacto" },
-  ];
 
   return (
     <footer className={dark ? "relative bg-[#060e29] text-white" : "relative bg-paper text-ink"}>
-      {/* Figma: isotipo negro de 68 px, promesa en Montserrat 20/24 (la primera frase en SemiBold),
-          y a la derecha «© 2026 Asenix» y los legales en 16 px; sin línea superior */}
-      <div className="mx-auto max-w-[1920px] px-5 pb-u-70 pt-u-40 md:px-10 xl:px-[12.5%]">
+      {/* Figma: isotipo negro de 68 px, promesa en Montserrat 16/24 (la primera frase en SemiBold, ancho 459),
+          y a la derecha, apilados: redes, legales (600 · 14 · UPPER) y «© 2026 Asenix» + derechos en 14; sin línea superior */}
+      <div className="mx-auto max-w-[1920px] px-5 pb-u-110 pt-u-40 md:px-10 xl:px-[12.5%]">
         <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
           <div className="flex items-start gap-u-23">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,19 +69,34 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
               alt="Asenix"
               className={`h-u-68 w-auto brightness-0 ${dark ? "invert" : ""}`}
             />
-            <div className={`max-w-u-582 fs-u-20 lh-u-24 ${dark ? "text-white/90" : "text-[#04050a]/90"}`}>
+            <div className={`max-w-u-459 fs-u-16 lh-u-24 ${dark ? "text-white/90" : "text-[#04050a]/90"}`}>
               <p className="font-display font-semibold">{t.tagline}</p>
               <p className="text-pretty">{t.sub}</p>
             </div>
           </div>
 
-          <div className="flex flex-col items-start gap-5 md:items-end">
-            <div className="flex flex-wrap items-center gap-x-u-40 gap-y-3">
-              <p className={`font-display fs-u-16 font-semibold ${dark ? "text-white" : "text-black"}`}>
-                © {new Date().getFullYear()} Asenix
-              </p>
+          <div className="flex flex-col items-start md:items-end">
+            {/* Figma: redes (y 587) → legales (centro y 678) → © (centro y 706): filas de texto a 28 px de paso */}
+            <div className="flex flex-col items-start md:items-end">
+              {SOCIALS.length > 0 && (
+                <div className="mb-u-36 flex gap-2">
+                  {SOCIALS.map(({ label, href, icon: Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      aria-label={label}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      // Figma: círculos de 41 px en #161614 con el icono en blanco
+                      className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white transition-transform duration-300 hover:-translate-y-0.5"
+                    >
+                      <Icon className="size-u-20" />
+                    </a>
+                  ))}
+                </div>
+              )}
               {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
-              <ul className={`flex flex-wrap gap-x-3 font-display fs-u-16 font-semibold uppercase tracking-[0.07em] ${dark ? "text-white" : "text-black"}`}>
+              <ul className={`flex flex-wrap justify-start gap-x-3 font-display fs-u-14 lh-u-28 font-semibold uppercase tracking-[0.07em] md:justify-end ${dark ? "text-white" : "text-black"}`}>
                 {LEGAL_SLUGS.map((slug, i) => (
                   <li key={slug} className="flex gap-3">
                     {i > 0 && <span aria-hidden>/</span>}
@@ -107,45 +117,14 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
                   </button>
                 </li>
               </ul>
-              {SOCIALS.length > 0 && (
-                <div className="flex gap-2">
-                  {SOCIALS.map(({ label, href, icon: Icon }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      aria-label={label}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      // Figma: círculos de 41 px en #161614 con el icono en blanco
-                      className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white transition-transform duration-300 hover:-translate-y-0.5"
-                    >
-                      <Icon className="size-u-20" />
-                    </a>
-                  ))}
-                </div>
-              )}
+              {/* Figma: «© 2026 Asenix» 700 negro (override) + «Todos los derechos reservados.» 500 #586a96 · 14 · ls 0,07 em, una línea */}
+              <p className="font-display fs-u-14 lh-u-28 tracking-[0.07em] md:text-right">
+                <span className={`font-bold ${dark ? "text-white" : "text-black"}`}>© {new Date().getFullYear()} Asenix</span>{" "}
+                <span className={`font-medium ${dark ? "text-white/60" : "text-slate"}`}>{t.rights}</span>
+              </p>
             </div>
-
-            <nav aria-label={t.navAria}>
-              <ul className={`flex flex-wrap gap-x-5 gap-y-2 fs-u-13 ${dark ? "text-white/55" : "text-ink/55"}`}>
-                {links.map((item) => (
-                  <li key={item.href}>
-                    {item.href.startsWith("/#") ? (
-                      <a href={item.href} className="transition-colors duration-200 hover:text-electric">
-                        {item.label}
-                      </a>
-                    ) : (
-                      <Link href={item.href} className="transition-colors duration-200 hover:text-electric">
-                        {item.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </div>
         </div>
-        <p className={`mt-u-32 fs-u-12 ${dark ? "text-white/40" : "text-ink/40"}`}>{t.rights}</p>
       </div>
     </footer>
   );
