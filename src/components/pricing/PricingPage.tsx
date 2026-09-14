@@ -377,7 +377,7 @@ export default function PricingPage() {
           <section className="mt-u-153 bg-[#e7ebf6] pb-u-170 pt-u-105">
             <div className="mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
               <SectionHead eyebrow={t.addons.eyebrow} title={`${t.addons.titleA} ${t.addons.titleB}`} sub={t.addons.sub} />
-              <div className="mx-auto mt-u-90 grid max-w-u-1397 gap-6 min-[680px]:grid-cols-2 lg:grid-cols-3 lg:gap-u-13">
+              <div className="mx-auto mt-u-90 grid max-w-u-1397 auto-rows-fr gap-6 min-[680px]:grid-cols-2 lg:grid-cols-3 lg:gap-u-13">
                 {t.addons.items.map((addon, i) => {
                   const Icon = ADDON_ICONS[i] ?? Cpu;
                   return (
@@ -398,13 +398,14 @@ export default function PricingPage() {
                         >
                           <Icon className="size-u-25" strokeWidth={2} />
                         </span>
-                        <h4 className="min-h-u-57 pr-u-90 font-display fs-u-22 lh-u-24 font-bold text-black">
+                        <h4 className="min-h-u-52 pr-u-90 font-display fs-u-22 lh-u-24 font-bold text-black">
                           <span className="underline underline-offset-[0.2em]">{addon.name}</span>
                           {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
                         </h4>
-                        <p className="max-w-u-388 flex-1 fs-u-15 lh-u-17 text-black">{addon.desc}</p>
-                        <div className="mt-u-20 flex items-end justify-between gap-3">
-                          <p className="font-display fs-u-25 lh-u-30 font-semibold text-black">
+                        {/* Figma: 15/20 en una caja de 330 (la línea más ancha mide 320) */}
+                        <p className="mt-u-8 max-w-u-330 flex-1 fs-u-15 lh-u-20 text-black">{addon.desc}</p>
+                        <div className="mt-u-6 flex items-end justify-between gap-3">
+                          <p className="font-display fs-u-28 lh-u-30 font-semibold text-black">
                             {addon.price && <span>{addon.price} </span>}
                             {addon.tail && <span className="text-electric">{addon.tail.replace(/^·\s*/, "")}</span>}
                           </p>
@@ -430,16 +431,20 @@ export default function PricingPage() {
           <section className="mx-auto max-w-[1920px] px-5 pt-u-146 md:px-10 xl:px-[12.5%]">
             <SectionHead eyebrow={t.pay.eyebrow} title={`${t.pay.titleA} ${t.pay.titleB}`} sub={t.pay.sub} />
             <Reveal delay={0.1} className="mx-auto mt-u-93 max-w-u-1299">
-              <div className="grid gap-10 rounded-u-25 bg-[#e7ebf6] px-u-70 py-u-50 min-[680px]:grid-cols-2 xl:grid-cols-4 xl:gap-u-40">
+              {/* Las cuatro columnas comparten pistas de fila (`subgrid`): la cifra
+                  de una puede partir en dos líneas —pasa en EN con «€0 upfront»—
+                  y las etiquetas, los párrafos y los pies siguen alineados entre
+                  sí, como en el marco. */}
+              <div className="grid gap-10 rounded-u-25 bg-[#e7ebf6] px-u-70 py-u-50 min-[680px]:grid-cols-2 xl:grid-cols-4 xl:grid-rows-[auto_auto_1fr_auto] xl:gap-x-u-51 xl:gap-y-0">
                 {PAY_ORDER.map((idx) => {
                   const item = t.pay.items[idx];
                   return (
-                    <div key={item.k}>
-                      {/* Figma: la cifra en azul a 48, la etiqueta en negro a 20 */}
-                      <p className="font-display fs-u-48 font-bold leading-none text-electric">{item.title}</p>
-                      <p className="mt-u-12 font-display fs-u-20 font-bold leading-none text-black">{item.k}</p>
-                      <p className="mt-u-20 fs-u-15 lh-u-21 text-black">{item.body}</p>
-                      <p className="mt-u-6 font-display fs-u-15 lh-u-21 font-bold text-black">{item.foot}</p>
+                    <div key={item.k} className="xl:row-span-4 xl:grid xl:grid-rows-subgrid">
+                      {/* Figma: la cifra en azul a 53, la etiqueta en negro a 21 */}
+                      <p className="font-display fs-u-53 font-bold leading-none text-electric">{item.title}</p>
+                      <p className="mt-u-10 font-display fs-u-21 font-bold leading-none text-black">{item.k}</p>
+                      <p className="mt-u-26 fs-u-15 lh-u-20 text-black">{item.body}</p>
+                      <p className="mt-u-8 font-display fs-u-15 lh-u-20 font-bold text-black">{item.foot}</p>
                     </div>
                   );
                 })}

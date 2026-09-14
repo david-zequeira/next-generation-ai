@@ -342,16 +342,63 @@ ya está en el código.
 
 ---
 
+## 11 · Tipografía y alineación · **encontrado revisando la web**
+
+Salió mirando `/precios` en EN, no del marco: los componentes se veían
+desiguales. Al medirlos contra el Figma, cinco valores estaban mal y el panel de
+pago no alineaba nada.
+
+### Formas de pago
+
+Las cuatro columnas del marco **están alineadas banda a banda**: la cifra de la
+1.ª ocupa `292…331` y la de la 3.ª `288…339` (alturas distintas), pero la
+etiqueta arranca en `352`/`349`, el párrafo en `397` en las cuatro y el pie en
+`455` en las cuatro. En el código cada columna era un bloque independiente, así
+que en EN —donde «€0 upfront» y «3 payments» parten en dos líneas— cada etiqueta
+caía a una altura distinta.
+
+Resuelto con `grid-rows-subgrid`: las cuatro columnas comparten las pistas de
+fila del panel, así que una cifra puede partir en dos líneas sin descolgar el
+resto.
+
+| Propiedad | Figma | Código | Estado |
+|---|---|---|---|
+| Cifra | **53** — «3 plazos» ocupa 221 px de tinta; a 48 daba 200 | 48 | corregido, medido: 221 |
+| Etiqueta | **21** — «Fraccionado» ocupa 136 | 20 | corregido |
+| Párrafo | 15/**20** (líneas en `397`, `417`, `437`) | 15/21 | corregido |
+| Hueco entre columnas | ≈ 51 (columna de ≈ 250) | 40 | corregido |
+| Alineación entre columnas | banda a banda | cada columna por su cuenta | corregido con `subgrid` |
+
+### Módulos
+
+| Propiedad | Figma | Código | Estado |
+|---|---|---|---|
+| Interlínea de la descripción | **20** (líneas en `758`, `778`, `798`, `818`) | 17 | corregido |
+| Caja de la descripción | **330** (la línea más ancha mide 320) | 388 | corregido |
+| Precio | **28** — «3.000 €» ocupa 109 px de tinta; a 25 daba 97 | 25 | corregido |
+| Hueco descripción → precio | 16 | 31 | corregido |
+| Alto de las tarjetas | 244, todas iguales | cada fila con el suyo | uniformado con `auto-rows-fr` |
+
+El título sí estaba bien: «La web, después» ocupa 191 px en el marco y 192 en la
+web.
+
+Las tarjetas quedan en 270 y no en 244 porque los textos del diccionario son más
+largos que los del marco; lo que importaba era que **las ocho midan lo mismo**,
+y ahora lo hacen.
+
+---
+
 ## Estado final
 
-Todas las fases aplicadas. Geometría medida contra el marco:
+Todas las fases aplicadas, más la pasada de tipografía y alineación del § 11.
+Geometría medida contra el marco:
 
 | Elemento | Figma | Web | |
 |---|---|---|---|
 | Tarjeta de plan | x363, 377 | x363, 377 | exacto |
 | Banda del Diagnóstico | x304, 1313×242 | x304, 1313×250 | exacto en ancho |
 | Comparativa | x240, 1440 | x241, 1438 | ±2 |
-| Tarjeta de módulo | 457×244 | 457×244 | exacto |
+| Tarjeta de módulo | 457×244 | 457×270 | ancho exacto; el alto lo marca el copy, las ocho iguales |
 | Panel de Formas de pago | x311, 1299×295 | x311, 1299×401 | exacto en ancho; el alto lo marca el copy |
 | Fila del FAQ | 667×62 | 663×62 | ±4 |
 | Tarjeta del CTA final | x363, 1194×460 | x362, 1197×502 | +42 de alto por el 2.º botón (D2) |
