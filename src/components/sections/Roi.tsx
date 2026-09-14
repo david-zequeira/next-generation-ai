@@ -42,7 +42,7 @@ export default function Roi() {
   const bodyRest = colon > 0 ? t.body.slice(colon + 1) : t.body;
 
   return (
-    <section id="roi" className="relative bg-void pb-u-134 pt-u-120">
+    <section id="roi" className="relative bg-void pt-u-120 pb-u-63">
       <div className="mx-auto max-w-[1920px] px-5 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
@@ -55,40 +55,40 @@ export default function Roi() {
         >
           <div className="relative grid gap-12 lg:grid-cols-[1fr_auto] lg:gap-u-40">
             {/* — el argumento — */}
-            <div className="lg:pt-u-28">
-              <p className="eyebrow eyebrow-gradient">{t.eyebrow}</p>
+            <div className="lg:pt-u-36">
+              <p className="eyebrow">{t.eyebrow}</p>
               {/* Figma: Montserrat SemiBold 35/40, blanco, con «haz la cuenta.» en azul */}
               <h2 className="mt-u-24 max-w-u-462 font-display fs-u-35 lh-u-40 font-semibold text-white">
                 {t.titleA}
                 <br />
                 <span className="text-electric">{t.titleB}</span>
               </h2>
-              <p className="mt-u-24 max-w-u-485 fs-u-18 lh-u-25 text-white">
+              <p className="mt-u-12 max-w-u-485 fs-u-18 lh-u-27 text-white">
                 {bodyLead && <strong className="font-semibold">{bodyLead}</strong>}
                 {bodyRest}
               </p>
 
-              {/* Figma: 375×62, radio completo, #c7d7ff, SemiBold 15, flecha azul */}
+              {/* Figma: 375×66, radio completo, #c7d7ff, SemiBold 15, flecha azul */}
               <Link
                 href="/calculadora"
                 onClick={() => trackEvent("cta_calculadora_home")}
-                className="btn-light group mt-u-52 inline-flex h-u-62 items-center gap-u-24 rounded-full pl-u-36 pr-u-24 font-display fs-u-15 font-semibold text-void transition-all duration-300 active:scale-[0.97]"
+                className="btn-light group mt-u-52 inline-flex h-u-66 items-center gap-u-24 rounded-full pl-u-36 pr-u-24 font-display fs-u-15 font-semibold text-void transition-all duration-300 active:scale-[0.97]"
               >
                 {t.cta}
                 <ArrowRight className="size-u-32 text-electric transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.5} />
               </Link>
-              <p className="mt-u-40 fs-u-12 lh-u-22 font-medium text-cloud">{t.note}</p>
+              <p className="mt-u-44 fs-u-12 lh-u-22 font-medium text-cloud">{t.note}</p>
             </div>
 
             {/* — el ejemplo, ya calculado — Figma: panel claro 577×498, radio 35, #fff→#c7d7ff */}
             <div className="w-full rounded-u-35 border-[1.3px] border-pulse/50 bg-[linear-gradient(180deg,#ffffff_0%,#c7d7ff_100%)] px-u-37 pb-u-37 pt-u-36 lg:w-u-577">
               <p className="text-center font-display fs-u-22 lh-u-23 font-semibold text-black">{t.exampleLabel}</p>
 
-              <ul className="mt-u-33 grid gap-x-u-9 gap-y-u-37 sm:grid-cols-2">
+              <ul className="mt-u-27 grid gap-x-u-9 gap-y-u-16 sm:grid-cols-2">
                 {t.inputs.map((line, i) => (
                   <li key={line}>
                     <p className="font-display fs-u-12 font-bold text-black">{t.inputLabels[i]}</p>
-                    <p className="mt-u-11 flex min-h-u-60 items-center rounded-u-16 bg-white px-u-23 fs-u-15 lh-u-17 font-medium text-black shadow-[0_1px_4px_rgba(12,12,13,0.05),0_1px_4px_rgba(12,12,13,0.1)]">
+                    <p className="mt-u-5 flex min-h-u-60 items-center rounded-u-16 bg-white px-u-23 fs-u-15 lh-u-17 font-medium text-black shadow-[0_1px_4px_rgba(12,12,13,0.05),0_1px_4px_rgba(12,12,13,0.1)]">
                       {line}
                     </p>
                   </li>
@@ -107,7 +107,7 @@ export default function Roi() {
                     <dd className="font-display fs-u-18 font-bold tabular-nums text-neon">{eur(r.net)}</dd>
                   </div>
                 </dl>
-                <div className="mt-u-30 flex items-end justify-between gap-4">
+                <div className="mt-u-21 flex items-end justify-between gap-4">
                   <p className="font-display fs-u-18 lh-u-22 font-semibold text-white">{t.paybackLabel}</p>
                   <p className="font-display leading-none text-white">
                     <span className="fs-u-45 font-semibold">{meses}</span>

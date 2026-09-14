@@ -31,8 +31,8 @@ function FigmaSparkle({ className, delay = 0 }: { className?: string; delay?: nu
 
 /**
  * Sección 9 — «Planes simples que escalan contigo» (Figma): tres tarjetas de
- * 296×86 con radio 30; la recomendada en azul con el precio en lima, las
- * otras blancas con el precio en azul, y una estrella de 40 px asomando por
+ * 301×88 con radio 30; la recomendada en azul con el precio en lima, las
+ * otras blancas con el precio en azul, y una estrella de 41 px asomando por
  * la esquina superior derecha. Los nombres y precios salen del diccionario
  * de /precios: aquí no se escribe ninguna tarifa a mano.
  */
@@ -42,11 +42,11 @@ export default function Plans() {
   const plans = pricingDicts[locale].plans;
 
   return (
-    <section id="plans" className="relative bg-void pb-u-120 pt-u-63">
+    <section id="plans" className="relative bg-void pt-u-63 pb-u-90">
       <div className="mx-auto max-w-5xl px-6 text-center" key={locale}>
-        <SectionHeading eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} gradientEyebrow subSize={18} />
+        <SectionHeading eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} subClassName="max-w-u-950" />
 
-        <ul className="mt-u-113 flex flex-wrap items-stretch justify-center gap-u-20">
+        <ul className="mt-u-86 flex flex-wrap items-stretch justify-center gap-u-10">
           {plans.map((p, i) => (
             <motion.li
               key={p.name}
@@ -60,22 +60,22 @@ export default function Plans() {
                 href="/precios"
                 onClick={() => trackEvent("cta_plans_home")}
                 className={cn(
-                  "group relative flex h-u-86 w-u-296 cursor-pointer flex-col items-center justify-center rounded-u-30 text-center transition-all duration-300 hover:-translate-y-0.5",
+                  "group relative flex h-u-88 w-u-301 cursor-pointer flex-col items-center justify-center rounded-u-30 text-center transition-all duration-300 hover:-translate-y-0.5",
                   p.star
                     ? "border border-electric bg-[linear-gradient(180deg,#1a4dff_0%,#102e99_100%)] text-white"
                     : "bg-white text-black hover:bg-cloud"
                 )}
               >
-                {/* La estrella (32 px) asoma 15 px por encima del borde, a 56 px de la esquina derecha */}
+                {/* La estrella (41 px) asoma 20 px por encima del borde, a 48 px de la esquina derecha */}
                 <FigmaSparkle
                   delay={i * 0.4}
                   className={cn(
-                    "absolute -top-[max(9px,15*var(--u))] right-[max(33px,56*var(--u))] size-u-32",
+                    "absolute -top-[max(12px,20*var(--u))] right-[max(28px,48*var(--u))] size-u-41",
                     p.star ? "text-neon" : "text-electric"
                   )}
                 />
-                <span className="font-display fs-u-22 lh-u-30 font-semibold">{p.name}</span>
-                <span className={cn("fs-u-15 leading-none", p.star ? "font-medium text-neon" : "font-semibold text-electric")}>
+                <span className="font-display fs-u-24 lh-u-30 font-semibold">{p.name}</span>
+                <span className={cn("fs-u-16 leading-none", p.star ? "font-medium text-neon" : "font-semibold text-electric")}>
                   {p.setupPrefix ? `${p.setupPrefix} ` : ""}
                   {p.setup} {t.setup}
                 </span>
@@ -84,19 +84,19 @@ export default function Plans() {
           ))}
         </ul>
 
-        {/* Figma: «¿Necesitas algo personalizado? Habla con nuestro equipo →», Medium 18, enlace verde */}
+        {/* Figma: «¿Necesitas algo personalizado? Habla con nuestro equipo →», Medium 14/24; la pregunta en #ecefff (override del nodo) y el enlace en #1cfcb9 */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-u-118 font-display fs-u-18 lh-u-24 font-medium text-frost"
+          className="link-mint mt-u-122 font-display text-frost"
         >
           {t.question}{" "}
           <Link
             href="/contacto"
             onClick={() => trackEvent("cta_plans_custom_home")}
-            className="group inline-flex items-center gap-1 text-mint transition-colors hover:text-white"
+            className="group inline-flex items-center gap-1 text-mint underline underline-offset-2 transition-colors hover:text-white"
           >
             {t.link}
             <ArrowRight className="size-u-18 transition-transform duration-300 group-hover:translate-x-0.5" />
