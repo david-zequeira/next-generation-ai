@@ -99,19 +99,19 @@ export default function CaseStudies() {
   }, []);
 
   return (
-    <section id="work" ref={sectionRef} className="relative overflow-hidden bg-void">
+    <section id="work" ref={sectionRef} className="relative overflow-hidden bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)]">
       <div className="flex min-h-svh items-center">
         <div
           ref={trackRef}
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 py-24 [scrollbar-width:none] md:snap-none md:gap-u-52 md:overflow-x-visible md:px-[12.5vw] [&::-webkit-scrollbar]:hidden"
         >
-          {/* Panel de introducción — Figma: H2 700 52/54, sub 400 18/28 #c7d7ff, enlace verde */}
+          {/* Panel de introducción — Figma: H2 700 52/54, sub 400 20/28 #c7d7ff a 28, enlace verde 500 14/24 a 60 */}
           <div className="flex w-[82vw] shrink-0 snap-center flex-col justify-center md:w-[24vw]" key={locale}>
             <h2 className="max-w-u-455 font-display fs-u-52 lh-u-54 font-bold text-white text-balance">{t.title}</h2>
-            <p className="mt-u-40 max-w-u-390 fs-u-18 lh-u-28 text-cloud">{t.sub}</p>
+            <p className="mt-u-28 max-w-u-390 fs-u-20 lh-u-28 text-cloud">{t.sub}</p>
             <a
               href="#roi"
-              className="group mt-u-56 inline-flex items-center gap-u-8 font-display fs-u-18 font-medium text-mint transition-colors hover:text-white"
+              className="link-mint group mt-u-60 inline-flex items-center gap-u-8 font-display transition-colors"
             >
               {t.link}
               <ArrowRight className="size-u-18 transition-transform duration-300 group-hover:translate-x-1" />
@@ -125,22 +125,28 @@ export default function CaseStudies() {
             return (
               <article
                 key={`${study.headline}-${locale}`}
-                style={{ ["--ring-w" as string]: "2px" }}
-                // Figma: 826×365, radio 25, degradado 247° #101837→#050b21, borde cónico de 2 px;
-                // solo la principal proyecta la sombra azul
+                style={{
+                  ["--ring-w" as string]: featured ? "2px" : "1px",
+                  ["--ring-bg" as string]: featured
+                    ? "conic-gradient(#6994ff 12%, #1a4dff 50%, #6994ff 85%)"
+                    : "conic-gradient(#6994ff 26%, #1a4dff 50%, #6994ff 74%)",
+                }}
+                // Figma: 826×365, radio 25, degradado 247° #101837→#050b21 a opacidad .5;
+                // la destacada lleva borde cónico de 2 px (12/50/85 %) y la sombra azul,
+                // el resto 1 px (26/50/74 %) sin sombra
                 className={cn(
-                  "ring-conic card-navy group relative w-[86vw] shrink-0 snap-center rounded-u-25 pb-u-38 pl-u-53 pr-u-37 pt-u-38 transition-shadow duration-500 md:w-[43vw]",
+                  "ring-conic group relative bg-[linear-gradient(247deg,rgba(16,24,55,.5),rgba(5,11,33,.5))] w-[86vw] shrink-0 snap-center rounded-u-25 pb-u-38 pl-u-53 pr-u-37 pt-u-38 transition-shadow duration-500 md:w-[43vw]",
                   featured && "shadow-[0_0_150px_rgba(26,77,255,0.5),0_0_80px_3px_rgba(26,77,255,0.5)]"
                 )}
               >
                 <div className="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
                   <div className="pt-u-73">
-                    {/* Figma: «+ Clientes» Montserrat Medium 45/48 azul; historia Light 20/25 #597eff */}
+                    {/* Figma: «+ Clientes» Montserrat Medium 45/48 azul; historia Light 20/25 #779eff */}
                     <h3 className="font-display fs-u-45 lh-u-48 font-medium text-electric">
                       <span className="mr-2">+</span>
                       {study.headline}
                     </h3>
-                    <p className="mt-u-10 max-w-u-254 pl-u-42 fs-u-20 lh-u-25 font-light text-[#597eff]">{study.story}</p>
+                    <p className="mt-u-10 max-w-u-254 pl-u-42 fs-u-20 lh-u-25 font-light text-periwinkle">{study.story}</p>
                   </div>
 
                   {/* Panel azul — Figma: 376×290, radio 16, degradado #1a4dff 21 % → #03259b */}
@@ -169,7 +175,7 @@ export default function CaseStudies() {
                       <p className="font-display fs-u-35 font-semibold leading-none text-white">
                         <Counter prefix={s.prefix} value={s.value} suffix={s.suffix} />
                       </p>
-                      <p className="mt-u-8 fs-u-20 text-mint">{study.statLabel}</p>
+                      <p className="mt-u-8 fs-u-20 font-normal text-mint">{study.statLabel}</p>
                     </div>
                     <div className="absolute -bottom-1 right-u-24 h-u-197">
                       <Person />
