@@ -48,8 +48,9 @@ export default function MagneticButton({
   };
 
   const baseClasses = cn(
-    // Figma: 244×72, radio 47 (pastilla), Montserrat SemiBold 18, icono a 12 px del texto
-    "group relative inline-flex min-h-u-72 cursor-pointer items-center justify-center gap-u-12 overflow-hidden rounded-full px-u-52 py-2 font-display fs-u-18 font-semibold transition-[background,box-shadow,border-color] duration-300",
+    // Figma: botones del hero 213×72 («Comenzar») y 244×72 («Ver demo»), radio 47 (pastilla),
+    // Montserrat SemiBold 18, icono a 12 px del texto; padding lateral 40 para que «Comenzar» dé 213
+    "group relative inline-flex min-h-u-72 cursor-pointer items-center justify-center gap-u-12 overflow-hidden rounded-full px-u-40 py-2 font-display fs-u-18 font-semibold transition-[background,box-shadow,border-color] duration-300",
     variant === "primary" && "btn-light",
     variant === "ghost" && "btn-outline",
     variant === "blue" && "btn-blue",

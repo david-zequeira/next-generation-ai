@@ -18,11 +18,14 @@ type SectionHeadingProps = {
   titleClassName?: string;
   /** Clases extra del h2 (p. ej. `max-w-u-704 mx-auto` en Servicios). */
   h2ClassName?: string;
+  /** Clases extra del subtítulo (p. ej. `max-w-u-950` en Planes). */
+  subClassName?: string;
 };
 
 /**
  * Cabecera de sección del Figma «Asenix Web»: pastilla-eyebrow, titular
  * Montserrat Bold 52/54 y subtítulo #c7d7ff de hasta 704 px, todo centrado.
+ * Ritmo vertical del Figma 1532:2424: eyebrow → h2 35, h2 → sub 25.
  * Los tamaños salen de las utilidades `*-u-N` (px del Figma a 1920).
  */
 export default function SectionHeading({
@@ -35,13 +38,14 @@ export default function SectionHeading({
   className,
   titleClassName,
   h2ClassName,
+  subClassName,
 }: SectionHeadingProps) {
   const lines = Array.isArray(title) ? title : [title];
   const centered = align === "center";
   return (
     <div className={cn("flex flex-col", centered ? "items-center text-center" : "items-start text-left", className)}>
       <p className={cn("eyebrow", gradientEyebrow && "eyebrow-gradient")}>{eyebrow}</p>
-      <h2 className={cn("h2-section mt-u-56", titleClassName, h2ClassName)}>
+      <h2 className={cn("h2-section mt-u-35", titleClassName, h2ClassName)}>
         {lines.map((line, i) => (
           <TextReveal key={line} as="span" text={line} delay={i * 0.2} className="block font-bold" />
         ))}
@@ -49,10 +53,11 @@ export default function SectionHeading({
       {sub && (
         <p
           className={cn(
-            "sub-section mt-u-24",
+            "sub-section mt-u-25",
             subSize === 26 && "fs-u-26 lh-u-34 text-cloud/80 max-w-u-705",
             subSize === 24 && "fs-u-24 lh-u-32 text-cloud/80",
-            subSize === 18 && "fs-u-18 lh-u-28"
+            subSize === 18 && "fs-u-18 lh-u-28",
+            subClassName
           )}
         >
           {sub}
