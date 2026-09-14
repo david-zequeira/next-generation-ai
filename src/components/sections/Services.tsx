@@ -105,18 +105,23 @@ export default function Services() {
   const current = t.tabs[tab];
 
   return (
-    <section id="services" className="relative border-b border-line bg-void pt-u-40">
+    <section id="services" className="relative bg-void pt-u-125">
       <div className="relative mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
-        <SectionHeading key={locale} eyebrow={t.eyebrow} title={t.title} sub={t.sub} />
+        <SectionHeading key={locale} eyebrow={t.eyebrow} title={t.title} sub={t.sub} h2ClassName="max-w-u-704 mx-auto" />
 
-        {/* Selector de pestañas — Figma: 798×95, borde cónico de 0,5 px, activa blanca 227×64 */}
+        {/* Selector de pestañas — Figma «Rectangle 29»: 711×90, radio 55, trazo cónico de 0,5 px
+            (#4977ff → #1a4dff → #6994ff); pestaña activa «Rectangle 181» blanca 212×66, radio 47 */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
           role="tablist"
-          className="ring-conic mx-auto mt-u-63 flex h-u-95 w-fit max-w-full items-center gap-u-8 overflow-x-auto rounded-full px-u-16 [scrollbar-width:none]"
+          style={{
+            ["--ring-w" as string]: "0.5px",
+            ["--ring-bg" as string]: "conic-gradient(#4977ff 63%, #1a4dff 75%, #6994ff 88%)",
+          }}
+          className="ring-conic mx-auto mt-u-86 flex h-u-90 w-u-711 max-w-full items-center justify-center gap-u-8 overflow-x-auto rounded-u-55 px-u-16 [scrollbar-width:none]"
         >
           {t.tabs.map((item, i) => (
             <button
@@ -126,7 +131,7 @@ export default function Services() {
               aria-selected={tab === i}
               onClick={() => setTab(i)}
               className={cn(
-                "relative h-u-64 shrink-0 cursor-pointer rounded-full px-u-44 font-display fs-u-18 font-semibold transition-colors duration-300",
+                "relative h-u-66 w-u-212 shrink-0 cursor-pointer rounded-u-47 px-0 font-display fs-u-18 font-semibold transition-colors duration-300",
                 tab === i ? "text-black" : "text-white hover:text-cloud"
               )}
             >
@@ -149,11 +154,15 @@ export default function Services() {
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          style={{ ["--ring-w" as string]: "0.5px" }}
-          // Figma: texto a 91 del borde, tableta a 92 arriba y 87 abajo (no toca la base de la tarjeta)
-          className="ring-conic relative mt-u-68 rounded-t-u-35 bg-[linear-gradient(180deg,#101a3e_0%,#1a3ba9_100%)] px-6 pb-u-87 pt-u-92 shadow-[0_0_150px_rgba(26,77,255,0.5)] md:px-u-91"
+          style={{
+            ["--ring-w" as string]: "0.5px",
+            ["--ring-bg" as string]: "conic-gradient(#6994ff 32%, #1a4dff 50%, #6994ff 68%)",
+          }}
+          // Figma: a 78 de la barra; texto a 91 del borde y a 104 arriba / 108 abajo; la tableta
+          // a 92 arriba y 87 abajo (no toca la base de la tarjeta)
+          className="ring-conic relative mt-u-78 rounded-t-u-35 bg-[linear-gradient(180deg,#101a3e_0%,#1a3ba9_100%)] px-6 pb-u-87 pt-u-92 shadow-[0_0_150px_rgba(26,77,255,0.5)] md:px-u-91"
         >
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.13fr] lg:items-start lg:gap-u-44">
+          <div className="grid gap-10 lg:grid-cols-[1fr_max(300px,645*var(--u))] lg:items-start lg:gap-u-44">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${locale}-${tab}`}
@@ -166,37 +175,39 @@ export default function Services() {
                 <h3 className="max-w-u-569 font-display fs-u-38 lh-u-47 font-semibold text-white text-balance">
                   {current.title}
                 </h3>
-                <p className="mt-u-26 max-w-u-569 fs-u-20 lh-u-28 font-light text-cloud">{current.desc}</p>
+                <p className="mt-u-31 max-w-u-569 fs-u-20 lh-u-28 font-light text-cloud">{current.desc}</p>
 
-                <ul className="mt-u-56 grid gap-x-u-48 gap-y-u-40 sm:grid-cols-2">
+                {/* Figma «Frame 222-225»: 2 columnas de 285 con paso 289, filas de 80/101 con paso 103 */}
+                <ul className="mt-u-64 grid gap-x-[max(3px,4*var(--u))] gap-y-u-23 sm:grid-cols-[repeat(2,max(200px,285*var(--u)))]">
                   {current.features.map((f) => (
                     <li key={f.title} className="flex gap-u-16">
-                      <CheckCircle2 className="mt-px size-u-24 shrink-0 fill-neon text-space" strokeWidth={2} />
+                      <CheckCircle2 className="mt-px size-u-24 shrink-0 fill-neon text-white" strokeWidth={2} />
                       <div>
                         <p className="font-display fs-u-18 lh-u-24 font-semibold text-white">{f.title}</p>
-                        <p className="mt-u-8 fs-u-15 lh-u-22 text-white">{f.desc}</p>
+                        <p className="mt-u-8 fs-u-15 lh-u-24 text-white">{f.desc}</p>
                       </div>
                     </li>
                   ))}
                 </ul>
 
-                <div className="mt-auto flex flex-col gap-5 pt-u-64 sm:flex-row sm:items-center sm:gap-u-40">
-                  <button
-                    type="button"
-                    onClick={() => window.dispatchEvent(new CustomEvent("ng:open-chat"))}
-                    className="group inline-flex cursor-pointer items-center gap-u-8 font-display fs-u-18 font-medium text-mint transition-colors hover:text-white"
-                  >
-                    {t.link}
-                    <ArrowRight className="size-u-18 transition-transform duration-300 group-hover:translate-x-1" />
-                  </button>
-                  {/* Figma «Cotizar proyecto»: 176×49, radio 16, #c7d7ff, SemiBold 15 */}
+                <div className="mt-auto flex flex-col gap-5 pt-u-46 sm:flex-row sm:items-center sm:gap-u-20">
+                  {/* Figma «Cotizar proyectos»: 194×53, radio 50, degradado navy→abyss, borde 1 px #1a4dff, SemiBold 14 blanco */}
                   <Link
                     href="/contacto"
                     onClick={() => trackEvent("cta_services_home")}
-                    className="btn-light-sm inline-flex h-u-49 cursor-pointer items-center justify-center rounded-u-16 px-u-24 font-display fs-u-15 font-semibold transition-all duration-300 active:scale-[0.97]"
+                    className="tag-pill inline-flex h-u-53 min-w-u-194 cursor-pointer items-center justify-center rounded-full px-u-24 font-display fs-u-14 font-semibold text-white transition-all duration-300 active:scale-[0.97]"
                   >
                     {t.cta}
                   </Link>
+                  {/* Figma «Explorar Asenix Copilot →»: 500 · 14/24 · #1cfcb9, a 20 del botón */}
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new CustomEvent("ng:open-chat"))}
+                    className="link-mint group inline-flex cursor-pointer items-center gap-u-8 font-display transition-colors"
+                  >
+                    {t.link}
+                    <ArrowRight className="size-u-14 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -208,12 +219,12 @@ export default function Services() {
             <div className="relative flex h-u-573 w-full items-start justify-center overflow-hidden rounded-u-25 bg-[linear-gradient(180deg,#1a4dff_28%,#294296_100%)] px-u-60 pt-u-75 md:px-u-123">
               <div
                 aria-hidden
-                className="pointer-events-none absolute aspect-square w-[109%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[20px]"
+                className="pointer-events-none absolute aspect-square w-[109%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[40px]"
                 style={{ left: "75%", top: "15%" }}
               />
               <div
                 aria-hidden
-                className="pointer-events-none absolute aspect-square w-[169%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[4px]"
+                className="pointer-events-none absolute aspect-square w-[169%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[7px]"
                 style={{ left: "-5%", top: "63%" }}
               />
               <div className="relative min-h-u-511 w-full max-w-u-399 rounded-t-u-20 border-[0.5px] border-white bg-[linear-gradient(180deg,#ffffff_0%,#94b2fc_47%,#7a93d0_100%)] shadow-[0_0_50px_-13px_rgba(255,255,255,0.59)]">
