@@ -1,0 +1,53 @@
+{
+  "_doc": "Bandas verticales del marco 984:14321 «Asenix Calculadora1», y relativo al marco en px (marco de 1920 x 6461). Extraído de /v1/files el 2026-09-14T06:45:12Z.",
+  "bands": [
+    {
+      "name": "Header",
+      "y0": 0,
+      "y1": 120,
+      "component": "src/components/layout/Navbar.tsx"
+    },
+    {
+      "name": "Hero",
+      "y0": 120,
+      "y1": 827,
+      "component": "src/components/calculator/CalculatorPage.tsx (cabecera)"
+    },
+    {
+      "name": "Intro calculadora",
+      "y0": 827,
+      "y1": 1336,
+      "component": "src/components/calculator/CalculatorPage.tsx (intro)"
+    },
+    {
+      "name": "Formulario y cuenta",
+      "y0": 1336,
+      "y1": 3091,
+      "component": "src/components/calculator/CalculatorPage.tsx (pasos + panel)"
+    },
+    {
+      "name": "Que lo resuelve",
+      "y0": 3091,
+      "y1": 3918,
+      "component": "src/components/calculator/CalculatorPage.tsx (soluciones)"
+    },
+    {
+      "name": "Preguntas y respuestas",
+      "y0": 3918,
+      "y1": 4874,
+      "component": "src/components/calculator/CalculatorPage.tsx (FAQ)"
+    },
+    {
+      "name": "Te enviamos los resultados",
+      "y0": 4874,
+      "y1": 5667,
+      "component": "src/components/calculator/CalculatorPage.tsx (captura)"
+    },
+    {
+      "name": "Hablemos y pie",
+      "y0": 5667,
+      "y1": 6461,
+      "component": "src/components/sections/FinalCTA.tsx + layout/Footer.tsx"
+    }
+  ]
+}

@@ -439,6 +439,14 @@ body {
     border-color: #ffffff;
     color: #ffffff;
   }
+  /* Sobre un módulo claro (la cuenta de /calculadora): caja sólida sin borde,
+     para que la lima se lea. Figma 1543:5205 y 1555:67668, 114×28. */
+  .eyebrow-dark {
+    background: var(--color-abyss);
+    border-color: transparent;
+    padding-inline: max(14px, 18 * var(--u)); /* Figma: la pastilla mide 114 */
+    font-weight: 500;
+  }
 
   /* Titular de sección (Figma: Montserrat Bold 52/54, sin tracking, centrado) */
   .h2-section {
@@ -467,6 +475,14 @@ body {
     height: max(2px, 3 * var(--u));
     border: 0;
     background: radial-gradient(50% 100% at 50% 50%, #1a4dff 0%, #030617 100%);
+  }
+
+  /* Raya lisa entre bandas (Figma «Vector 31/32» de /calculadora): 1920 × 0,5 px
+     #6994ff, a todo el ancho. */
+  .divider-hair {
+    height: max(1px, 0.5 * var(--u));
+    border: 0;
+    background: #6994ff;
   }
 
   /* Enlace «→» verde (Figma: 500 · 14/24 · #1cfcb9; Servicios, Pruebas, Planes) */
