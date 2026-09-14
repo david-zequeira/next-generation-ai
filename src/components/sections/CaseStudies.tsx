@@ -8,13 +8,20 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 /**
  * Cifras de cada tarjeta — los textos viven en el diccionario, por índice.
  * Tres tarjetas, como pide el diseño; la primera es la destacada (con sombra).
  */
-const STATS = [
+/**
+ * `icon`: icono grande del Figma (104×104, degradado #1cfcb9→#38d4ff) en
+ * `public/icons/proof/`. Solo «Tiempo» está exportado (nodo 1532:2967); los de
+ * «Clientes» y «Eficacia» faltan por la cuota de Figma — mientras, la silueta.
+ */
+const STATS: { prefix: string; value: number; suffix: string; icon?: string }[] = [
   { prefix: "+", value: 40, suffix: "%" },
-  { prefix: "", value: 40, suffix: "h" },
+  { prefix: "", value: 40, suffix: "h", icon: "tiempo" },
   { prefix: "", value: 3, suffix: "×" },
 ];
 
@@ -177,9 +184,19 @@ export default function CaseStudies() {
                       </p>
                       <p className="mt-u-8 fs-u-20 font-normal text-mint">{study.statLabel}</p>
                     </div>
-                    <div className="absolute -bottom-1 right-u-24 h-u-197">
-                      <Person />
-                    </div>
+                    {s.icon ? (
+                      /* Figma: icono 104×104 a 62 del borde derecho del panel, centrado en vertical */
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`${BASE}/icons/proof/${s.icon}.svg`}
+                        alt=""
+                        className="absolute right-u-62 top-1/2 size-u-104 -translate-y-1/2"
+                      />
+                    ) : (
+                      <div className="absolute -bottom-1 right-u-24 h-u-197">
+                        <Person />
+                      </div>
+                    )}
                   </motion.div>
                 </div>
               </article>

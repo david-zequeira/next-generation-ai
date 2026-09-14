@@ -128,17 +128,18 @@ export default function Evolution() {
     <section ref={ref} id="future" className="relative h-[450vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         {/* Fondo del Figma («El futuro» 1532:2424), debajo de estrellas y rejilla.
-            «Rectangle 2»: negro→transparente en toda la etapa (hijo 0, al fondo).
-            «Rectangle 162»: desde y+253, 827 de alto, #030617→#040b24, opaco y
-            por encima del anterior (hijo 1; en el render el corte a 253 es neto
-            y de ahí hacia abajo el color es exactamente #030617, sin velo). */}
+            «Rectangle 162»: #030617→#040b24 en toda la etapa (en el Figma arranca
+            a 253 px, pero como la etapa queda fijada durante todo el scroll el
+            corte se veía como una franja; se extiende al alto completo).
+            «Rectangle 2»: negro→transparente por encima, que funde la salida del
+            hero con la etapa sin ningún borde visible. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,transparent_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)]"
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 top-[max(150px,253*var(--u))] h-[max(500px,827*var(--u))] bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,transparent_60%)]"
         />
         {/* Espacio digital: estrellas en parallax */}
         <motion.div

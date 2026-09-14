@@ -128,12 +128,13 @@ function ChatMock({ t }: { t: { name: string; status: string; msgs: string[]; pl
       // Figma: 524×573, radio 30 30 30 39, degradado #0a1540→#1a4dff
       className="ring-conic relative mx-auto w-full max-w-u-524 overflow-hidden rounded-u-30 rounded-br-[max(23.4px,39*var(--u))] bg-[linear-gradient(180deg,#0a1540_0%,#1a4dff_100%)] shadow-[0_50px_100px_-40px_rgba(26,77,255,0.7)]"
     >
-      {/* Cabecera: 109 px, azul al 75 %, avatar de 68; el Figma no lleva «×» de cierre */}
+      {/* Cabecera: 109 px, azul al 75 %, avatar de 68 en lima (#b8f21e, «Ellipse 1»)
+          con el isotipo en negro («Vector» 36×30 fill #000); el Figma no lleva «×» de cierre */}
       <div className="flex h-u-109 items-center rounded-t-u-30 bg-electric/75 px-u-33">
         <div className="flex items-center gap-u-22">
-          <span className="flex size-u-68 items-center justify-center rounded-full bg-white">
+          <span className="flex size-u-68 items-center justify-center rounded-full bg-neon">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${BASE}/isotipo.png`} alt="" className="size-u-36" />
+            <img src={`${BASE}/isotipo.png`} alt="" className="size-u-36 brightness-0" />
           </span>
           <div>
             <p className="font-display fs-u-24 font-medium leading-none text-white">{t.name}</p>
