@@ -43,24 +43,26 @@ const ROW_B: Brand[] = [
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Pastilla del Figma: 70 px de alto, radio completo, blanco al 10 %, borde de
- * 0,5 px en degradado #94b2fc→#586a96, disco #ecefff de 48 px con el logo
- * (≈ 36 px) y el nombre en Montserrat Medium 18. Medidas a 1920 (*-u-N).
+ * Pastilla del Figma 1532:2424 («Rectangle 168…», «Ellipse 63…»): 55 px de
+ * alto, radio completo, blanco al 10 %, trazo de 0,5 px rgba(148,178,252,.61),
+ * disco blanco de 37 px a 9 del borde con el logo (≈ 26 px) y el nombre en
+ * Montserrat Medium 16; padding derecho 27, hueco entre pastillas 10.
+ * Medidas a 1920 (*-u-N).
  */
 function LogoPill({ brand }: { brand: Brand }) {
   return (
     <span
-      style={{ ["--ring-bg" as string]: "linear-gradient(90deg, #94b2fc, #586a96)", ["--ring-w" as string]: "0.5px" }}
-      // Suelos más altos que el resto (58 / 44 / 32 / 15 px): a 1440 la escala 0,75 las dejaba diminutas
-      className="ring-conic group/pill mx-u-6 inline-flex h-[max(58px,70*var(--u))] shrink-0 cursor-default items-center gap-[max(12px,14*var(--u))] rounded-full bg-white/10 pl-[max(8px,11*var(--u))] pr-[max(22px,28*var(--u))] font-display text-[max(15px,18*var(--u))] font-medium text-frost backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
+      style={{ ["--ring-bg" as string]: "rgba(148,178,252,.61)", ["--ring-w" as string]: "0.5px" }}
+      // Suelos más altos que el resto (44 / 30 / 20 / 13 px): a 1440 la escala 0,75 las dejaba diminutas
+      className="ring-conic group/pill mx-[max(4px,5*var(--u))] inline-flex h-[max(44px,55*var(--u))] shrink-0 cursor-default items-center gap-[max(7px,9*var(--u))] rounded-full bg-white/10 pl-[max(7px,9*var(--u))] pr-[max(20px,27*var(--u))] font-display text-[max(13px,16*var(--u))] font-medium text-frost backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15"
     >
-      <span className="flex size-[max(44px,48*var(--u))] items-center justify-center rounded-full bg-frost transition-transform duration-300 group-hover/pill:scale-105">
+      <span className="flex size-[max(30px,37*var(--u))] items-center justify-center rounded-full bg-frost transition-transform duration-300 group-hover/pill:scale-105">
         <Image
           src={`${BASE}/logos/${brand.file}.svg`}
           alt=""
           width={36}
           height={36}
-          className="size-[max(32px,36*var(--u))]"
+          className="size-[max(20px,26*var(--u))]"
           draggable={false}
           // Carga inmediata a propósito: son 19 SVG de 1–2 KB dentro de una
           // cinta que no para de moverse. Con la carga diferida de next/image
@@ -104,9 +106,9 @@ export default function Technology() {
   const t = dict.technology;
 
   return (
-    <section id="technology" className="relative overflow-hidden border-t border-line bg-void pb-u-160 pt-u-130">
-      <div className="relative mx-auto max-w-7xl px-6">
-        <SectionHeading key={locale} eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} gradientEyebrow subSize={18} />
+    <section id="technology" className="relative overflow-hidden border-t border-line bg-void pb-u-87 pt-u-173">
+      <div className="relative mx-auto max-w-[1920px] px-5 md:px-10 xl:px-[12.5%]">
+        <SectionHeading key={locale} eyebrow={t.eyebrow} title={[t.titleA, t.titleB]} sub={t.sub} />
       </div>
 
       <motion.div
@@ -114,7 +116,7 @@ export default function Technology() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 1.2 }}
-        className="relative mt-u-130 flex flex-col gap-u-24"
+        className="relative mt-u-123 flex flex-col gap-u-29"
       >
         <MarqueeRow items={ROW_A} />
         <MarqueeRow items={ROW_B} reverse />

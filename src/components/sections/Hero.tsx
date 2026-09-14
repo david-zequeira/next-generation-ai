@@ -162,10 +162,23 @@ export default function Hero() {
         <span>3.7038°W {"//"}</span>
       </motion.div>
 
-      {/* Contenido */}
+      {/* Contenido.
+          Posición del bloque (Figma 1532:2424, hero de 1080 con la barra de 116
+          por encima): «texto Gero» arranca en y=400 y «Rectangle 20»/«Frame 255»
+          (botones) en y=820–892. El bloque mide 114 (titular 2×57) + 46 + 56
+          (sub 2×28) + 225 + 72 (botones) = 513; centrado por `items-center` sin
+          padding quedaría en 283–796, así que hay que bajarlo ≈117. Un
+          padding-top P sobre este contenedor centrado lo desplaza P/2; el
+          cálculo teórico daba P = 2×117 ≈ 234u, pero medido en el render
+          (1920×1080) con 234u el bloque quedaba ≈20 px por debajo del Figma,
+          así que se corrige a 194u (suelo 64 px = el antiguo pt-16). Con 194u
+          los glifos quedan: titular 386 / sub 547 / botones 822, frente a
+          390 / 541 / 820 del Figma. Los saltos 46/225 del Figma van de caja a
+          caja y las cajas de texto del Figma (83 y 66) no miden lo que sus
+          líneas (114 y 56). */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-20 mx-auto flex max-w-5xl flex-col items-center px-6 pt-16 text-center"
+        className="relative z-20 mx-auto flex max-w-5xl flex-col items-center px-6 pt-[max(64px,194*var(--u))] text-center"
       >
         <h1 className="sr-only">
           ASENIX — {t.titleA} {t.titleB}
@@ -176,13 +189,13 @@ export default function Hero() {
             as="span"
             text={t.titleA}
             delay={0.45}
-            className="block fs-u-52 lh-u-54 text-white"
+            className="block max-w-u-704 fs-u-55 lh-u-57 text-white"
           />
           <TextReveal
             as="span"
             text={t.titleB}
             delay={0.7}
-            className="block fs-u-52 lh-u-54 text-white"
+            className="block max-w-u-704 fs-u-55 lh-u-57 text-white"
           />
         </motion.div>
 
@@ -190,7 +203,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.25, ease: [0.16, 1, 0.3, 1] }}
-          className="sub-section mt-u-32 text-balance"
+          className="sub-section mt-u-46 text-balance"
         >
           {t.sub}
         </motion.p>
@@ -199,13 +212,13 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-u-180 flex flex-col items-center gap-u-32 sm:flex-row"
+          className="mt-u-225 flex flex-col items-center gap-u-32 sm:flex-row"
         >
           <MagneticButton href="/contacto">
             {t.ctaPrimary}
             <ArrowRight
-              className="size-u-24 text-electric transition-transform duration-300 group-hover:translate-x-1"
-              strokeWidth={3}
+              className="size-u-32 text-electric transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={2}
             />
           </MagneticButton>
           {/* La "demo" no es un vídeo: es hablar con el agente. El CTA
@@ -218,7 +231,7 @@ export default function Hero() {
                 onClick={() => window.dispatchEvent(new CustomEvent("ng:open-voice"))}
               >
                 {t.ctaSecondary}
-                <Play className="size-u-20 fill-electric text-electric" strokeWidth={1.5} />
+                <Play className="size-u-24 text-electric" strokeWidth={2} />
               </MagneticButton>
             </span>
           )}

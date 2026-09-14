@@ -10,14 +10,18 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 /* ───────────────────────── Órbita ───────────────────────── */
 
 /*
- * Geometría del Figma en px a 1920: la elipse ocupa 464×385 ya inclinada, lo
- * que corresponde a semiejes 237×186 girados −20°; el planeta mide 185 y el
- * isotipo unos 100. El viewBox (520×440) deja aire para el halo.
+ * Geometría del Figma en px a 1920 (raw.json, «Vector» 1532:2601): la caja del
+ * marco girado mide 464×385, pero el trazo real (absoluteRenderBounds) ocupa
+ * 387×286 con rotación −19,4°, lo que corresponde a semiejes 199×134 (elipse
+ * 398×268 sin girar). El SVG se pinta a 464 px de ancho (columna central) con
+ * viewBox de 520, así que 1 unidad = 464/520 px: 199/0,892 ≈ 223 y 134/0,892
+ * ≈ 150. El planeta mide 185 y el isotipo unos 100. El viewBox (520×440) deja
+ * aire para el halo.
  */
 const CX = 260;
 const CY = 220;
-const RX = 237;
-const RY = 186;
+const RX = 223;
+const RY = 150;
 /** Inclinación de la órbita en grados (la misma que dibuja el SVG). */
 const TILT = -20;
 /** Radio del planeta (185 px de diámetro en el Figma). */
@@ -72,17 +76,18 @@ function Step({
       className="group w-full max-w-u-300"
     >
       {/* Figma: título Montserrat SemiBold 20/23 con el número (círculo #101a3e de 42) a la derecha,
-          y una línea de 0,5 px #c7d7ff debajo; el paso activo pasa a lima */}
+          y una línea de 0,5 px #c7d7ff debajo; en el paso activo título y línea pasan a azul
+          (#1a4dff) y el número a lima (#b8f21e) */}
       <div
         className={cn(
           "flex items-center justify-between gap-u-16 border-b-[0.5px] pb-u-12 transition-colors duration-700",
-          active ? "border-neon/70" : "border-cloud"
+          active ? "border-electric" : "border-cloud"
         )}
       >
         <span
           className={cn(
             "font-display fs-u-20 lh-u-23 font-semibold transition-colors duration-700",
-            active ? "text-neon" : "text-white group-hover:text-cloud"
+            active ? "text-electric" : "text-white group-hover:text-cloud"
           )}
         >
           {title}
@@ -101,9 +106,11 @@ function Step({
           </span>
         </span>
       </div>
+      {/* Figma: descripción Light 16/24 #c7d7ff a 18 de la línea; en el paso activo
+          («Analizamos…», 1532:2572) el relleno es #a7b2d1 (mist) */}
       <p
         className={cn(
-          "mt-u-18 fs-u-18 lh-u-23 font-light transition-colors duration-700",
+          "mt-u-18 fs-u-16 lh-u-24 font-light transition-colors duration-700",
           active ? "text-mist" : "text-cloud"
         )}
       >
@@ -160,9 +167,13 @@ export default function Ecosystem() {
     <section
       id="ecosystem"
       ref={sectionRef}
-      className="relative overflow-hidden border-y border-line bg-[#02040f] pb-u-140 pt-u-116"
+      className="relative overflow-hidden border-t border-line bg-void pb-u-186 pt-u-125"
     >
       <Galaxy sectionRef={sectionRef} />
+      {/* Figma: bajo la línea de 0,5 px #6994ff (Vector 31, y=3533) va la línea brillante
+          (Vector 20, y=3534): trazo de 2,5 px con degradado radial azul → fondo, centrado.
+          El límite con Proceso (y=4570) solo lleva la brillante, y la pone Process.tsx */}
+      <div aria-hidden className="divider-glow pointer-events-none absolute inset-x-0 top-0" />
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-electric/[0.12] blur-[120px]"
@@ -175,8 +186,10 @@ export default function Ecosystem() {
             del planeta, directamente sobre el fondo de la sección (la banda oscura del Figma se retiró) */}
         <div className="relative mt-u-130 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max(300px,464*var(--u))_minmax(0,1fr)] lg:items-stretch lg:gap-x-u-30">
 
-          {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo */}
-          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-110">
+          {/* Izquierda: paso 6 arriba, eslogan en el centro, paso 5 abajo.
+              Figma: el paso empieza en x=421 y el contenedor en 240 (12,5 % de 1920) ⇒ 181 de
+              sangría; la columna mide (1440 − 464 − 2·30)/2 = 458 ⇒ el paso queda en 277 ≈ 278 */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-start pl-u-181">
             <ul className="flex w-full">
               <Step n={6} title={s[5].title} desc={s[5].desc} active={active === 5} delay={0.5} />
             </ul>
@@ -212,8 +225,9 @@ export default function Ecosystem() {
             </ul>
           </div>
 
-          {/* Derecha: paso 2 arriba, eslogan en el centro, paso 3 abajo */}
-          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-end pr-u-110">
+          {/* Derecha: paso 2 arriba, eslogan en el centro, paso 3 abajo.
+              Figma: el paso acaba en x=1221+278=1499 y el contenedor en 1680 ⇒ 181, simétrico */}
+          <div className="relative z-10 grid grid-rows-[1fr_auto_1fr] justify-items-end pr-u-181">
             <ul className="flex w-full justify-end">
               <Step n={2} title={s[1].title} desc={s[1].desc} active={active === 1} delay={0.1} />
             </ul>
@@ -392,11 +406,11 @@ function Orbit({
           <stop offset="45%" stopColor="#94b2fc" stopOpacity="0.18" />
           <stop offset="100%" stopColor="#1a4dff" stopOpacity="0" />
         </radialGradient>
-        {/* Figma: trazo cónico #1a4dff → #94b2fc → #1a4dff → #b8f21e */}
+        {/* Figma: trazo cónico #1a4dff 12 % → #94b2fc 58 % → #1a4dff 87 % → #b8f21e 100 % */}
         <linearGradient id={lineId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1a4dff" />
-          <stop offset="50%" stopColor="#94b2fc" />
-          <stop offset="85%" stopColor="#1a4dff" />
+          <stop offset="12%" stopColor="#1a4dff" />
+          <stop offset="58%" stopColor="#94b2fc" />
+          <stop offset="87%" stopColor="#1a4dff" />
           <stop offset="100%" stopColor="#b8f21e" />
         </linearGradient>
         {/* Figma: planeta radial #ffffff → #ecefff con borde de 2 px #c7d7ff */}

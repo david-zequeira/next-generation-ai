@@ -45,3 +45,5 @@ next-env.d.ts
 /docs/figma/*/fills/
 /docs/figma/*/png/*.png
 !/docs/figma/home/png/*.png
+# figma: capturas de la web (regenerables con npm run figma:shot)
+/docs/figma/home-1532/shots/

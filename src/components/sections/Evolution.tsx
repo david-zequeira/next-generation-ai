@@ -95,7 +95,7 @@ function Stage({
       <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
         <DustText text={label} seed={index * 100 + 1} spread={40} />
       </h3>
-      <p className="mt-u-30 max-w-u-1004 fs-u-24 lh-u-28 text-white">
+      <p className="mt-u-16 max-w-u-1004 fs-u-24 lh-u-28 text-white">
         <DustText text={sub} seed={index * 100 + 50} spread={24} />
       </p>
     </motion.div>
@@ -127,6 +127,20 @@ export default function Evolution() {
   return (
     <section ref={ref} id="future" className="relative h-[450vh] bg-void">
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
+        {/* Fondo del Figma («El futuro» 1532:2424), debajo de estrellas y rejilla.
+            «Rectangle 162»: #030617→#040b24 en toda la etapa (en el Figma arranca
+            a 253 px, pero como la etapa queda fijada durante todo el scroll el
+            corte se veía como una franja; se extiende al alto completo).
+            «Rectangle 2»: negro→transparente por encima, que funde la salida del
+            hero con la etapa sin ningún borde visible. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(180deg,#030617_0%,#040b24_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,transparent_60%)]"
+        />
         {/* Espacio digital: estrellas en parallax */}
         <motion.div
           style={{ y: starsY }}
@@ -176,8 +190,8 @@ export default function Evolution() {
         </div>
 
         {/* Raíl de progreso */}
-        <div className="absolute bottom-[10vh] left-1/2 w-56 -translate-x-1/2">
-          <div className="h-px w-full bg-white/10">
+        <div className="absolute bottom-[max(80px,139*var(--u))] left-1/2 w-u-278 -translate-x-1/2">
+          <div className="h-[2px] w-full bg-white/10">
             <motion.div
               style={{ scaleX: scrollYProgress }}
               className="h-full w-full origin-left bg-gradient-to-r from-electric to-pulse"

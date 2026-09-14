@@ -1,0 +1,382 @@
+{
+  "fileKey": "IxRzkKKPa5XStlUI6UnpBv",
+  "rootId": "1532:2424",
+  "fileName": "Asenix Web",
+  "rootName": "Asenix HOME",
+  "lastModified": "2026-09-13T05:50:09Z",
+  "fetchedAt": "2026-09-13T21:07:09.397Z",
+  "rootBBox": {
+    "x": 1172,
+    "y": 356,
+    "width": 1920,
+    "height": 11618
+  },
+  "sections": [
+    {
+      "order": "01",
+      "id": "band:header",
+      "name": "Header",
+      "slug": "header",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/layout/Navbar.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 356,
+        "width": 1920,
+        "height": 120
+      },
+      "members": [
+        "1532:2975",
+        "1532:3001",
+        "1532:2993",
+        "1532:2974"
+      ],
+      "png": "png/01-header.png"
+    },
+    {
+      "order": "02",
+      "id": "band:hero",
+      "name": "Hero",
+      "slug": "hero",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Hero.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 476,
+        "width": 1920,
+        "height": 960
+      },
+      "members": [
+        "1532:2971",
+        "1532:2973",
+        "1532:2972",
+        "1532:2976",
+        "1532:2996",
+        "1532:2978",
+        "1532:2977",
+        "1532:2979"
+      ],
+      "png": "png/02-hero.png"
+    },
+    {
+      "order": "03",
+      "id": "band:el-futuro",
+      "name": "El futuro",
+      "slug": "el-futuro",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Evolution.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 1436,
+        "width": 1920,
+        "height": 1089
+      },
+      "members": [
+        "1532:2437"
+      ],
+      "png": "png/03-el-futuro.png"
+    },
+    {
+      "order": "04",
+      "id": "band:servicios",
+      "name": "Servicios",
+      "slug": "servicios",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Services.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 2525,
+        "width": 1920,
+        "height": 1364
+      },
+      "members": [
+        "1532:2445",
+        "1532:3109",
+        "1532:2603",
+        "1532:2604",
+        "1532:3217",
+        "1532:3007"
+      ],
+      "png": "png/04-servicios.png"
+    },
+    {
+      "order": "05",
+      "id": "band:como-trabajamos",
+      "name": "Cómo trabajamos",
+      "slug": "como-trabajamos",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Ecosystem.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 3889,
+        "width": 1920,
+        "height": 1037
+      },
+      "members": [
+        "1532:2557",
+        "1532:3104",
+        "1532:3108",
+        "1532:2597",
+        "1532:2567",
+        "1532:2576",
+        "1532:2561",
+        "1532:2601",
+        "1532:2582",
+        "1532:2585",
+        "1532:2588",
+        "1532:2566",
+        "1532:2568",
+        "1532:2574",
+        "1532:2575",
+        "1532:2565",
+        "1532:2562",
+        "1532:2718",
+        "1532:2719",
+        "1532:2558",
+        "1532:2560",
+        "1532:2559",
+        "1532:2591",
+        "1532:2579",
+        "1532:2569",
+        "1532:2571",
+        "1532:2602",
+        "1532:2578",
+        "1532:2573",
+        "1532:2563",
+        "1532:2572",
+        "1532:2594",
+        "1532:2570",
+        "1532:2577",
+        "1532:2564"
+      ],
+      "png": "png/05-como-trabajamos.png"
+    },
+    {
+      "order": "06",
+      "id": "band:proceso",
+      "name": "Proceso",
+      "slug": "proceso",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Process.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 4926,
+        "width": 1920,
+        "height": 3015
+      },
+      "members": [
+        "1532:3103",
+        "1532:3105",
+        "1532:2436",
+        "1532:2600",
+        "1532:3023",
+        "1532:2846",
+        "1318:6631",
+        "1532:2605",
+        "1532:2606",
+        "1532:3012",
+        "1532:3016",
+        "1532:2607",
+        "1532:2608",
+        "1532:3009",
+        "1532:3014",
+        "1532:3008",
+        "1532:2922",
+        "1532:2920",
+        "1532:3041",
+        "1532:2726",
+        "1532:2723",
+        "1532:2724",
+        "1532:2725",
+        "1532:3015",
+        "1532:3013",
+        "1532:3010",
+        "1532:3011",
+        "1532:2842",
+        "1532:2921",
+        "1532:3026",
+        "1532:2870",
+        "1532:2609",
+        "1532:2610",
+        "1532:3020",
+        "1532:3022",
+        "1532:2611",
+        "1532:2612",
+        "1532:3017",
+        "1532:3019",
+        "1532:3021",
+        "1532:3018",
+        "1543:6552",
+        "1543:6551"
+      ],
+      "png": "png/06-proceso.png"
+    },
+    {
+      "order": "07",
+      "id": "band:tecnologia",
+      "name": "Tecnología",
+      "slug": "tecnologia",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Technology.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 7941,
+        "width": 1920,
+        "height": 804
+      },
+      "members": [
+        "1532:2932",
+        "1555:59586",
+        "1532:2614",
+        "1532:2613",
+        "1532:2617",
+        "1532:3120",
+        "1532:2616"
+      ],
+      "png": "png/07-tecnologia.png"
+    },
+    {
+      "order": "08",
+      "id": "band:pruebas-no-promesas",
+      "name": "Pruebas no promesas",
+      "slug": "pruebas-no-promesas",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/CaseStudies.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 8745,
+        "width": 1920,
+        "height": 1011
+      },
+      "members": [
+        "1532:3214",
+        "1532:3215",
+        "1555:78050",
+        "1555:75247"
+      ],
+      "png": "png/08-pruebas-no-promesas.png"
+    },
+    {
+      "order": "09",
+      "id": "band:calculadora",
+      "name": "Calculadora",
+      "slug": "calculadora",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Roi.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 9756,
+        "width": 1920,
+        "height": 670
+      },
+      "members": [
+        "1532:3051",
+        "1532:3055",
+        "1555:53226",
+        "1532:3068",
+        "1532:3054",
+        "1532:3065",
+        "1532:3066",
+        "1532:3056",
+        "1532:3057",
+        "1619:1881",
+        "1532:3059",
+        "1532:3063",
+        "1532:3064",
+        "1532:3052",
+        "1532:3060",
+        "1532:3061",
+        "1532:3062",
+        "1532:3067",
+        "1532:3069",
+        "1532:3070",
+        "1532:3071",
+        "1532:3073",
+        "1532:3072",
+        "1532:3099",
+        "1532:3074",
+        "1532:3075",
+        "1532:3053"
+      ],
+      "png": "png/09-calculadora.png"
+    },
+    {
+      "order": "10",
+      "id": "band:planes-2026",
+      "name": "Planes 2026",
+      "slug": "planes-2026",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/Plans.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 10426,
+        "width": 1920,
+        "height": 754
+      },
+      "members": [
+        "1555:53217",
+        "1532:2615",
+        "1532:2906",
+        "1532:3029",
+        "1532:3035",
+        "1532:3045",
+        "1532:2908",
+        "1532:2912",
+        "1532:2916",
+        "1532:3058",
+        "1532:2907"
+      ],
+      "png": "png/10-planes-2026.png"
+    },
+    {
+      "order": "11",
+      "id": "band:hablemos",
+      "name": "Hablemos",
+      "slug": "hablemos",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/sections/FinalCTA.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 11180,
+        "width": 1920,
+        "height": 536
+      },
+      "members": [
+        "1532:3076"
+      ],
+      "png": "png/11-hablemos.png"
+    },
+    {
+      "order": "12",
+      "id": "band:footer",
+      "name": "Footer",
+      "slug": "footer",
+      "type": "BAND",
+      "kind": "section",
+      "component": "src/components/layout/Footer.tsx",
+      "bbox": {
+        "x": 1172,
+        "y": 11716,
+        "width": 1920,
+        "height": 258
+      },
+      "members": [],
+      "png": "png/12-footer.png"
+    }
+  ],
+  "fullPng": "png/00-home-full.png",
+  "imageFills": 2,
+  "svgAssets": [],
+  "apiCalls": 0
+}
