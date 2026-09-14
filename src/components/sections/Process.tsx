@@ -11,7 +11,7 @@ import {
   MessagesSquare,
   Phone,
   Receipt,
-  Repeat,
+  MapPinned,
   ShoppingBag,
   Sparkles,
   UserRound,
@@ -249,7 +249,8 @@ function VoiceMock({ t }: { t: { chips: string[]; sectors: string[] } }) {
 
 /* ——— 3. Reservas: el flujo del cliente al sistema, con pulsos de luz ——— */
 
-const NODE_ICONS: LucideIcon[] = [Users, Receipt, CalendarDays, Repeat];
+// Figma: «seguimiento-de-ubicacion» (26×26), un icono de mapa con chincheta, no una flecha de repetir
+const NODE_ICONS: LucideIcon[] = [Users, Receipt, CalendarDays, MapPinned];
 
 /**
  * Disposición del gráfico dentro de la tarjeta de 524×573, en coordenadas del
@@ -318,19 +319,22 @@ function BookingMock({ t }: { t: { client: string; nodes: string[] } }) {
       <Chip icon={NODE_ICONS[1]} style={at(BOOK.billing)}>{t.nodes[1]}</Chip>
       <Chip icon={NODE_ICONS[0]} style={at(BOOK.crm)}>{t.nodes[0]}</Chip>
       <Chip icon={NODE_ICONS[2]} style={at(BOOK.calendar)}>{t.nodes[2]}</Chip>
-      <Chip icon={NODE_ICONS[3]} style={at(BOOK.followup)}>{t.nodes[3]}</Chip>
+      <Chip icon={NODE_ICONS[3]} iconClass="size-u-26" style={at(BOOK.followup)}>{t.nodes[3]}</Chip>
     </motion.div>
   );
 }
 
-/** Nodo del flujo — Figma: 55 px de alto, radio 25, azul con texto #ecefff (el cliente, claro con texto #294296). */
+/** Nodo del flujo — Figma: 55 px de alto, radio 25, ancho según el texto (132–196), azul con texto #ecefff (el cliente, claro con texto #294296). El icono no se encoge: con w fija el de «Seguimiento» salía aplastado. */
 function Chip({
   icon: Icon,
+  iconClass = "size-u-22",
   style,
   light = false,
   children,
 }: {
   icon: LucideIcon;
+  /** Figma: los iconos miden 24, salvo el de seguimiento (26) */
+  iconClass?: string;
   style: React.CSSProperties;
   light?: boolean;
   children: string;
@@ -339,11 +343,11 @@ function Chip({
     <span
       style={style}
       className={cn(
-        "absolute flex h-u-55 w-u-160 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-12 font-display fs-u-18 font-medium",
+        "absolute flex h-u-55 min-w-u-160 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-u-10 whitespace-nowrap rounded-u-25 px-u-16 font-display fs-u-18 font-medium",
         light ? "bg-frost text-[#294296]" : "bg-electric text-frost"
       )}
     >
-      <Icon className="size-u-22" strokeWidth={1.8} />
+      <Icon className={cn("shrink-0", iconClass)} strokeWidth={1.8} />
       {children}
     </span>
   );
