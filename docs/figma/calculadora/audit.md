@@ -57,13 +57,13 @@ Leyenda: `ok` · `desvío` · `n/a` · `pendiente` (depende de la diseñadora).
 | Resuelve | Icono | 52 · r18 · `#081248` · sombra `0 0 10px #1a4dff` | igual | ok |
 | Resuelve | Alineación | izquierda | izquierda | ok (D8) |
 | Resuelve | Raya interior de la tarjeta | **no existe** | eliminada | ok |
-| Resuelve | Raya entre tarjetas | 35 × 2 px `#354d8e` | igual | ok |
+| Resuelve | **Flecha** entre tarjetas | `Arrow` 35 × 2 px `#354d8e`, punta en el extremo derecho (`End point`) | SVG de 35×10, misma punta y grosor | ok |
 | FAQ | H2 | caja 696 · 52/52 | 696 | ok |
 | FAQ | Filas | 667×62 · r15 · hueco 10 | 667×63 · hueco 10,0 | ok |
 | FAQ | «+» | icono 12×12 trazo 2 | 12×12 | ok |
 | Captura | Tarjeta | 1196×568 · r35 · cónico 1,3 | 1196×672 | ok (alto por copy) |
 | Captura | Reparto | 582 / 614 | 582 / 614 | ok |
-| Captura | Pastillas | 163/131/122 · relleno lima→azul · una línea | 164/127/118 · una línea | ok |
+| Captura | Pastillas | 163/131/122 · relleno lima→azul · una línea | 161/124/116 · **una línea en 768, 1024, 1280 y 1920**, y también en EN (157/133/114) | ok |
 | Captura | Caja de nota | 485×166 · `#ffffff→#c7d7ff` | igual | ok |
 | Captura | Cajas del formulario | 439×**62** · r15 | 62 de alto | ok |
 | Captura | Botón | 271×66 · r47 `#c7d7ff` + icono de envío | igual | ok |
@@ -78,6 +78,9 @@ Leyenda: `ok` · `desvío` · `n/a` · `pendiente` (depende de la diseñadora).
   apaga el texto. Se hornea en los alfas del fondo (`electric/5`) y la sombra (0,25) para que los
   titulares se lean, que es lo que enseña el render.
 - **Resplandor interior de las seis pastillas de sector**: omitido (es sutil y son seis nodos).
+- **Pastillas de la captura por debajo de 1920**: se escalan de forma proporcional (sin el suelo de
+  12 px de `fs-u-*`, con un mínimo de 9 px) para que las tres sigan en **una sola fila** y se lean
+  como un proceso. Con los suelos normales se partían en dos líneas entre 768 y 1400.
 - **Bordes de las tarjetas de paso**: implementados los tres distintos (360°, plano, 180°) tal cual.
 
 ## Duplicados y erratas del Figma (pendientes de la diseñadora)

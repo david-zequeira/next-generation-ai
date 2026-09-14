@@ -606,35 +606,39 @@ export default function CalculatorPage() {
               {t.solutions.cards.map((c, i) => {
                 const Icon = SOLUTION_ICONS[i];
                 return (
-                  <Reveal
-                    key={c.title}
-                    delay={0.08 * i}
-                    className="ring-conic relative isolate flex flex-col overflow-hidden rounded-u-20 bg-electric/5 px-u-32 pb-u-34 pt-u-25 shadow-[0_0_45px_4px_rgba(26,77,255,0.25)] [--ring-w:2px]"
-                  >
-                    {/* Figma 1555:66418: el brillo radial recortado por la tarjeta */}
-                    <span
-                      aria-hidden
-                      style={{ top: "calc(-134 * var(--u))", left: "calc(170 * var(--u))", width: "calc(291 * var(--u))", height: "calc(257 * var(--u))" }}
-                      className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0.12)_81%,rgba(46,107,255,0)_100%)] blur-[17.5px]"
-                    />
-                    {/* Figma «Vector 17/18»: las tarjetas van unidas por una raya de 35×2 */}
-                    {i < t.solutions.cards.length - 1 && (
+                  <Reveal key={c.title} delay={0.08 * i} className="relative">
+                    <div className="ring-conic relative isolate flex h-full flex-col overflow-hidden rounded-u-20 bg-electric/5 px-u-32 pb-u-34 pt-u-25 shadow-[0_0_45px_4px_rgba(26,77,255,0.25)] [--ring-w:2px]">
+                      {/* Figma 1555:66418: el brillo radial recortado por la tarjeta */}
                       <span
                         aria-hidden
-                        style={{ right: "calc(-45 * var(--u))", top: "calc(131 * var(--u))", width: "calc(35 * var(--u))", height: "max(1px, calc(2 * var(--u)))" }}
-                        className="absolute hidden bg-[#354d8e] md:block"
+                        style={{ top: "calc(-134 * var(--u))", left: "calc(170 * var(--u))", width: "calc(291 * var(--u))", height: "calc(257 * var(--u))" }}
+                        className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0.12)_81%,rgba(46,107,255,0)_100%)] blur-[17.5px]"
                       />
+                      <span className="flex size-u-52 items-center justify-center rounded-u-18 bg-[#081248] shadow-[0_0_10px_0_#1a4dff]">
+                        <Icon className="size-u-24 text-electric" strokeWidth={2} />
+                      </span>
+                      <h3 className="mt-u-15 font-display fs-u-24 lh-u-30 font-semibold text-white">{c.title}</h3>
+                      {/* Dos líneas reservadas: así la cifra queda a la misma altura en las tres */}
+                      <p className="mt-u-9 min-h-u-44 fs-u-15 lh-u-22 text-cloud">{c.sub}</p>
+                      <p className="mt-u-35 flex flex-wrap items-baseline gap-x-u-8">
+                        <span className="whitespace-nowrap font-display fs-u-28 font-semibold text-neon">{c.stat}</span>
+                        <span className="fs-u-15 text-white">{c.statLabel}</span>
+                      </p>
+                    </div>
+                    {/* Figma «Vector 17/18»: flecha de 35×2 px #354d8e que encadena las tarjetas.
+                        Va fuera de la tarjeta porque esta recorta el brillo. */}
+                    {i < t.solutions.cards.length - 1 && (
+                      <svg
+                        aria-hidden
+                        viewBox="0 0 35 10"
+                        fill="none"
+                        preserveAspectRatio="none"
+                        style={{ left: "100%", top: "calc(131 * var(--u))", width: "calc(35 * var(--u))", height: "calc(10 * var(--u))" }}
+                        className="absolute hidden md:block"
+                      >
+                        <path d="M0 5H33M28.5 1.5 33 5l-4.5 3.5" stroke="#354d8e" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                      </svg>
                     )}
-                    <span className="flex size-u-52 items-center justify-center rounded-u-18 bg-[#081248] shadow-[0_0_10px_0_#1a4dff]">
-                      <Icon className="size-u-24 text-electric" strokeWidth={2} />
-                    </span>
-                    <h3 className="mt-u-15 font-display fs-u-24 lh-u-30 font-semibold text-white">{c.title}</h3>
-                    {/* Dos líneas reservadas: así la cifra queda a la misma altura en las tres */}
-                    <p className="mt-u-9 min-h-u-44 fs-u-15 lh-u-22 text-cloud">{c.sub}</p>
-                    <p className="mt-u-35 flex flex-wrap items-baseline gap-x-u-8">
-                      <span className="whitespace-nowrap font-display fs-u-28 font-semibold text-neon">{c.stat}</span>
-                      <span className="fs-u-15 text-white">{c.statLabel}</span>
-                    </p>
                   </Reveal>
                 );
               })}
@@ -695,13 +699,17 @@ export default function CalculatorPage() {
                 <h2 className="max-w-u-462 font-display fs-u-35 lh-u-40 font-semibold text-white">{t.lead.figTitle}</h2>
                 <p className="mt-u-65 max-w-u-485 fs-u-16 lh-u-22 text-white">{t.lead.figBody}</p>
                 {/* Figma 1353:83: pastillas de 35 rellenas de lima→azul, texto blanco, con flechas entre ellas */}
-                <p className="mt-u-32 flex flex-wrap items-center gap-u-7">
+                {/* Una sola fila: se lee como un proceso. Por debajo de 1920 las tres
+                    pastillas se encogen con el ancho en vez de partirse. */}
+                <p className="mt-u-32 flex flex-nowrap items-center gap-[max(3px,7*var(--u))]">
                   {t.lead.tags.map((tag, i) => (
-                    <span key={tag} className="inline-flex items-center gap-u-7">
-                      <span className="inline-flex h-u-35 items-center justify-center rounded-full bg-[linear-gradient(211deg,#b8f21e_0%,#1a4dff_59%)] px-u-16 font-display fs-u-12 lh-u-22 font-bold tracking-[0.1em] text-white uppercase">
+                    <span key={tag} className="inline-flex min-w-0 items-center gap-[max(3px,7*var(--u))]">
+                      <span className="inline-flex h-[max(24px,35*var(--u))] shrink-0 items-center justify-center rounded-full bg-[linear-gradient(211deg,#b8f21e_0%,#1a4dff_59%)] px-[max(8px,16*var(--u))] font-display text-[max(9px,12*var(--u))] leading-none font-bold tracking-[0.08em] whitespace-nowrap text-white uppercase">
                         {tag}
                       </span>
-                      {i < t.lead.tags.length - 1 && <ArrowRight className="size-u-20 text-electric" strokeWidth={1} />}
+                      {i < t.lead.tags.length - 1 && (
+                        <ArrowRight className="size-[max(12px,20*var(--u))] shrink-0 text-electric" strokeWidth={1} />
+                      )}
                     </span>
                   ))}
                 </p>
