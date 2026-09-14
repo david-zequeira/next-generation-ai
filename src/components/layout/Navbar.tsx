@@ -96,8 +96,11 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
             <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-81 w-auto" />
           </Link>
 
-          {/* Centrado absoluto: el Figma centra el menú en la página, no entre el logo y los botones */}
-          <ul className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-u-22 lg:flex">
+          {/* El Figma centra el menú en la página (no entre el logo y los botones): centrado
+              absoluto a partir de 2xl. Por debajo de 1536 el menú se solaparía con el botón de
+              idioma (a 1440 el menú termina donde empieza el botón), así que ahí va en flujo,
+              centrado en el hueco que queda entre el logo y los botones. */}
+          <ul className="mx-auto hidden items-center gap-u-22 lg:flex 2xl:absolute 2xl:left-1/2 2xl:top-1/2 2xl:mx-0 2xl:-translate-x-1/2 2xl:-translate-y-1/2">
             {t.links.map((label, i) => (
               <li key={HREFS[i]}>
                 <a href={HREFS[i]} className={linkClass}>

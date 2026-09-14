@@ -115,7 +115,8 @@ export default function CaseStudies() {
 
           {STATS.map((s, i) => {
             const study = t.studies[i];
-            const featured = i === 0;
+            // Las tres tarjetas con el mismo anillo de 2 px y el brillo azul de la destacada del Figma
+            const featured = true;
             return (
               <article
                 key={`${study.headline}-${locale}`}
