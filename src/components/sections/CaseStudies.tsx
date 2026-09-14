@@ -15,14 +15,17 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
  * Tres tarjetas, como pide el diseño; la primera es la destacada (con sombra).
  */
 /**
- * `icon`: icono grande del Figma (104×104, degradado #1cfcb9→#38d4ff) en
- * `public/icons/proof/`. Solo «Tiempo» está exportado (nodo 1532:2967); los de
- * «Clientes» y «Eficacia» faltan por la cuota de Figma — mientras, la silueta.
+ * `icon`: figura del Figma exportada desde su geometría a `public/icons/proof/`
+ * (degradado #1cfcb9→#38d4ff), con su sitio dentro del panel azul de 376×290:
+ *  - Clientes (1532:2951): 179×197 pegada abajo, a 24 del borde derecho.
+ *  - Tiempo (1532:2967): reloj de 104 centrado en vertical, a 62 del borde.
+ *  - Eficacia (1254:462): 162×197 pegada arriba, a 33 del borde.
+ * `flip`: en «Tiempo» el Figma pone la cifra arriba y los chips abajo.
  */
-const STATS: { prefix: string; value: number; suffix: string; icon?: string }[] = [
-  { prefix: "+", value: 40, suffix: "%" },
-  { prefix: "", value: 40, suffix: "h", icon: "tiempo" },
-  { prefix: "", value: 3, suffix: "×" },
+const STATS: { prefix: string; value: number; suffix: string; icon: string; iconClass: string; flip?: boolean }[] = [
+  { prefix: "+", value: 40, suffix: "%", icon: "clientes", iconClass: "absolute -bottom-1 right-u-24 h-u-197 w-auto" },
+  { prefix: "-", value: 70, suffix: "%", icon: "tiempo", iconClass: "absolute right-u-62 top-1/2 size-u-104 -translate-y-1/2", flip: true },
+  { prefix: "", value: 3, suffix: "x", icon: "eficacia", iconClass: "absolute right-u-33 top-0 h-u-197 w-auto" },
 ];
 
 function Counter({ prefix, value, suffix }: { prefix: string; value: number; suffix: string }) {
@@ -46,22 +49,6 @@ function Counter({ prefix, value, suffix }: { prefix: string; value: number; suf
       {display}
       {suffix}
     </span>
-  );
-}
-
-/** Silueta de persona — la figura del Figma, en degradado verde → cian (#1cfcb9 → #38d4ff). */
-function Person() {
-  return (
-    <svg viewBox="0 0 120 130" className="h-full w-auto" aria-hidden>
-      <defs>
-        <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#1cfcb9" />
-          <stop offset="100%" stopColor="#38d4ff" />
-        </linearGradient>
-      </defs>
-      <circle cx="60" cy="40" r="30" fill="url(#personGrad)" />
-      <path d="M 8 130 A 52 52 0 0 1 112 130 Z" fill="url(#personGrad)" />
-    </svg>
   );
 }
 
@@ -164,7 +151,7 @@ export default function CaseStudies() {
                     transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                     className="relative flex h-u-290 w-full items-end justify-between overflow-hidden rounded-u-16 bg-[linear-gradient(180deg,#1a4dff_21%,#03259b_100%)] p-u-25 md:w-u-376"
                   >
-                    <div className="absolute left-u-25 top-u-28 flex flex-col items-start gap-u-7">
+                    <div className={cn("absolute left-u-25 flex flex-col items-start gap-u-7", s.flip ? "bottom-u-31" : "top-u-28")}>
                       {study.chips.map((c, j) => (
                         <motion.span
                           key={c}
@@ -178,25 +165,14 @@ export default function CaseStudies() {
                         </motion.span>
                       ))}
                     </div>
-                    <div className="relative z-10">
+                    <div className={cn("z-10", s.flip ? "absolute left-u-25 top-u-29" : "relative")}>
                       <p className="font-display fs-u-35 font-semibold leading-none text-white">
                         <Counter prefix={s.prefix} value={s.value} suffix={s.suffix} />
                       </p>
                       <p className="mt-u-8 fs-u-20 font-normal text-mint">{study.statLabel}</p>
                     </div>
-                    {s.icon ? (
-                      /* Figma: icono 104×104 a 62 del borde derecho del panel, centrado en vertical */
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={`${BASE}/icons/proof/${s.icon}.svg`}
-                        alt=""
-                        className="absolute right-u-62 top-1/2 size-u-104 -translate-y-1/2"
-                      />
-                    ) : (
-                      <div className="absolute -bottom-1 right-u-24 h-u-197">
-                        <Person />
-                      </div>
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`${BASE}/icons/proof/${s.icon}.svg`} alt="" className={s.iconClass} />
                   </motion.div>
                 </div>
               </article>

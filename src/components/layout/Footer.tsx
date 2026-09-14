@@ -35,14 +35,15 @@ function GitHubIcon({ className }: IconProps) {
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Sin perfiles sociales reales todavía: la lista queda vacía a propósito (tres
- * botones que llevaban a x.com/linkedin.com/github.com a secas eran peor señal
- * que no tenerlos). Al crear los perfiles, añadir aquí las URL completas.
+ * Redes del Figma (tres círculos de 41 en #161614, en este orden). Sin perfiles
+ * reales todavía: con `href` vacío se pintan como marca sin enlace (mejor que
+ * un botón que lleve a x.com a secas). Al crear los perfiles, poner la URL.
  */
-const SOCIALS: { label: string; href: string; icon: (p: IconProps) => React.JSX.Element }[] = [];
-void XIcon;
-void LinkedInIcon;
-void GitHubIcon;
+const SOCIALS: { label: string; href: string; icon: (p: IconProps) => React.JSX.Element }[] = [
+  { label: "GitHub", href: "", icon: GitHubIcon },
+  { label: "LinkedIn", href: "", icon: LinkedInIcon },
+  { label: "X", href: "", icon: XIcon },
+];
 
 /**
  * Pie del Figma (1532:2424, «Frame 254»): sobre el mismo lavanda claro del
@@ -80,19 +81,29 @@ export default function Footer({ tone = "light" }: { tone?: "light" | "dark" }) 
             <div className="flex flex-col items-start md:items-end">
               {SOCIALS.length > 0 && (
                 <div className="mb-u-36 flex gap-2">
-                  {SOCIALS.map(({ label, href, icon: Icon }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      aria-label={label}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      // Figma: círculos de 41 px en #161614 con el icono en blanco
-                      className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white transition-transform duration-300 hover:-translate-y-0.5"
-                    >
-                      <Icon className="size-u-20" />
-                    </a>
-                  ))}
+                  {SOCIALS.map(({ label, href, icon: Icon }) =>
+                    href ? (
+                      <a
+                        key={label}
+                        href={href}
+                        aria-label={label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        // Figma: círculos de 41 px en #161614 con el icono en blanco
+                        className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white transition-transform duration-300 hover:-translate-y-0.5"
+                      >
+                        <Icon className="size-u-20" />
+                      </a>
+                    ) : (
+                      <span
+                        key={label}
+                        title={label}
+                        className="flex size-u-41 items-center justify-center rounded-full bg-[#161614] text-white"
+                      >
+                        <Icon className="size-u-20" />
+                      </span>
+                    )
+                  )}
                 </div>
               )}
               {/* Legal: obligatorio (LSSI-CE/RGPD) y, de paso, señal de seriedad */}
