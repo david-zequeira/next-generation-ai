@@ -130,7 +130,7 @@ const es: PricingDict = {
       setupNote: "de puesta en marcha",
       mrr: "349 €",
       mrrNote: "/mes · servicio gestionado",
-      kitline: "En 3 plazos sin recargo · o **0 € de entrada** a 510 €/mes durante 18 meses",
+      kitline: "En 3 plazos sin recargo o **0 € de entrada** a 510 €/mes durante 18 meses",
       features: [
         { text: "**El agente se instala en la web que ya tienes** — no hay que rehacer nada" },
         { text: "**WhatsApp Business oficial**: el mismo cerebro, en tu número de siempre" },
@@ -154,7 +154,7 @@ const es: PricingDict = {
       setupNote: "de puesta en marcha",
       mrr: "449 €",
       mrrNote: "/mes · servicio gestionado",
-      kitline: "En 3 plazos sin recargo · o **0 € de entrada** a 779 €/mes durante 18 meses",
+      kitline: "En 3 plazos sin recargo o **0 € de entrada** a 779 €/mes durante 18 meses",
       features: [
         { text: "Todo lo del **Starter**, con el asistente ya integrado en la web nueva", inherited: true },
         { text: "**Identidad de marca esencial** — logo, paleta, tipografías y mini-manual" },
@@ -171,7 +171,6 @@ const es: PricingDict = {
       name: "Nexus",
       glyph: "⬢",
       who: "Para que la operación entera corra sobre agentes supervisados por ti.",
-      setupPrefix: "desde",
       setup: "18.000 €",
       setupNote: "de puesta en marcha",
       mrr: "desde 1.900 €",
@@ -351,7 +350,6 @@ const en: PricingDict = {
       name: "Nexus",
       glyph: "⬢",
       who: "So the whole operation runs on agents supervised by you.",
-      setupPrefix: "from",
       setup: "€18,000",
       setupNote: "setup",
       mrr: "from €1,900",

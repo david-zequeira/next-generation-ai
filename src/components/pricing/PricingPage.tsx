@@ -204,7 +204,23 @@ export default function PricingPage() {
                         )}
                       >
                         <div className="text-center">
-                          <p className="font-display fs-u-48 font-bold leading-none tracking-[0.02em]">{plan.mrr}</p>
+                          {/* Figma: «desde 1.900 €» va con el «desde» a 34 y la cifra a 48
+                              —el mismo cuerpo que «349 €»—. Todo a 48 mide 358 en una caja
+                              de 313 y partía en dos líneas, desfasando la tarjeta entera
+                              48 px respecto a las otras dos. */}
+                          <p className="font-display fs-u-48 font-bold leading-none tracking-[0.02em]">
+                            {(() => {
+                              const m = plan.mrr.match(/^(desde|from)\s+(.+)$/i);
+                              return m ? (
+                                <>
+                                  <span className="fs-u-34">{m[1]} </span>
+                                  {m[2]}
+                                </>
+                              ) : (
+                                plan.mrr
+                              );
+                            })()}
+                          </p>
                           <p className="mt-u-10 font-display fs-u-12 font-medium uppercase tracking-[0.07em]">{plan.mrrNote.replace(/^\/?/, "")}</p>
                         </div>
 
@@ -215,9 +231,20 @@ export default function PricingPage() {
                           </span>{" "}
                           <span className={cn("font-medium", star ? "text-neon" : "text-electric")}>{plan.setupNote}</span>
                         </p>
-                        {/* Figma: caja blanca 317×70, radio 5, texto 14/16 azul con «0 € de entrada» en negro */}
-                        <p className="mt-u-12 rounded-u-5 bg-white px-u-27 py-u-12 fs-u-14 lh-u-16 font-medium text-electric">
-                          <Rich text={plan.kitline} strongClass="font-medium text-black" />
+                        {/* Figma: caja blanca de 317×69, radio 5, texto 14/16 azul con
+                            «0 € de entrada» en negro. El alto es **fijo**: en el marco la
+                            tarjeta 1 mete dos líneas y la 2 mete tres, y las dos cajas
+                            miden 69. Sin ese suelo, en ES una caja se iba a tres líneas y
+                            la otra no, y las listas de las tres tarjetas no arrancaban a la
+                            misma altura. El ancho útil son 271 — la línea más larga del
+                            marco mide 270. */}
+                        <p className="mt-u-12 flex min-h-u-69 items-center rounded-u-5 bg-white px-u-21 fs-u-14 lh-u-16 font-medium text-electric">
+                          {/* El <span> es necesario: sin él, los trozos que devuelve `Rich`
+                              serían cada uno un ítem del flex y el texto se partiría en
+                              columnas en vez de fluir como una frase. */}
+                          <span>
+                            <Rich text={plan.kitline} strongClass="font-medium text-black" />
+                          </span>
                         </p>
 
                         <ul className="mt-u-20 flex flex-1 flex-col gap-u-14">
@@ -321,7 +348,7 @@ export default function PricingPage() {
             <SectionHead eyebrow={t.compare.eyebrow} title={t.compare.title} sub={t.compare.sub} subClass="lh-u-22" />
             <Reveal delay={0.1} className="mt-u-121">
               <div className="overflow-x-auto rounded-u-25 border border-periwinkle bg-[linear-gradient(180deg,#fcfdff_0%,#f5f7ff_100%)]">
-                <table className="w-full min-w-[760px] border-collapse">
+                <table className="w-full min-w-[760px] table-fixed border-collapse">
                   <thead>
                     <tr>
                       <th className="w-[34.4%] pl-u-86 pr-u-8 pb-u-32 pt-u-41 text-left font-display fs-u-24 lh-u-30 font-semibold text-black underline underline-offset-[0.25em]">
@@ -331,7 +358,7 @@ export default function PricingPage() {
                         <th
                           key={col}
                           className={cn(
-                            "px-4 pb-u-32 pt-u-41 text-center font-display fs-u-24 lh-u-30 text-black underline underline-offset-[0.25em]",
+                            "w-[21.87%] px-4 pb-u-32 pt-u-41 text-center font-display fs-u-24 lh-u-30 text-black underline underline-offset-[0.25em]",
                             i === 1 ? "bg-[linear-gradient(180deg,#f2f5ff_0%,#ebefff_100%)] font-semibold" : "font-bold"
                           )}
                         >

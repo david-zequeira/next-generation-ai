@@ -448,6 +448,55 @@ las descripciones caen ya entre 2 y 4 líneas — el mismo rango que el marco.
 
 ---
 
+## 12 · Paridad en el resto de secciones
+
+Repaso de las que quedaban, con el mismo método: medir cada banda en las dos
+lenguas y ver si el valor es único.
+
+### Tarjetas de plan · tres desajustes
+
+| Qué | Figma | Código | Estado |
+|---|---|---|---|
+| «desde 1.900 €» | «desde» a **34** y la cifra a 48 — el mismo cuerpo que «349 €» | todo a 48 | corregido |
+| «desde 18.000 € de puesta en marcha» | el marco escribe **«18.000 € de puesta en marcha»**, sin «desde»: ese matiz lo lleva el precio de arriba y la comparativa | con «desde» | corregido |
+| Caja blanca de la cuota | **alto fijo de 69**: en el marco la tarjeta 1 mete dos líneas y la 2 mete tres, y las dos cajas miden lo mismo | alto según el texto (56/72/84) | corregido |
+
+Lo de «desde 1.900 €» era lo gordo: a cuerpo 48 mide 358 px en una caja de 313,
+así que partía en dos líneas y **bajaba 48 px toda la tarjeta Nexus** respecto a
+las otras dos, en ES.
+
+Y el ancho útil de la caja blanca eran 259 cuando la línea más larga del marco
+mide 270, así que `px-u-27` pasa a `px-u-21`.
+
+### Comparativa
+
+Sin `table-fixed` el navegador repartía las columnas por contenido: en ES salían
+**495 · 262 · 331 · 351** y en EN **495 · 300 · 335 · 308**, cuando en el marco
+son 495 y tres de ~315 iguales. Además, el reparto desigual hacía que algunas
+celdas partieran y esas filas midieran 48 en vez de 45.
+
+Con `table-fixed` y `w-[21.87%]` en las tres columnas de plan: **495 · 314 · 314
+· 314** y las 23 filas a 45, en los dos idiomas.
+
+### Sin desviaciones
+
+Dudas razonables (11 filas a 62) y los dos botones del CTA final (275×60) ya
+estaban bien.
+
+### Verificación
+
+Cada medida, en ES y EN, devuelve **un solo valor**:
+
+```
+planes   precio · setup · caja (69) · lista · CTA · alto   → uno cada uno
+tabla    495·314·314·314 · 23 filas a 45
+módulos  8 tarjetas a 244
+pago     las 4 columnas con las mismas 4 bandas
+FAQ      11 filas a 62      CTA final  2 botones 275×60
+```
+
+---
+
 ## Estado final
 
 Todas las fases aplicadas, más la pasada de tipografía y alineación del § 11.
