@@ -361,13 +361,25 @@ Resuelto con `grid-rows-subgrid`: las cuatro columnas comparten las pistas de
 fila del panel, así que una cifra puede partir en dos líneas sin descolgar el
 resto.
 
+Con eso solo no bastaba. `subgrid` alinea el **arranque** de cada banda, así que
+las cifras de una sola línea se quedaban pegadas arriba y dejaban un hueco de
+53 px hasta su etiqueta, mientras que las de dos líneas llevaban su etiqueta
+justo debajo. Se ven desiguales igual. Con `self-end` en la cifra, las cuatro se
+apoyan en la base de la pista y el hueco cifra → etiqueta es el mismo en todas.
+
+Y una tercera: en EN «payments» mide **277 px en una columna de 252** a cuerpo
+53, así que se comía la columna de al lado y chocaba con «±0.1%». A 48 entra
+justo (251 de 252). La cifra va a 53 en ES —el valor del marco— y a 48 en EN.
+Es una decisión de **tamaño**, no de texto: el marco nunca previó cifras de esa
+longitud.
+
 | Propiedad | Figma | Código | Estado |
 |---|---|---|---|
-| Cifra | **53** — «3 plazos» ocupa 221 px de tinta; a 48 daba 200 | 48 | corregido, medido: 221 |
+| Cifra | **53** — «3 plazos» ocupa 221 px de tinta; a 48 daba 200 | 48 | corregido (48 en EN, ver arriba) |
 | Etiqueta | **21** — «Fraccionado» ocupa 136 | 20 | corregido |
 | Párrafo | 15/**20** (líneas en `397`, `417`, `437`) | 15/21 | corregido |
 | Hueco entre columnas | ≈ 51 (columna de ≈ 250) | 40 | corregido |
-| Alineación entre columnas | banda a banda | cada columna por su cuenta | corregido con `subgrid` |
+| Alineación entre columnas | banda a banda | cada columna por su cuenta | corregido con `subgrid` + `self-end` en la cifra |
 
 ### Módulos
 

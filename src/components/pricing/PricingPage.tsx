@@ -440,8 +440,22 @@ export default function PricingPage() {
                   const item = t.pay.items[idx];
                   return (
                     <div key={item.k} className="xl:row-span-4 xl:grid xl:grid-rows-subgrid">
-                      {/* Figma: la cifra en azul a 53, la etiqueta en negro a 21 */}
-                      <p className="font-display fs-u-53 font-bold leading-none text-electric">{item.title}</p>
+                      {/* Figma: la cifra en azul a 53, la etiqueta en negro a 21.
+                          `self-end`: si una cifra parte en dos líneas la pista crece,
+                          y sin esto las de una sola línea se quedaban arriba dejando
+                          un hueco de 53 px hasta su etiqueta. Alineadas por abajo, el
+                          hueco cifra→etiqueta es el mismo en las cuatro. */}
+                      <p
+                        className={cn(
+                          "font-display font-bold leading-none text-electric xl:self-end",
+                          // El marco va a 53 y las cifras en ES caben. En EN «payments»
+                          // mide 277 en una columna de 252 y se comía la de al lado;
+                          // a 48 entra justo. Es tamaño, no texto.
+                          es ? "fs-u-53" : "fs-u-48"
+                        )}
+                      >
+                        {item.title}
+                      </p>
                       <p className="mt-u-10 font-display fs-u-21 font-bold leading-none text-black">{item.k}</p>
                       <p className="mt-u-26 fs-u-15 lh-u-20 text-black">{item.body}</p>
                       <p className="mt-u-8 font-display fs-u-15 lh-u-20 font-bold text-black">{item.foot}</p>
