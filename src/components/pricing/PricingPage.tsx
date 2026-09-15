@@ -402,8 +402,13 @@ export default function PricingPage() {
                           <span className="underline underline-offset-[0.2em]">{addon.name}</span>
                           {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
                         </h4>
-                        {/* Figma: 15/20 en una caja de 330 (la línea más ancha mide 320) */}
-                        <p className="mt-u-8 max-w-u-330 flex-1 fs-u-15 lh-u-20 text-black">{addon.desc}</p>
+                        {/* Figma: 15/20 en una caja de 330 (la línea más ancha mide 320).
+                            `min-h` de tres líneas: el precio va anclado abajo, así que sin
+                            un suelo fijo una descripción de dos líneas dejaba 57 px de
+                            hueco y una de cuatro solo 7, y las tarjetas no casaban entre
+                            sí. Con las tres líneas reservadas, el hueco es el mismo en las
+                            ocho. */}
+                        <p className="mt-u-8 min-h-u-60 max-w-u-330 flex-1 fs-u-15 lh-u-20 text-black">{addon.desc}</p>
                         <div className="mt-u-6 flex items-end justify-between gap-3">
                           <p className="font-display fs-u-28 lh-u-30 font-semibold text-black">
                             {addon.price && <span>{addon.price} </span>}

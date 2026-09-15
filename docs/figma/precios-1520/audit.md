@@ -406,9 +406,40 @@ idiomas, y el cuerpo se queda en los 53 del marco sin excepciones por idioma.
 El título sí estaba bien: «La web, después» ocupa 191 px en el marco y 192 en la
 web.
 
-Las tarjetas quedan en 270 y no en 244 porque los textos del diccionario son más
-largos que los del marco; lo que importaba era que **las ocho midan lo mismo**,
-y ahora lo hacen.
+### El hueco entre descripción y precio
+
+El precio va anclado abajo, como en el marco. Con descripciones de entre 2 y 4
+líneas eso dejaba el hueco descripción → precio **entre 7 y 57 px** según la
+tarjeta, y es lo que hacía que la rejilla se viera desigual aunque las cajas
+midieran lo mismo. Medido, tarjeta a tarjeta, antes de tocarlo:
+
+```
+La web, después       4L  hueco  7      Sede adicional     2L  hueco 47
+Conversaciones extra  3L  hueco 27      Idioma adicional   2L  hueco 47
+…solo web             3L  hueco 27      Integración…       4L  hueco  7
+Manual de identidad   3L  hueco 27      Contenido…         2L  hueco 17
+```
+
+`min-h` de tres líneas en la descripción no bastaba: reserva la caja, pero el
+lector mide el hueco desde la **última línea de texto**, no desde el borde del
+bloque. La única forma de igualarlo era que todas las descripciones ocupen las
+mismas líneas.
+
+Con permiso para tocar copy, las ocho se llevaron a **3 líneas exactas** en los
+dos idiomas: recortadas las de 4, ampliadas las de 2 con información que ya era
+cierta (el panel compartido, las reglas de escalado). Y dos cosas más que
+rompían la fila:
+
+- **«Integración con tus sistemas» → «Integraciones».** El título partía en dos
+  líneas y el subrayado quedaba dentado, con la segunda línea mucho más corta.
+  Ahora ningún título parte, salvo los que llevan nota debajo —«…solo web»—, que
+  es el patrón del propio marco.
+- **«desde 690 € · formación 490 €» no cabe en una línea a cuerpo 28.** Partía en
+  dos y dejaba ese hueco en 7. El precio de la formación pasa a la descripción y
+  la línea de precio se queda en «desde 690 €», como las otras siete.
+
+Resultado: las **16 tarjetas** (ocho por idioma) miden **244 px** —el valor exacto
+del marco— con descripción de 3 líneas, precio de 30 px y hueco de 21. Idénticas.
 
 Y una descripción se salía del rango: «Integración con tus sistemas» ocupaba
 **5 líneas** cuando en el marco ninguna pasa de 4, así que esa tarjeta iba
