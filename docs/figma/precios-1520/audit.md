@@ -478,6 +478,16 @@ celdas partieran y esas filas midieran 48 en vez de 45.
 Con `table-fixed` y `w-[21.87%]` en las tres columnas de plan: **495 · 314 · 314
 · 314** y las 23 filas a 45, en los dos idiomas.
 
+### Subrayado de los títulos de módulo
+
+A `0.2em` (4,4 px sobre un cuerpo de 22) la línea quedaba justo donde acaba el
+descendente de Montserrat, que baja **0,21em ≈ 4,6 px**: cortaba la cola de la
+«g» de «Integraciones» y la «p» de «después». Subido a `0.3em` (6,6 px), pasa
+por debajo con holgura.
+
+Las cabeceras de la comparativa van a `0.25em` sobre 24 = 6 px y su descendente
+más profundo mide 5, así que ahí no hacía falta tocar nada.
+
 ### Sin desviaciones
 
 Dudas razonables (11 filas a 62) y los dos botones del CTA final (275×60) ya

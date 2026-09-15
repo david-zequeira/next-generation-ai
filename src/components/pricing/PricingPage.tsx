@@ -426,7 +426,10 @@ export default function PricingPage() {
                           <Icon className="size-u-25" strokeWidth={2} />
                         </span>
                         <h4 className="min-h-u-52 pr-u-90 font-display fs-u-22 lh-u-24 font-bold text-black">
-                          <span className="underline underline-offset-[0.2em]">{addon.name}</span>
+                          {/* 0.3em: el descendente de Montserrat baja 0.21em, así que a 0.2em la
+                              línea cortaba la cola de la «g» de «Integraciones» y la «p»
+                              de «después». */}
+                          <span className="underline underline-offset-[0.3em]">{addon.name}</span>
                           {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
                         </h4>
                         {/* Figma: 15/20 en una caja de 330 (la línea más ancha mide 320).
