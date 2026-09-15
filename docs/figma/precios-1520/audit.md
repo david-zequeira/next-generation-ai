@@ -367,15 +367,27 @@ las cifras de una sola línea se quedaban pegadas arriba y dejaban un hueco de
 justo debajo. Se ven desiguales igual. Con `self-end` en la cifra, las cuatro se
 apoyan en la base de la pista y el hueco cifra → etiqueta es el mismo en todas.
 
-Y una tercera: en EN «payments» mide **277 px en una columna de 252** a cuerpo
-53, así que se comía la columna de al lado y chocaba con «±0.1%». A 48 entra
-justo (251 de 252). La cifra va a 53 en ES —el valor del marco— y a 48 en EN.
-Es una decisión de **tamaño**, no de texto: el marco nunca previó cifras de esa
-longitud.
+Y aun así seguía viéndose mal, porque el problema de fondo no era de estilo: en
+el marco **la cifra es una cifra** —`0€`, `-5€`, `3 plazos`, `+0.4%`— y en el
+diccionario se habían colado frases enteras que partían en dos líneas. «€0
+upfront» repetía lo que ya dice su etiqueta («Nothing upfront»), y «3 payments»
+medía 277 px en una columna de 252, así que se comía la columna de al lado.
+
+Con permiso para tocar copy se recortaron las cuatro cifras a lo que son:
+
+| | Antes | Ahora | Etiqueta que ya lo decía |
+|---|---|---|---|
+| ES · sin entrada | «0 € de entrada» | **«0 €»** | «Sin entrada» |
+| ES · flexible | — | — | «Lo mismo, no más caro» → **«Lo mismo»** (se partía en dos líneas) |
+| EN · sin entrada | «€0 upfront» | **«€0»** | «Nothing upfront» |
+| EN · fraccionado | «3 payments» | **«3»** | «Instalments» |
+
+Con eso las cuatro cifras y las cuatro etiquetas caben en una línea en los dos
+idiomas, y el cuerpo se queda en los 53 del marco sin excepciones por idioma.
 
 | Propiedad | Figma | Código | Estado |
 |---|---|---|---|
-| Cifra | **53** — «3 plazos» ocupa 221 px de tinta; a 48 daba 200 | 48 | corregido (48 en EN, ver arriba) |
+| Cifra | **53** — «3 plazos» ocupa 221 px de tinta; a 48 daba 200 | 48 | corregido |
 | Etiqueta | **21** — «Fraccionado» ocupa 136 | 20 | corregido |
 | Párrafo | 15/**20** (líneas en `397`, `417`, `437`) | 15/21 | corregido |
 | Hueco entre columnas | ≈ 51 (columna de ≈ 250) | 40 | corregido |
@@ -397,6 +409,11 @@ web.
 Las tarjetas quedan en 270 y no en 244 porque los textos del diccionario son más
 largos que los del marco; lo que importaba era que **las ocho midan lo mismo**,
 y ahora lo hacen.
+
+Y una descripción se salía del rango: «Integración con tus sistemas» ocupaba
+**5 líneas** cuando en el marco ninguna pasa de 4, así que esa tarjeta iba
+apretada y el precio quedaba pegado al texto. Recortada en los dos idiomas, todas
+las descripciones caen ya entre 2 y 4 líneas — el mismo rango que el marco.
 
 ---
 
