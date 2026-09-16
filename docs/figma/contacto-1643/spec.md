@@ -240,10 +240,11 @@ con las mismas órdenes. Estado al cerrar el trabajo (tinta, no cajas):
    marco el párrafo empieza en x 759 y el título en x 766: seis píxeles de
    desalineación entre dos nodos que deberían compartir margen. Aquí los dos
    cuelgan de x 762.
-5. **El bloque de teléfono no se pinta.** El marco publica `+91 76810 12153`,
-   que es un número de India, y `asenix@asenix.com`, que no es el dominio real.
-   Se publica el correo bueno; en cuanto haya teléfono público, el tercer
-   bloque entra y la columna izquierda queda igual que el marco.
+5. **Los datos de contacto son los reales, no los del marco.** El marco publica
+   `asenix@asenix.com` (el dominio real es `.es`) y `+91 76810 12153`, que es un
+   número de India. Se publican el correo `.es` y el teléfono de España. Los
+   tres bloques, su orden y sus posiciones sí son los del marco: azulejos de
+   62×62 en x 393, en y 830, 916 y 1002.
 6. **El enlace «¿Prefieres escribirnos sin reservar?» va fuera de la tarjeta.**
    No está en el marco; dentro, la tarjeta dejaría de medir 654 de alto.
 7. **Ninguna franja viene preseleccionada.** El marco enseña las 9:00 elegidas;

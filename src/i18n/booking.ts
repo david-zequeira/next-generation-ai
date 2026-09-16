@@ -11,9 +11,8 @@
  *   Aquí es «Inicio».
  * - **Los datos de contacto del marco son de plantilla**: `asenix@asenix.com`
  *   (el dominio real es `.es`) y `+91 76810 12153`, que es un número de India.
- *   Se publica el correo real y, mientras no haya teléfono público, ese bloque
- *   no se pinta — un número inventado en la página de contacto es una llamada
- *   perdida, no un detalle de maquetación.
+ *   Se publican los reales: el correo `.es` y el teléfono de España. Los tres
+ *   bloques y su orden sí son los del marco.
  *
  * La forma —cuántos bloques, en qué orden y con qué medidas— sí es la del
  * marco, al píxel. Ver `docs/figma/contacto-1643/spec.md`.
@@ -71,6 +70,7 @@ const es: BookingDict = {
   perks: ["30 minutos de tu tiempo", "Recomendaciones personalizadas", "Sin compromiso"],
   channels: [
     { label: "Correo electrónico", value: "projects@asenix.es", href: "mailto:projects@asenix.es", kind: "email" },
+    { label: "Teléfono", value: "+34 624 52 87 21", href: "tel:+34624528721", kind: "phone" },
     { label: "Ubicación", value: "Remoto · España", href: "", kind: "place" },
   ],
   panelTitle: "Reserva una llamada con nuestro equipo",
@@ -119,6 +119,7 @@ const en: BookingDict = {
   perks: ["30 minutes of your time", "Tailored recommendations", "No commitment"],
   channels: [
     { label: "Email", value: "projects@asenix.es", href: "mailto:projects@asenix.es", kind: "email" },
+    { label: "Phone", value: "+34 624 52 87 21", href: "tel:+34624528721", kind: "phone" },
     { label: "Location", value: "Remote · Spain", href: "", kind: "place" },
   ],
   panelTitle: "Book a call with our team",
