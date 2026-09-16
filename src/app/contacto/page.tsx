@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import ContactPage from "@/components/contact/ContactPage";
+import BookingPage from "@/components/contact/BookingPage";
 
 export const metadata: Metadata = {
-  title: "Contacto · Contact — Asenix",
+  title: "Reservar llamada · Book a call — Asenix",
   description:
-    "Cuéntanos sobre tu negocio y te respondemos en menos de 24 horas laborables. Marca, web premium y agentes de IA que atienden y reservan por ti.",
+    "Reserva una llamada estratégica de 30 minutos. Sin rodeos y sin compromiso: te llevas un plan claro para crecer con IA, trabajes con nosotros o no.",
   robots: { index: true, follow: true },
 };
 
 export default function Page() {
-  return <ContactPage />;
+  return <BookingPage />;
 }

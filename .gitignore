@@ -46,7 +46,7 @@ next-env.d.ts
 /docs/figma/*/png/*.png
 !/docs/figma/home/png/*.png
 # figma: capturas de la web (regenerables con npm run figma:shot)
-/docs/figma/home-1532/shots/
+/docs/figma/*/shots/
 # figma: render del prototipo y comparativas (regenerables con proto-shot.mjs)
 /docs/figma/*/proto/
 /docs/figma/*/figma-vs-web.png

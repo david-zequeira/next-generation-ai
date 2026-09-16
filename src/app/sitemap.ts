@@ -14,6 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/precios"), changeFrequency: "monthly", priority: 0.9 },
     { url: absoluteUrl("/calculadora"), changeFrequency: "monthly", priority: 0.85 },
     { url: absoluteUrl("/contacto"), changeFrequency: "monthly", priority: 0.8 },
+    // El formulario de mensaje, desde que /contacto es la reserva de llamada.
+    { url: absoluteUrl("/contacto/mensaje"), changeFrequency: "monthly", priority: 0.5 },
     ...LEGAL_SLUGS.map((slug) => ({
       url: absoluteUrl(`/legal/${slug}`),
       changeFrequency: "yearly" as const,

@@ -3,6 +3,7 @@ export type Locale = "en" | "es";
 const en = {
   nav: {
     links: ["Platform", "Services", "Ecosystem", "Proof", "Process"],
+    home: "Home",
     calc: "Calculator",
     pricing: "Pricing",
     cta: "Book a call",
@@ -319,6 +320,7 @@ const en = {
 const es: typeof en = {
   nav: {
     links: ["Plataforma", "Servicios", "Ecosistema", "Pruebas", "Proceso"],
+    home: "Inicio",
     calc: "Calculadora",
     pricing: "Precios",
     cta: "Reservar llamada",
