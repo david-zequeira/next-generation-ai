@@ -425,26 +425,31 @@ body {
       linear-gradient(var(--color-void), var(--color-void)) padding-box,
       linear-gradient(128deg, #1a4dff 0%, #102e99 100%) border-box;
   }
-  /* La misma pastilla sobre fondo claro (/precios): caja blanca, borde en
-     degradado y texto azul (la lima no se lee sobre blanco). */
-  .eyebrow-light {
-    border-color: transparent;
-    background:
-      linear-gradient(#ffffff, #ffffff) padding-box,
-      linear-gradient(124deg, #1a4dff 0%, #102e99 100%) border-box;
-    color: var(--color-electric);
-  }
-  /* Sobre la tarjeta azul del cierre (/precios): borde y texto blancos */
-  .eyebrow-white {
-    border-color: #ffffff;
-    color: #ffffff;
-  }
   /* Sobre un módulo claro (la cuenta de /calculadora): caja sólida sin borde,
      para que la lima se lea. Figma 1543:5205 y 1555:67668, 114×28. */
   .eyebrow-dark {
     background: var(--color-abyss);
     border-color: transparent;
     padding-inline: max(14px, 18 * var(--u)); /* Figma: la pastilla mide 114 */
+    font-weight: 500;
+  }
+  /* La pastilla de /precios (Figma 1520:1546): mismo relleno #050b21 que la de
+     la calculadora, pero con 14 px de aire a los lados y sin borde — allí la
+     caja de «COMPARATIVA» mide 124×28 exactos, con el texto de 912 a 1007.
+     El borde transparente de `.eyebrow` sumaría 2 px que el marco no tiene. */
+  .eyebrow-ink {
+    background: var(--color-abyss);
+    border-width: 0;
+    padding-inline: max(11px, 14 * var(--u));
+    font-weight: 500;
+  }
+  /* La misma sobre la tarjeta azul del cierre: el #050b21 al 40 %, para que el
+     azul se transparente. Medido: sale #243e9c sobre un fondo #3861ee, que es
+     justo 0,4 de #050b21. */
+  .eyebrow-ink-40 {
+    background: rgba(5, 11, 33, 0.4);
+    border-width: 0;
+    padding-inline: max(11px, 14 * var(--u));
     font-weight: 500;
   }
 

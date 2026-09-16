@@ -253,6 +253,26 @@ es el marco anterior (`541:168`, ya no existe en el fichero), solo histórico.
 Captura de la web a 1920 para comparar: `npm run figma:shot [url]` →
 `docs/figma/home-1532/shots/` (no se versiona).
 
+**Precios:** marco vigente `1520:1546` → `docs/figma/precios-1520/`;
+`docs/figma/precios/` es el marco anterior (`690:14`, «Asenix Planes»), solo
+histórico — **sus valores están desfasados**.
+
+### Cuando la REST y el MCP están sin cuota
+
+Le pasó a `/precios`: la REST devolvió `429` con `retry-after` de ~3,4 días y el
+MCP de Figma tenía agotada la cuota del plan Starter. La salida es renderizar el
+**prototipo público**, que se ve sin token, a 1920 px de ancho, donde sale 1:1:
+
+```bash
+node scripts/figma/proto-shot.mjs "<url del prototipo>" --slices 9
+```
+
+→ `docs/figma/precios-1520/proto/p-NN.png` (no se versiona). El scroll es
+determinista, así que dos ejecuciones dan las mismas coordenadas al píxel y se
+pueden citar medidas como `p-04.png @652,682`. No da el árbol de capas, así que
+los valores se sacan por muestreo de píxel y detección de bordes; el método está
+explicado en `docs/figma/precios-1520/audit.md`.
+
 Se hace por la API REST y no por el MCP porque el plan Starter da 20 llamadas
 al MCP al mes; la REST va aparte (10 peticiones/min con asiento Full) y el
 script gasta 4.
