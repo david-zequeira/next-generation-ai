@@ -8,7 +8,7 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Languages, Menu, X } from "lucide-react";
+import { ChevronRight, Languages, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n/LocaleContext";
 import { trackEvent } from "@/lib/track";
@@ -22,7 +22,19 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
  * el hero y gana fondo al bajar; se esconde al hacer scroll hacia abajo y
  * vuelve al subir.
  */
-export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
+export default function Navbar({
+  tone = "dark",
+  breadcrumb,
+}: {
+  tone?: "dark" | "light";
+  /**
+   * Modo miga (Figma 1643:2250, /contacto): en vez del menú centrado y la
+   * pastilla de contacto, al lado del logo va «Inicio › <aquí>» y a la derecha
+   * solo queda el idioma. El logo y la pastilla no se mueven — son los mismos
+   * 55 px a x=240 y los mismos 98×46 del resto del sitio.
+   */
+  breadcrumb?: string;
+}) {
   const light = tone === "light";
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -89,18 +101,49 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
           // Figma: barra de 116 px, imago de 55 px a 240 px del borde (12,5 % del ancho)
           className="relative mx-auto flex h-u-116 max-w-[1920px] items-center justify-between px-5 md:px-10 xl:px-[12.5%]"
         >
-          <Link href="/" className="flex items-center gap-3">
-            {/* El glifo ocupa el 68 % del alto del PNG (512 px con aire): para que mida los 55 px
-                del Figma, la imagen va a 81 */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-81 w-auto" />
-          </Link>
+          <div className="flex items-center gap-u-56">
+            <Link href="/" className="flex items-center gap-3">
+              {/* El glifo ocupa el 68 % del alto del PNG (512 px con aire): para que mida los 55 px
+                  del Figma, la imagen va a 81 */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`${BASE}/isotipo.png`} alt="Asenix" className="h-u-81 w-auto" />
+            </Link>
+
+            {/* Figma: «Hogar › Contacto» en x 364–490, 500 · 15, el padre en
+                #96a3c5 y la hoja en blanco, con el chevron en medio. */}
+            {breadcrumb && (
+              <nav aria-label="Miga" className="hidden font-display fs-u-15 font-medium sm:flex items-center gap-u-6">
+                <Link
+                  href="/"
+                  className={cn(
+                    "transition-colors duration-200",
+                    light ? "text-ink/55 hover:text-ink" : "text-[#96a3c5] hover:text-frost"
+                  )}
+                >
+                  {t.home}
+                </Link>
+                <ChevronRight
+                  className={cn("size-u-14", light ? "text-ink/40" : "text-[#96a3c5]")}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span aria-current="page" className={light ? "text-black" : "text-white"}>
+                  {breadcrumb}
+                </span>
+              </nav>
+            )}
+          </div>
 
           {/* El Figma centra el menú en la página (no entre el logo y los botones): centrado
               absoluto a partir de 2xl. Por debajo de 1536 el menú se solaparía con el botón de
               idioma (a 1440 el menú termina donde empieza el botón), así que ahí va en flujo,
               centrado en el hueco que queda entre el logo y los botones. */}
-          <ul className="mx-auto hidden items-center gap-u-22 lg:flex 2xl:absolute 2xl:left-1/2 2xl:top-1/2 2xl:mx-0 2xl:-translate-x-1/2 2xl:-translate-y-1/2">
+          <ul
+            className={cn(
+              "mx-auto hidden items-center gap-u-22 2xl:absolute 2xl:left-1/2 2xl:top-1/2 2xl:mx-0 2xl:-translate-x-1/2 2xl:-translate-y-1/2",
+              breadcrumb ? "hidden" : "lg:flex"
+            )}
+          >
             {t.links.map((label, i) => (
               <li key={HREFS[i]}>
                 <a href={HREFS[i]} className={linkClass}>
@@ -124,13 +167,14 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
           </ul>
 
           <div className="flex items-center gap-u-10">
-            <span className="hidden lg:inline-flex">{langButton}</span>
+            <span className={breadcrumb ? "inline-flex" : "hidden lg:inline-flex"}>{langButton}</span>
             {/* Figma: 165×46, radio 20, blanco, Montserrat 500 15 negro */}
             <Link
               href="/contacto"
               onClick={() => trackEvent("cta_navbar")}
               className={cn(
-                "hidden cursor-pointer items-center font-display fs-u-15 font-medium transition-all duration-300 active:scale-[0.97] lg:inline-flex",
+                "hidden cursor-pointer items-center font-display fs-u-15 font-medium transition-all duration-300 active:scale-[0.97]",
+                breadcrumb ? "hidden" : "lg:inline-flex",
                 // Figma (claro): caja gris de 128×41 con radio 10 · (oscuro): pastilla blanca de 165×46
                 light
                   ? "h-u-41 rounded-u-10 bg-[#dfe2ea] px-u-20 text-black hover:bg-cloud"
@@ -145,7 +189,9 @@ export default function Navbar({ tone = "dark" }: { tone?: "dark" | "light" }) {
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className={cn(
-                "inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full transition-colors lg:hidden",
+                "h-11 w-11 cursor-pointer items-center justify-center rounded-full transition-colors lg:hidden",
+                // En modo miga no hay menú que abrir: la miga ya lleva a Inicio.
+                breadcrumb ? "hidden" : "inline-flex",
                 light ? "text-ink hover:bg-ink/5" : "text-frost hover:bg-white/5"
               )}
             >
