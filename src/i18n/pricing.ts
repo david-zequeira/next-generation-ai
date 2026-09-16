@@ -94,7 +94,7 @@ export type PricingDict = {
     titleA: string;
     titleB: string;
     sub: string;
-    items: { name: string; note?: string; desc: string; price?: string; tail?: string }[];
+    items: { name: string; desc: string; price?: string; tail?: string }[];
   };
   pay: {
     eyebrow: string;
@@ -238,11 +238,11 @@ const es: PricingDict = {
     items: [
       { name: "La web, después", desc: "Empezaste por el Starter y ahora quieres la marca y la web premium. Se añade sin tocar el asistente.", price: "3.000 €" },
       { name: "Conversaciones extra", desc: "Bloque de 500 conversaciones más al mes. Pasarte de la cuota nunca corta tu servicio: te avisamos y lo hablamos.", tail: "99 €/mes" },
-      { name: "Conversaciones extra", note: "· solo web", desc: "Bloque de 1.000 conversaciones más al mes para planes sin WhatsApp, donde cada conversación cuesta bastante menos.", tail: "59 €/mes" },
+      { name: "Conversaciones extra", desc: "Solo web: bloque de 1.000 conversaciones más al mes para planes sin WhatsApp, donde cada una cuesta bastante menos.", tail: "59 €/mes" },
       { name: "Sede adicional", desc: "Otro centro con su propia agenda, su horario, su equipo y sus métricas separadas, gestionado desde el mismo panel.", price: "490 €", tail: "+ 49 €/mes" },
       { name: "Idioma adicional", desc: "El agente atiende y reserva en otro idioma, con su propio tono de marca y las mismas reglas de escalado.", price: "390 €", tail: "+ 29 €/mes" },
       { name: "Integraciones", desc: "Tu POS, ERP o CRM se estudia y se presupuesta en el Diagnóstico. No vendemos conectores que no existen.", price: "a presupuestar" },
-      { name: "Manual de identidad completo", desc: "Marca al detalle: aplicaciones, papelería, señalética y normas de uso. Incluido en Nexus.", tail: "1.490 €" },
+      { name: "Manual de identidad", desc: "Marca al detalle: aplicaciones, papelería, señalética y normas de uso. Incluido en Nexus.", tail: "1.490 €" },
       { name: "Contenido y formación", desc: "Fotografía y vídeo de marca, y formación a tu equipo por 490 € para que le saque todo el partido.", price: "desde 690 €" },
     ],
   },
@@ -417,7 +417,7 @@ const en: PricingDict = {
     items: [
       { name: "The website, later", desc: "You started with Starter and now you want the brand and the premium website. It's added without touching the assistant.", price: "€3,000" },
       { name: "Extra conversations", desc: "A block of 500 more conversations per month. Going over quota never cuts your service: we tell you and we talk about it.", tail: "€99/mo" },
-      { name: "Extra conversations", note: "· web only", desc: "A block of 1,000 more conversations per month for plans without WhatsApp, where each conversation costs considerably less.", tail: "€59/mo" },
+      { name: "Extra conversations", desc: "Web only: a block of 1,000 more conversations per month for plans without WhatsApp, where each costs much less.", tail: "€59/mo" },
       { name: "Additional location", desc: "Another site with its own calendar, hours, team and separate metrics, managed from the same panel.", price: "€490", tail: "+ €49/mo" },
       { name: "Additional language", desc: "The agent answers and books in another language, with its own brand tone and the same escalation rules.", price: "€390", tail: "+ €29/mo" },
       { name: "Integrations", desc: "Your POS, ERP or CRM gets assessed and quoted in the Diagnostic. We don't sell connectors that don't exist.", price: "quoted" },

@@ -430,7 +430,6 @@ export default function PricingPage() {
                               línea cortaba la cola de la «g» de «Integraciones» y la «p»
                               de «después». */}
                           <span className="underline underline-offset-[0.3em]">{addon.name}</span>
-                          {addon.note && <span className="block font-normal">{addon.note.replace(/^·\s*/, "")}</span>}
                         </h4>
                         {/* Figma: 15/20 en una caja de 330 (la línea más ancha mide 320).
                             `min-h` de tres líneas: el precio va anclado abajo, así que sin

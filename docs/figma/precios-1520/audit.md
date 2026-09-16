@@ -478,6 +478,21 @@ celdas partieran y esas filas midieran 48 en vez de 45.
 Con `table-fixed` y `w-[21.87%]` en las tres columnas de plan: **495 · 314 · 314
 · 314** y las 23 filas a 45, en los dos idiomas.
 
+### «solo web» sale del título
+
+El marco pinta esa tarjeta como nombre subrayado más una nota debajo sin
+subrayar. Era el único módulo con nota, así que era también el único título de
+dos líneas de los ocho. A petición del dueño, «solo web» pasa al principio de la
+descripción («Solo web: bloque de 1.000 conversaciones…») y el campo `note` se
+retira del diccionario, del tipo y del componente por quedarse sin uso.
+
+De paso, «Manual de identidad completo» partía en dos líneas: se queda en
+«Manual de identidad» — lo de «completo» ya lo dice su descripción, «Marca al
+detalle: aplicaciones, papelería, señalética y normas de uso».
+
+Los ocho títulos van ahora a una línea en los dos idiomas. **Es una desviación
+deliberada del marco**, que sí lleva esa nota.
+
 ### Subrayado de los títulos de módulo
 
 A `0.2em` (4,4 px sobre un cuerpo de 22) la línea quedaba justo donde acaba el
