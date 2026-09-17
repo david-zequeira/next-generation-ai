@@ -177,6 +177,11 @@ export default function PricingPage() {
             <div className="mx-auto grid max-w-u-1195 items-stretch gap-8 min-[680px]:grid-cols-2 xl:grid-cols-3 xl:gap-u-32">
               {t.plans.map((plan, i) => {
                 const star = !!plan.star;
+                // El nombre publicado ES el slug desde el 17/09/2026: hasta entonces la
+                // tarjeta se llamaba «Starter» y había que traducirla a «arranque» aquí
+                // para que /contacto y ng-agent la reconocieran. Al unificar el nombre,
+                // la traducción sobra — y el enlace deja de poder desincronizarse del
+                // título que el visitante acaba de leer.
                 const slug = plan.name.toLowerCase();
                 return (
                   <Reveal key={plan.name} delay={(i % 3) * 0.08} className="relative h-full">
@@ -269,7 +274,7 @@ export default function PricingPage() {
 
                         {/* Figma: 227×60 en píldora completa, azul de marca, SemiBold 16. El slug del plan viaja a /contacto */}
                         <Link
-                          href={`/contacto?plan=${slug === "starter" ? "arranque" : slug}`}
+                          href={`/contacto?plan=${slug}`}
                           onClick={() => trackEvent(`cta_plan_${slug}`)}
                           className={cn(
                             "mx-auto mt-u-40 flex h-u-57 w-u-226 max-w-full items-center justify-center rounded-full font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5",
