@@ -104,12 +104,13 @@ const en = {
       msgs: ["Hi", "Hi 👋 I'm Asenix AI, your intelligent assistant. How can I help you today?", "I'd like some help with a few questions"],
       placeholder: "Write me a message…",
     },
+    /** Espejo del bloque ES: sin cifras de rendimiento (ver el comentario allí). */
     voice: {
-      tag: "AI voice agents",
-      title: "Never miss an important call.",
-      desc: "AI-powered voice agents that answer, qualify and book appointments automatically, with natural, fluid conversations.",
-      bullets: ["100% of calls answered", "3× more appointments booked", "90% lead capture rate", "Grow your revenue"],
-      note: "Inbound calls, 24 hours a day",
+      tag: "Voice agent · in testing",
+      title: "And it answers out loud, too.",
+      desc: "The same assistant holds the conversation by voice: it answers with your business's information, resolves the question and books the appointment while talking. We're tuning it with our first clients before opening it up — ask us about the waiting list.",
+      bullets: ["Answers, resolves and books out loud", "Says it's an AI and that the call is recorded", "What it doesn't know goes to a person", "In testing with our first clients"],
+      note: "Try it right here on this page",
       chips: ["Qualifies leads", "AI receptionist", "Books appointments"],
       sectors: ["E-commerce", "Real estate", "Hospitality", "Health & telemedicine"],
     },
@@ -420,12 +421,34 @@ const es: typeof en = {
       msgs: ["Hola", "Hola 👋 Soy Asenix AI, tu asistente inteligente. ¿En qué puedo ayudarte hoy?", "Me gustaría que me ayudaras con algunas dudas"],
       placeholder: "Escríbeme un mensaje…",
     },
+    /**
+     * **17/09/2026 — fuera las tres cifras de rendimiento.**
+     *
+     * Esta sección prometía "100 % de llamadas respondidas", "3× más citas
+     * agendadas" y "90 % de tasa de captación". Con cero clientes de pago no
+     * hay de dónde sacar esos porcentajes: no se sostienen ante el primero que
+     * pregunte de dónde salen, y contradicen la regla que ordena el resto del
+     * sitio — nunca prometer porcentajes, prometer medición. Se eliminan; no
+     * se matizan, porque un porcentaje inventado con asterisco sigue siéndolo.
+     *
+     * El titular también se va. "Nunca pierdas una llamada importante" vende
+     * telefonía ENTRANTE, que es justo lo único de aquí que hoy no se puede
+     * entregar: falta el número +34, y en `ng-agent/src/plans.ts` el Arranque
+     * y el Core llevan `voiceMinutesPerMonth: 0`.
+     *
+     * Lo que queda es verdad y se puede comprobar sin salir de la página: la
+     * llamada por voz desde la web FUNCIONA — es el botón de esta misma home,
+     * con aviso hablado de que es una IA y de que se graba (`voice-compliance.ts`
+     * y §6 de la política de privacidad). Así que en vez de una lista de espera
+     * a secas, la invitación es a probarlo ahora. Convierte mejor que una
+     * promesa y, a diferencia de ella, es cierta.
+     */
     voice: {
-      tag: "Agentes de voz con IA",
-      title: "Nunca pierdas una llamada importante.",
-      desc: "Agentes de voz impulsados por IA que responden, califican y programan citas automáticamente con conversaciones naturales y fluidas.",
-      bullets: ["100 % de llamadas respondidas", "3× más citas agendadas", "90 % de tasa de captación de clientes potenciales", "Aumenta tus ingresos"],
-      note: "Llamadas entrantes las 24 horas",
+      tag: "Agente de voz · en pruebas",
+      title: "Y además, atiende hablando.",
+      desc: "El mismo asistente sostiene la conversación por voz: responde con la información de tu negocio, resuelve la duda y cierra la cita hablando. Lo estamos afinando con nuestros primeros clientes antes de abrirlo — pregúntanos por la lista de espera.",
+      bullets: ["Responde, resuelve y reserva hablando", "Avisa de que es una IA y de que se graba", "Lo que no sabe, pasa a una persona", "En pruebas con nuestros primeros clientes"],
+      note: "Pruébalo ahora mismo en esta página",
       chips: ["Califica clientes potenciales", "Recepcionista con IA", "Agenda citas"],
       sectors: ["Comercio electrónico", "Bienes raíces", "Hostelería", "Salud y telemedicina"],
     },
