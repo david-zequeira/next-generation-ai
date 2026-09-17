@@ -130,36 +130,35 @@ const en = {
     titleB: "what we build",
     sub: "We combine the leading technologies in artificial intelligence, software development, infrastructure and automation to build fast, scalable systems ready to evolve.",
   },
-  /** Espejo del bloque ES: la prueba es el asistente de esta página, no una cifra. */
   work: {
-    title: "Don't take our word for it. Try it.",
-    sub: "We have no client case studies to show you yet, and we're not going to invent any. We have something better: the assistant is running on this page.",
-    link: "Or do the maths with your numbers",
-    disclaimer: "When there are client cases, they'll be here with their name and their measured figures. Not before.",
+    title: "Proof, not promises",
+    sub: "Results speak louder than any presentation.",
+    link: "Do the maths for your business",
+    disclaimer: "Illustrative scenarios based on the patterns we deploy.",
     studies: [
       {
-        headline: "Write to it",
-        story: "Ask it what you'd ask a salesperson: prices, timelines, what each plan includes. It answers with Asenix's real information.",
-        chips: ["Answers instantly", "Nothing made up"],
-        stat: "Now",
-        statLabel: "on this page",
-        action: "chat",
+        headline: "Customers",
+        story: "We automate every interaction to turn visitors into customers.",
+        chips: ["Smart follow-up", "24/7 service"],
+        statLabel: "Conversion",
       },
       {
-        headline: "Talk to it",
-        story: "The same assistant, out loud. It tells you it's an AI and that the call is recorded, and resolves just as it does in writing.",
-        chips: ["Straight from the browser", "Nothing to install"],
-        stat: "Now",
-        statLabel: "voice call",
-        action: "voice",
+        headline: "Time",
+        story: "Smart processes that remove repetitive tasks and connect your whole operation.",
+        chips: ["Smart workflow", "Automatic processes"],
+        statLabel: "Manual work",
       },
       {
-        headline: "Do the maths",
-        story: "What slips away today through unanswered enquiries and no-shows, with our assumptions on screen so you can argue with them.",
-        chips: ["No sign-up", "Assumptions on screen"],
-        stat: "4",
-        statLabel: "questions",
-        action: "calc",
+        headline: "Efficiency",
+        story: "We connect systems, data and artificial intelligence to scale operations.",
+        chips: ["Fewer errors", "More capacity"],
+        statLabel: "Operating capacity",
+      },
+      {
+        headline: "Control",
+        story: "Your whole business in one system, with clear data to decide.",
+        chips: ["Real-time data", "One dashboard"],
+        statLabel: "Visibility",
       },
     ],
   },
@@ -469,58 +468,35 @@ const es: typeof en = {
     titleB: "lo que construimos",
     sub: "Combinamos las tecnologías líderes en inteligencia artificial, desarrollo de software, infraestructura y automatización para crear sistemas rápidos, escalables y preparados para evolucionar.",
   },
-  /**
-   * **17/09/2026 — la sección dejó de mentirse a sí misma.**
-   *
-   * Se llamaba «Pruebas, no promesas» y pintaba tres cifras HARDCODEADAS en
-   * `CaseStudies.tsx` — +40 % de conversión, −70 % de trabajo manual, 3x de
-   * capacidad — animadas contando hacia arriba para que el ojo fuera ahí. Con
-   * cero clientes de pago no salían de ningún sitio, y el descargo a 12 px
-   * («escenarios ilustrativos basados en los patrones que desplegamos») las
-   * empeoraba: daba a entender despliegues que no existen, justo debajo de un
-   * titular que las llamaba pruebas.
-   *
-   * Lo que hay ahora es la única prueba que Asenix puede dar hoy, y es mejor
-   * que cualquier cifra: **el asistente está funcionando en esta misma página**.
-   * Las tres tarjetas no lo describen, lo ABREN — lanzan `ng:open-chat` y
-   * `ng:open-voice`, los mismos eventos que ya usan el hero y el cierre.
-   *
-   * El descargo pasa de tapar un problema a ser un activo: decir que no hay
-   * casos todavía, y que cuando los haya estarán aquí con nombre y cifras
-   * medidas, es la misma seriedad que se vende en el resto del sitio.
-   *
-   * Si algún día hay casos reales, esto vuelve a ser una sección de casos —
-   * pero con cliente, cifra medida y permiso para publicarla.
-   */
   work: {
-    title: "No te lo creas. Pruébalo.",
-    sub: "Todavía no tenemos casos de clientes que enseñarte, y no vamos a inventarlos. Tenemos algo mejor: el asistente está funcionando en esta página.",
-    link: "O haz la cuenta con tus números",
-    disclaimer: "Cuando haya casos de clientes, estarán aquí con su nombre y sus cifras medidas. No antes.",
+    title: "Pruebas, no promesas",
+    sub: "Los resultados hablan más fuerte que cualquier presentación.",
+    link: "Haz la cuenta para tu negocio",
+    disclaimer: "Escenarios ilustrativos basados en los patrones que desplegamos.",
     studies: [
       {
-        headline: "Escríbele",
-        story: "Pregúntale lo que le preguntarías a un comercial: precios, plazos, qué incluye cada plan. Responde con la información real de Asenix.",
-        chips: ["Responde al instante", "Sin datos inventados"],
-        stat: "Ahora",
-        statLabel: "en esta página",
-        action: "chat",
+        headline: "Clientes",
+        story: "Automatizamos cada interacción para convertir visitantes en clientes.",
+        chips: ["Seguimiento inteligente", "Atención 24/7"],
+        statLabel: "Conversión",
       },
       {
-        headline: "Háblale",
-        story: "El mismo asistente, hablando. Te avisa de que es una IA y de que la llamada se graba, y resuelve igual que por escrito.",
-        chips: ["Desde el navegador", "Sin instalar nada"],
-        stat: "Ahora",
-        statLabel: "llamada por voz",
-        action: "voice",
+        headline: "Tiempo",
+        story: "Procesos inteligentes que eliminan tareas repetitivas y conectan toda tu operación.",
+        chips: ["Flujo inteligente", "Procesos automáticos"],
+        statLabel: "Trabajo manual",
       },
       {
-        headline: "Haz la cuenta",
-        story: "Cuánto se te escapa hoy por consultas sin responder y plantones, con nuestras hipótesis a la vista para que puedas discutirlas.",
-        chips: ["Sin registro", "Hipótesis a la vista"],
-        stat: "4",
-        statLabel: "preguntas",
-        action: "calc",
+        headline: "Eficacia",
+        story: "Conectamos sistemas, datos e inteligencia artificial para escalar operaciones.",
+        chips: ["Menos errores", "Más capacidad"],
+        statLabel: "Capacidad operativa",
+      },
+      {
+        headline: "Control",
+        story: "Todo tu negocio en un solo sistema, con datos claros para decidir.",
+        chips: ["Datos en tiempo real", "Un solo panel"],
+        statLabel: "Visibilidad",
       },
     ],
   },
