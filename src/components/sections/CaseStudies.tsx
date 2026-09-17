@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { animate, motion, useInView } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
@@ -11,45 +11,49 @@ import { useLocale } from "@/i18n/LocaleContext";
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Cifras de cada tarjeta — los textos viven en el diccionario, por índice.
- * Tres tarjetas, como pide el diseño; la primera es la destacada (con sombra).
- */
-/**
+ * Ilustración de cada tarjeta — el texto vive en el diccionario, por índice.
+ *
  * `icon`: figura del Figma exportada desde su geometría a `public/icons/proof/`
  * (degradado #1cfcb9→#38d4ff), con su sitio dentro del panel azul de 376×290:
- *  - Clientes (1532:2951): 179×197 pegada abajo, a 24 del borde derecho.
- *  - Tiempo (1532:2967): reloj de 104 centrado en vertical, a 62 del borde.
- *  - Eficacia (1254:462): 162×197 pegada arriba, a 33 del borde.
- * `flip`: en «Tiempo» el Figma pone la cifra arriba y los chips abajo.
+ *  - 179×197 pegada abajo, a 24 del borde derecho.
+ *  - reloj de 104 centrado en vertical, a 62 del borde.
+ *  - 162×197 pegada arriba, a 33 del borde.
+ * `flip`: en la del medio el Figma pone la cifra arriba y los chips abajo.
+ *
+ * ---
+ *
+ * **Aquí vivían tres cifras inventadas (17/09/2026).** `+40 %` de conversión,
+ * `−70 %` de trabajo manual y `3x` de capacidad, escritas a mano en este array
+ * y animadas contando hacia arriba con `<Counter>` para que el ojo fuera justo
+ * ahí — bajo un titular que las llamaba «Pruebas, no promesas» y con cero
+ * clientes de pago de los que sacarlas.
+ *
+ * Se fueron con el contador. Lo que se pinta ahora sale del diccionario y es
+ * comprobable sin salir de la página, así que no hay nada que animar: es un
+ * rótulo, no un resultado.
  */
-const STATS: { prefix: string; value: number; suffix: string; icon: string; iconClass: string; flip?: boolean }[] = [
-  { prefix: "+", value: 40, suffix: "%", icon: "clientes", iconClass: "absolute -bottom-1 right-u-24 h-u-197 w-auto" },
-  { prefix: "-", value: 70, suffix: "%", icon: "tiempo", iconClass: "absolute right-u-62 top-1/2 size-u-104 -translate-y-1/2", flip: true },
-  { prefix: "", value: 3, suffix: "x", icon: "eficacia", iconClass: "absolute right-u-33 top-0 h-u-197 w-auto" },
+const CARDS: { icon: string; iconClass: string; flip?: boolean }[] = [
+  { icon: "clientes", iconClass: "absolute -bottom-1 right-u-24 h-u-197 w-auto" },
+  { icon: "tiempo", iconClass: "absolute right-u-62 top-1/2 size-u-104 -translate-y-1/2", flip: true },
+  { icon: "eficacia", iconClass: "absolute right-u-33 top-0 h-u-197 w-auto" },
 ];
 
-function Counter({ prefix, value, suffix }: { prefix: string; value: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px -15% 0px" });
-  const [display, setDisplay] = useState("0");
-
-  useEffect(() => {
-    if (!inView) return;
-    const controls = animate(0, value, {
-      duration: 2,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setDisplay(v.toFixed(0)),
-    });
-    return () => controls.stop();
-  }, [inView, value]);
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      {prefix}
-      {display}
-      {suffix}
-    </span>
-  );
+/**
+ * Qué hace cada tarjeta al pulsarla. `chat` y `voice` lanzan los mismos eventos
+ * globales que el hero y el cierre, así que la sección no describe el asistente:
+ * lo abre. Es la única prueba que Asenix puede dar hoy, y no hace falta creerse
+ * ninguna cifra para comprobarla.
+ */
+function runAction(action: string) {
+  if (action === "chat") window.dispatchEvent(new CustomEvent("ng:open-chat"));
+  else if (action === "voice") window.dispatchEvent(new CustomEvent("ng:open-voice"));
+  // El salto a la calculadora va por hash, como todos los enlaces internos del
+  // sitio (`/#services`, el «Haz la cuenta» de esta misma sección…). Ojo con la
+  // alternativa evidente: `scrollIntoView({ behavior: "smooth" })` NO funciona
+  // aquí — Lenis controla el scroll de la página con su propio rAF y se come el
+  // desplazamiento suave nativo. Sin `behavior` sí iría, pero el hash es lo que
+  // ya usa el resto y además deja la sección en la URL.
+  else window.location.hash = "roi";
 }
 
 /**
@@ -113,12 +117,18 @@ export default function CaseStudies() {
             <p className="mt-u-40 fs-u-12 text-mist/70">{t.disclaimer}</p>
           </div>
 
-          {STATS.map((s, i) => {
+          {CARDS.map((s, i) => {
             const study = t.studies[i];
             // Las tres tarjetas con el mismo anillo de 2 px y el brillo azul de la destacada del Figma
             const featured = true;
             return (
-              <article
+              // La tarjeta entera es el botón: pulsarla abre el chat, la voz o
+              // la calculadora. `text-left` porque <button> centra por defecto.
+              <motion.button
+                type="button"
+                onClick={() => runAction(study.action)}
+                aria-label={`${study.headline} — ${study.stat} ${study.statLabel}`}
+                whileTap={{ scale: 0.995 }}
                 key={`${study.headline}-${locale}`}
                 style={{
                   ["--ring-w" as string]: featured ? "2px" : "1px",
@@ -130,15 +140,16 @@ export default function CaseStudies() {
                 // la destacada lleva borde cónico de 2 px (12/50/85 %) y la sombra azul,
                 // el resto 1 px (26/50/74 %) sin sombra
                 className={cn(
-                  "ring-conic group relative bg-[linear-gradient(247deg,rgba(16,24,55,.5),rgba(5,11,33,.5))] w-[86vw] shrink-0 snap-center rounded-u-25 pb-u-38 pl-u-53 pr-u-37 pt-u-38 transition-shadow duration-500 md:w-[43vw]",
+                  "ring-conic group relative cursor-pointer bg-[linear-gradient(247deg,rgba(16,24,55,.5),rgba(5,11,33,.5))] w-[86vw] shrink-0 snap-center rounded-u-25 pb-u-38 pl-u-53 pr-u-37 pt-u-38 text-left transition-shadow duration-500 md:w-[43vw]",
                   featured && "shadow-[0_0_150px_rgba(26,77,255,0.5),0_0_80px_3px_rgba(26,77,255,0.5)]"
                 )}
               >
                 <div className="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
                   <div className="pt-u-73">
-                    {/* Figma: «+ Clientes» Montserrat Medium 45/48 azul; historia Light 20/25 #779eff */}
+                    {/* Figma: Montserrat Medium 45/48 azul; historia Light 20/25 #779eff.
+                        El «+» del diseño se fue con las cifras: encabezaba «+ Clientes»,
+                        y delante de un verbo («Escríbele») no significa nada. */}
                     <h3 className="font-display fs-u-45 lh-u-48 font-medium text-electric">
-                      <span className="mr-2">+</span>
                       {study.headline}
                     </h3>
                     <p className="mt-u-10 max-w-u-254 pl-u-42 fs-u-20 lh-u-25 font-light text-periwinkle">{study.story}</p>
@@ -168,7 +179,7 @@ export default function CaseStudies() {
                     </div>
                     <div className={cn("z-10", s.flip ? "absolute left-u-25 top-u-29" : "relative")}>
                       <p className="font-display fs-u-35 font-semibold leading-none text-white">
-                        <Counter prefix={s.prefix} value={s.value} suffix={s.suffix} />
+                        {study.stat}
                       </p>
                       <p className="mt-u-8 fs-u-20 font-normal text-mint">{study.statLabel}</p>
                     </div>
@@ -176,7 +187,7 @@ export default function CaseStudies() {
                     <img src={`${BASE}/icons/proof/${s.icon}.svg`} alt="" className={s.iconClass} />
                   </motion.div>
                 </div>
-              </article>
+              </motion.button>
             );
           })}
         </div>
