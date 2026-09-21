@@ -91,7 +91,7 @@ const es: BookingDict = {
   goalsPh: "Cuéntanos cuáles son tus objetivos",
   submit: "Reservar llamada",
   sending: "Reservando…",
-  note: "Sin spam. Respondemos en 24 horas",
+  note: "Sin spam. Respondemos en menos de 2 horas",
   months: [
     "Ene", "Feb", "Mar", "Abr", "May", "Jun",
     "Jul", "Ago", "Sep", "Oct", "Nov", "Dic",
@@ -140,7 +140,7 @@ const en: BookingDict = {
   goalsPh: "Tell us what you're trying to achieve",
   submit: "Book the call",
   sending: "Booking…",
-  note: "No spam. We reply within 24 hours",
+  note: "No spam. We reply within 2 hours",
   months: [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",

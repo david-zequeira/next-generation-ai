@@ -4,7 +4,7 @@ import ContactPage from "@/components/contact/ContactPage";
 export const metadata: Metadata = {
   title: "Escríbenos · Write to us — Asenix",
   description:
-    "Cuéntanos sobre tu negocio y te respondemos en menos de 24 horas laborables. Marca, web premium y agentes de IA que atienden y reservan por ti.",
+    "Cuéntanos sobre tu negocio y te respondemos en menos de 2 horas laborables. Marca, web premium y agentes de IA que atienden y reservan por ti.",
   robots: { index: true, follow: true },
 };
 
