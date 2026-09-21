@@ -117,8 +117,8 @@ const en = {
     booking: {
       tag: "AI booking automation",
       title: "Automate your bookings and let AI do the work",
-      desc: "We connect CRM, calendars, payments and follow-up so every booking moves forward automatically, with no manual work.",
-      bullets: ["Automatic bookings", "Calendar sync", "Client & payment management", "Automated follow-up", "Fewer repetitive tasks"],
+      desc: "We connect CRM, calendars and follow-up so every booking moves forward automatically, with no manual work.",
+      bullets: ["Automatic bookings", "Calendar sync", "Client management", "Automated follow-up", "Fewer repetitive tasks"],
       note: "Everything in sync, no manual work",
       client: "Client",
       nodes: ["CRM", "Billing", "Calendar", "Follow-up"],
@@ -455,8 +455,8 @@ const es: typeof en = {
     booking: {
       tag: "Automatización de reservas con IA",
       title: "Automatiza tus reservas y deja que la IA trabaje por ti",
-      desc: "Conectamos CRM, calendarios, pagos y seguimiento para que cada reserva avance automáticamente sin intervención manual.",
-      bullets: ["Reservas automáticas", "Sincronización con calendarios", "Gestión de clientes y pagos", "Seguimiento automatizado", "Menos tareas repetitivas"],
+      desc: "Conectamos CRM, calendarios y seguimiento para que cada reserva avance automáticamente sin intervención manual.",
+      bullets: ["Reservas automáticas", "Sincronización con calendarios", "Gestión de clientes", "Seguimiento automatizado", "Menos tareas repetitivas"],
       note: "Todo sincronizado, sin intervención manual",
       client: "Cliente",
       nodes: ["CRM", "Facturación", "Agenda", "Seguimiento"],

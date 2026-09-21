@@ -339,7 +339,7 @@ const es: CalcDict = {
     cards: [
       { title: "AI Concierge", sub: "Responde consultas 24/7", stat: "2 de 10", statLabel: "consultas sin responder" },
       { title: "AI Booking", sub: "Gestiona reservas y recordatorios", stat: "−30%", statLabel: "citas perdidas" },
-      { title: "Automatización", sub: "Conecta agenda, pagos y seguimiento", stat: "+25%", statLabel: "de clientes completan el flujo" },
+      { title: "Automatización", sub: "Conecta agenda, CRM y seguimiento", stat: "40 %", statLabel: "del dinero perdido, recuperado" },
     ],
     linkLead: "¿Necesitas algo personalizado?",
     link: "Habla con nuestro equipo →",
@@ -527,7 +527,7 @@ const en: CalcDict = {
     cards: [
       { title: "AI Concierge", sub: "Answers enquiries 24/7", stat: "2 in 10", statLabel: "unanswered enquiries" },
       { title: "AI Booking", sub: "Manages bookings and reminders", stat: "−30%", statLabel: "missed appointments" },
-      { title: "Automation", sub: "Connects calendar, payments and follow-up", stat: "+25%", statLabel: "of customers complete the flow" },
+      { title: "Automation", sub: "Connects calendar, CRM and follow-up", stat: "40 %", statLabel: "of the lost money, recovered" },
     ],
     linkLead: "Need something custom?",
     link: "Talk to our team →",
