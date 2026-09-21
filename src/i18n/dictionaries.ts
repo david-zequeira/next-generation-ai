@@ -51,7 +51,7 @@ const en = {
       {
         label: "Automation",
         title: "Connected. Always running.",
-        desc: "CRM, calendar, payments and follow-up in sync, so every booking moves forward without anyone touching it.",
+        desc: "CRM, calendar and follow-up in sync, so every booking moves forward without anyone touching it.",
         features: [
           { title: "Automatic bookings", desc: "Appointments confirmed and synced with your calendar." },
           { title: "No repetitive tasks", desc: "Reminders, invoices and follow-ups run on their own." },
@@ -368,7 +368,7 @@ const es: typeof en = {
       {
         label: "Automatización",
         title: "Conectado. Siempre funcionando.",
-        desc: "CRM, agenda, pagos y seguimiento sincronizados para que cada reserva avance sin que nadie la toque.",
+        desc: "CRM, agenda y seguimiento sincronizados para que cada reserva avance sin que nadie la toque.",
         features: [
           { title: "Reservas automáticas", desc: "Citas confirmadas y sincronizadas con tu agenda." },
           { title: "Sin tareas repetitivas", desc: "Recordatorios, facturas y seguimientos salen solos." },
