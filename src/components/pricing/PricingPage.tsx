@@ -165,7 +165,7 @@ export default function PricingPage() {
               <Link
                 href="/contacto"
                 onClick={() => trackEvent("cta_header_precios")}
-                className="inline-flex h-u-70 min-w-u-337 cursor-pointer items-center justify-center rounded-u-25 bg-space px-u-30 font-display fs-u-20 font-medium text-frost transition-colors hover:bg-electric"
+                className="inline-flex h-u-70 min-w-u-337 cursor-pointer coarse:min-h-11 items-center justify-center rounded-u-25 bg-space px-u-30 font-display fs-u-20 font-medium text-frost transition-colors hover:bg-electric"
               >
                 {t.header.cta}
               </Link>
@@ -277,7 +277,7 @@ export default function PricingPage() {
                           href={`/contacto?plan=${slug}`}
                           onClick={() => trackEvent(`cta_plan_${slug}`)}
                           className={cn(
-                            "mx-auto mt-u-40 flex h-u-57 w-u-226 max-w-full items-center justify-center rounded-full font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5",
+                            "mx-auto mt-u-40 flex h-u-57 w-u-226 max-w-full coarse:min-h-11 items-center justify-center rounded-full font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5",
                             star ? "bg-white text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] hover:bg-[#f2f5ff]" : "bg-electric text-white hover:bg-[#2557ff]"
                           )}
                         >
@@ -313,7 +313,7 @@ export default function PricingPage() {
                   <Link
                     href="/contacto"
                     onClick={() => trackEvent("cta_diagnostico_precios")}
-                    className="mt-u-20 inline-flex h-u-65 min-w-u-276 items-center justify-center rounded-full bg-white px-u-30 font-display fs-u-16 font-semibold text-black transition-colors hover:bg-[#f2f5ff]"
+                    className="mt-u-20 inline-flex h-u-65 min-w-u-276 coarse:min-h-11 items-center justify-center rounded-full bg-white px-u-30 font-display fs-u-16 font-semibold text-black transition-colors hover:bg-[#f2f5ff]"
                   >
                     {es ? "Contactar" : "Contact"}
                   </Link>
@@ -451,7 +451,12 @@ export default function PricingPage() {
                           <Link
                             href="/contacto"
                             aria-label={es ? `Agregar ${addon.name}` : `Add ${addon.name}`}
-                            className="inline-flex shrink-0 items-center text-space transition-transform hover:translate-x-0.5"
+                            // El área de toque pasa de 16×16 a 44×44 con relleno
+                            // y margen negativo, así el icono no se mueve ni un
+                            // píxel. Un `min-height` no bastaría: mide 16 también
+                            // de ancho, y el margen negativo se queda dentro del
+                            // relleno de la tarjeta, sin invadir la de al lado.
+                            className="inline-flex shrink-0 items-center text-space transition-transform hover:translate-x-0.5 coarse:-m-3.5 coarse:size-11 coarse:justify-end coarse:p-3.5"
                           >
                             <CornerDownRight className="size-u-26" strokeWidth={2} />
                           </Link>
@@ -534,14 +539,14 @@ export default function PricingPage() {
                   <Link
                     href="/contacto"
                     onClick={() => trackEvent("cta_final_precios")}
-                    className="inline-flex h-u-60 min-w-u-275 items-center justify-center gap-u-14 rounded-full bg-[linear-gradient(180deg,#050b21_0%,#101a3e_100%)] px-u-30 font-display fs-u-15 font-semibold text-white shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:-translate-y-0.5"
+                    className="inline-flex h-u-60 min-w-u-275 coarse:min-h-11 items-center justify-center gap-u-14 rounded-full bg-[linear-gradient(180deg,#050b21_0%,#101a3e_100%)] px-u-30 font-display fs-u-15 font-semibold text-white shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:-translate-y-0.5"
                   >
                     {t.final.cta}
                     <PhoneOutgoing className="size-u-18 text-electric" strokeWidth={2} />
                   </Link>
                   <Link
                     href="/calculadora"
-                    className="inline-flex h-u-60 min-w-u-275 items-center justify-center rounded-full border border-white/70 px-u-30 font-display fs-u-15 font-semibold text-white transition-colors duration-300 hover:bg-white/10"
+                    className="inline-flex h-u-60 min-w-u-275 coarse:min-h-11 items-center justify-center rounded-full border border-white/70 px-u-30 font-display fs-u-15 font-semibold text-white transition-colors duration-300 hover:bg-white/10"
                   >
                     {t.calc.cta}
                   </Link>
