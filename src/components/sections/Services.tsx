@@ -74,8 +74,12 @@ function Tile({ icon, label, index }: { icon: TileIcon; label: string; index: nu
           ["--gy" as string]: "8%",
           ["--gr" as string]: "56%",
           ["--go" as string]: "0.5",
+          // El fondo de la tarjeta va aquí y no en una utilidad `bg-[...]`: las
+          // utilidades de Tailwind ganan a la capa de @layer components y se
+          // llevarían por delante el brillo de `.glow-inset`.
+          ["--glow-base" as string]: "linear-gradient(180deg,#101a3e 0%,#050b21 61%)",
         }}
-        className="glow-inset group flex aspect-square flex-col items-center justify-between rounded-u-15 bg-[linear-gradient(180deg,#101a3e_0%,#050b21_61%)] px-u-12 pb-u-14 pt-u-30 text-center transition-shadow duration-300 hover:shadow-[0_18px_44px_-20px_rgba(26,77,255,0.8)]"
+        className="glow-inset group flex aspect-square flex-col items-center justify-between rounded-u-15 px-u-12 pb-u-14 pt-u-30 text-center transition-shadow duration-300 hover:shadow-[0_18px_44px_-20px_rgba(26,77,255,0.8)]"
       >
         {typeof icon === "string" ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -213,18 +217,21 @@ export default function Services() {
             </AnimatePresence>
 
             {/* La "tableta" azul — Figma: 645×573, radio 25, degradado #1a4dff 28 % → #294296,
-                dos brillos radiales (uno arriba a la derecha con blur 40, otro grande a la
-                izquierda) y dentro el dispositivo claro (399×511, radio 20 arriba) que
-                asoma recortado por la base */}
+                dos brillos radiales (uno arriba a la derecha, otro grande a la izquierda)
+                y dentro el dispositivo claro (399×511, radio 20 arriba) que asoma
+                recortado por la base. Los brillos van sin `blur()`: dentro de un
+                contenedor con `overflow:hidden` y radio, un filtro promueve la capa y
+                WebKit deja de recortarla con el radio; el degradado radial ya se apaga
+                solo en el borde, así que se ve igual. */}
             <div className="relative flex h-u-573 w-full items-start justify-center overflow-hidden rounded-u-25 bg-[linear-gradient(180deg,#1a4dff_28%,#294296_100%)] px-u-60 pt-u-75 md:px-u-123">
               <div
                 aria-hidden
-                className="pointer-events-none absolute aspect-square w-[109%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[40px]"
+                className="pointer-events-none absolute aspect-square w-[109%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)]"
                 style={{ left: "75%", top: "15%" }}
               />
               <div
                 aria-hidden
-                className="pointer-events-none absolute aspect-square w-[169%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)] blur-[7px]"
+                className="pointer-events-none absolute aspect-square w-[169%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#1a4dff_0%,rgba(46,107,255,0.12)_66%,rgba(46,107,255,0)_100%)]"
                 style={{ left: "-5%", top: "63%" }}
               />
               <div className="relative min-h-u-511 w-full max-w-u-399 rounded-t-u-20 border-[0.5px] border-white bg-[linear-gradient(180deg,#ffffff_0%,#94b2fc_47%,#7a93d0_100%)] shadow-[0_0_50px_-13px_rgba(255,255,255,0.59)]">
