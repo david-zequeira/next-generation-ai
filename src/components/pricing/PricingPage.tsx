@@ -203,8 +203,10 @@ export default function PricingPage() {
                             se topa en 12 —lo que pasa con `fs-u-14/15` por debajo de unos
                             1650 px de ancho— el interlineado seguía bajando y acababa siendo
                             menor que la letra: la viñeta quedaba en 12/10,5. Como razón
-                            escala con el cuerpo real y no se rompe nunca. */}
-                        <p className="mt-u-16 max-w-u-298 fs-u-15 leading-[1.35] text-black">{plan.who}</p>
+                            escala con el cuerpo real y no se rompe nunca. Las razones son las del
+                            propio Figma —18/15, 17/14 y 16/14—, así que a 1920 dan exactamente el
+                            valor del marco. */}
+                        <p className="mt-u-16 max-w-u-298 fs-u-15 leading-[1.2] text-black">{plan.who}</p>
                       </div>
 
                       {/* Cuerpo: azul en el destacado, lavanda→blanco en el resto */}
@@ -249,7 +251,7 @@ export default function PricingPage() {
                             la otra no, y las listas de las tres tarjetas no arrancaban a la
                             misma altura. El ancho útil son 271 — la línea más larga del
                             marco mide 270. */}
-                        <p className="mt-u-12 flex min-h-u-69 items-center rounded-u-5 bg-white px-u-21 fs-u-14 leading-[1.35] font-medium text-electric">
+                        <p className="mt-u-12 flex min-h-u-69 items-center rounded-u-5 bg-white px-u-21 fs-u-14 leading-[1.1429] font-medium text-electric">
                           {/* El <span> es necesario: sin él, los trozos que devuelve `Rich`
                               serían cada uno un ítem del flex y el texto se partiría en
                               columnas en vez de fluir como una frase. */}
@@ -260,7 +262,7 @@ export default function PricingPage() {
 
                         <ul className="mt-u-20 flex flex-1 flex-col gap-u-14">
                           {plan.features.map((f) => (
-                            <li key={f.text} className="flex gap-u-13 fs-u-14 leading-[1.4]">
+                            <li key={f.text} className="flex gap-u-13 fs-u-14 leading-[1.2143]">
                               <Check className={cn("mt-u-2 size-u-14 shrink-0", star ? "text-neon" : i === 0 ? "text-electric" : "text-space")} strokeWidth={3} />
                               <span className={star ? "text-white" : "text-black"}>
                                 <Rich text={f.text} strongClass={cn("font-semibold", star ? "text-white" : "text-black")} />
