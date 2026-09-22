@@ -198,7 +198,15 @@ export default function PricingPage() {
                           <PlanStar className={cn("size-u-30 shrink-0", star ? "text-neon" : "text-electric")} />
                           <h3 className="font-display fs-u-30 leading-none font-bold text-black">{plan.name}</h3>
                         </div>
-                        <p className="mt-u-16 max-w-u-298 fs-u-15 lh-u-18 text-black">{plan.who}</p>
+                        {/* El interlineado va sin unidad y no con `lh-u-N`. `fs-u-N` tiene
+                            suelo absoluto de 12 px y `lh-u-N` no, así que en cuanto el cuerpo
+                            se topa en 12 —lo que pasa con `fs-u-14/15` por debajo de unos
+                            1650 px de ancho— el interlineado seguía bajando y acababa siendo
+                            menor que la letra: la viñeta quedaba en 12/10,5. Como razón
+                            escala con el cuerpo real y no se rompe nunca. Las razones son las del
+                            propio Figma —18/15, 17/14 y 16/14—, así que a 1920 dan exactamente el
+                            valor del marco. */}
+                        <p className="mt-u-16 max-w-u-298 fs-u-15 leading-[1.2] text-black">{plan.who}</p>
                       </div>
 
                       {/* Cuerpo: azul en el destacado, lavanda→blanco en el resto */}
@@ -243,7 +251,7 @@ export default function PricingPage() {
                             la otra no, y las listas de las tres tarjetas no arrancaban a la
                             misma altura. El ancho útil son 271 — la línea más larga del
                             marco mide 270. */}
-                        <p className="mt-u-12 flex min-h-u-69 items-center rounded-u-5 bg-white px-u-21 fs-u-14 lh-u-16 font-medium text-electric">
+                        <p className="mt-u-12 flex min-h-u-69 items-center rounded-u-5 bg-white px-u-21 fs-u-14 leading-[1.1429] font-medium text-electric">
                           {/* El <span> es necesario: sin él, los trozos que devuelve `Rich`
                               serían cada uno un ítem del flex y el texto se partiría en
                               columnas en vez de fluir como una frase. */}
@@ -254,7 +262,7 @@ export default function PricingPage() {
 
                         <ul className="mt-u-20 flex flex-1 flex-col gap-u-14">
                           {plan.features.map((f) => (
-                            <li key={f.text} className="flex gap-u-13 fs-u-14 lh-u-17">
+                            <li key={f.text} className="flex gap-u-13 fs-u-14 leading-[1.2143]">
                               <Check className={cn("mt-u-2 size-u-14 shrink-0", star ? "text-neon" : i === 0 ? "text-electric" : "text-space")} strokeWidth={3} />
                               <span className={star ? "text-white" : "text-black"}>
                                 <Rich text={f.text} strongClass={cn("font-semibold", star ? "text-white" : "text-black")} />
@@ -277,7 +285,7 @@ export default function PricingPage() {
                           href={`/contacto?plan=${slug}`}
                           onClick={() => trackEvent(`cta_plan_${slug}`)}
                           className={cn(
-                            "mx-auto mt-u-40 flex h-u-57 w-u-226 max-w-full coarse:min-h-11 items-center justify-center rounded-full font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5",
+                            "mx-auto mt-u-40 flex h-u-57 w-full max-w-full coarse:min-h-11 items-center justify-center whitespace-nowrap rounded-full font-display fs-u-16 font-semibold transition-all duration-300 hover:-translate-y-0.5 md:w-u-226",
                             star ? "bg-white text-electric shadow-[0_14px_30px_-14px_rgba(0,0,0,0.5)] hover:bg-[#f2f5ff]" : "bg-electric text-white hover:bg-[#2557ff]"
                           )}
                         >
