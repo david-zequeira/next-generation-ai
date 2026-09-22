@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Variante para aplicar el mismo criterio del mínimo táctil elemento a
+   elemento. Los enlaces con forma de pastilla no se pueden seleccionar con un
+   selector fiable —no comparten clase, la altura se la da un `h-u-N` suelto—,
+   así que se marcan a mano con `coarse:`. */
+@custom-variant coarse (@media (pointer: coarse));
+
+
 @theme inline {
   /* Una sola familia en todo el sitio (Figma «Asenix Web»): Montserrat. Los dos
      alias se conservan para que ningún componente tenga que cambiar de nombre.
