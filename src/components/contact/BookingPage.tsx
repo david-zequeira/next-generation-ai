@@ -83,8 +83,10 @@ function Calendar({
 
   const selectClass =
     "h-u-29 cursor-pointer appearance-none rounded-u-8 border border-electric bg-transparent pl-u-14 pr-u-30 font-display fs-u-15 font-medium text-white outline-none transition-colors duration-200 hover:bg-electric/10 focus-visible:ring-2 focus-visible:ring-electric/60";
+  // Las flechas de mes van a 44 px en móvil. Con `size-u-24` caían al suelo del
+  // 60 % de la unidad —14,4 px— y no hay forma de acertarles con el dedo.
   const arrowClass =
-    "flex size-u-24 cursor-pointer items-center justify-center text-white transition-opacity duration-200 hover:opacity-60";
+    "flex size-11 cursor-pointer items-center justify-center text-white transition-opacity duration-200 hover:opacity-60 md:size-u-24";
 
   const step = (delta: number) => {
     const d = new Date(year, month + delta, 1);
@@ -96,7 +98,7 @@ function Calendar({
       {/* Cabecera: y 787…815 en el marco */}
       <div className="flex h-u-29 items-center justify-between">
         <button type="button" aria-label={labels.prev} onClick={() => step(-1)} className={arrowClass}>
-          <ChevronLeft className="size-u-20" strokeWidth={2.2} />
+          <ChevronLeft className="size-5 md:size-u-20" strokeWidth={2.2} />
         </button>
 
         <div className="flex items-center gap-u-8">
@@ -141,14 +143,14 @@ function Calendar({
         </div>
 
         <button type="button" aria-label={labels.next} onClick={() => step(1)} className={arrowClass}>
-          <ChevronRight className="size-u-20" strokeWidth={2.2} />
+          <ChevronRight className="size-5 md:size-u-20" strokeWidth={2.2} />
         </button>
       </div>
 
       {/* Días de la semana: tinta en y 840…849, en electric */}
       <div className="mt-u-23 grid grid-cols-7 gap-u-1 font-display fs-u-14 font-medium text-electric">
         {weekdays.map((w, i) => (
-          <span key={i} className="flex h-u-16 items-center justify-center">
+          <span key={i} className="flex h-5 items-center justify-center md:h-u-16">
             {w}
           </span>
         ))}
@@ -169,7 +171,10 @@ function Calendar({
               aria-pressed={isSelected}
               onClick={() => onPick(key)}
               className={cn(
-                "flex size-u-40 items-center justify-center rounded-u-8 font-display fs-u-17 font-medium transition-colors duration-200",
+                // En móvil la celda llena su columna y garantiza 44 px de alto.
+                // Con `size-u-40` quedaba clavada en 24 px dentro de una columna
+                // de 39: desperdiciaba el hueco y no llegaba al mínimo táctil.
+                "flex w-full min-h-11 items-center justify-center rounded-u-8 font-display text-[15px] font-medium transition-colors duration-200 md:size-u-40 md:min-h-0 md:fs-u-17",
                 isSelected
                   ? "bg-electric text-white"
                   : free
@@ -305,7 +310,7 @@ export default function BookingPage() {
   /* Flechas de la paginación de horas: las mismas del calendario, un punto más
      pequeñas, y apagadas en los extremos. */
   const pagerClass =
-    "flex size-u-18 cursor-pointer items-center justify-center text-white transition-opacity duration-200 hover:opacity-60 disabled:cursor-default disabled:opacity-25";
+    "flex size-11 cursor-pointer items-center justify-center text-white transition-opacity duration-200 hover:opacity-60 disabled:cursor-default disabled:opacity-25 md:size-u-18";
 
   const fieldClass =
     "h-u-42 w-full rounded-u-10 border border-white/25 bg-white/[0.07] px-u-16 font-display fs-u-15 text-white outline-none transition-colors duration-200 placeholder:text-white/45 focus:border-electric";
@@ -332,7 +337,11 @@ export default function BookingPage() {
           {/* El relleno no es simétrico en el marco: por la izquierda son 30
               (los azulejos empiezan en x 393) y 32 por los otros tres lados,
               que es lo que deja la tarjeta interior encajada a 732. */}
-          <div className="relative mx-auto max-w-u-1192 overflow-hidden rounded-u-30 border border-[#1d306b] pb-u-32 pl-u-28 pr-u-31 pt-u-32">
+          {/* En móvil los laterales bajan a 10 px. Los valores del Figma (28/31)
+              son de 1920 y al escalarlos quedan ~17 por lado; sumados a los del
+              marco de dentro y a los de la sección, el calendario se quedaba con
+              273 px de rejilla y celdas de 24. */}
+          <div className="relative mx-auto max-w-u-1192 overflow-hidden rounded-u-30 border border-[#1d306b] px-u-10 pb-u-32 pt-u-32 md:pl-u-28 md:pr-u-31">
             {/* Relleno: brillo elíptico con el máximo hacia (450, 760) del marco,
                 es decir un 7 % a la derecha y un 44 % hacia abajo de la tarjeta. */}
             <div
@@ -394,7 +403,7 @@ export default function BookingPage() {
               </div>
 
               {/* 03b · Tarjeta interior: 792×590, radio 20, navy → abyss al 65 % */}
-              <div className="min-w-0 flex-1 rounded-u-20 border border-[#1339bb] bg-[linear-gradient(180deg,#101837_0%,#050b21_65%)] pb-u-28 pl-u-29 pr-u-18 pt-u-32">
+              <div className="min-w-0 flex-1 rounded-u-20 border border-[#1339bb] bg-[linear-gradient(180deg,#101837_0%,#050b21_65%)] px-u-14 pb-u-28 pt-u-32 md:pl-u-29 md:pr-u-18">
                 {status === "ok" ? (
                   <div className="flex min-h-u-534 flex-col items-center justify-center text-center">
                     <span className="flex size-u-62 items-center justify-center rounded-full bg-neon/15">
@@ -445,7 +454,7 @@ export default function BookingPage() {
                           de seis en seis con las flechas, que caben en el hueco que el
                           marco deja a la derecha del rótulo. Con seis huecos o menos no
                           se pintan: en reposo la pantalla es la del Figma. */}
-                      <div className="mt-u-2 flex h-u-18 items-center justify-between">
+                      <div className="mt-u-2 flex min-h-11 items-center justify-between md:h-u-18 md:min-h-0">
                         <p className="font-display fs-u-12 font-semibold text-white">{t.slotsTitle}</p>
                         {slotPages > 1 && (
                           <div className="flex items-center gap-u-4">
@@ -456,7 +465,7 @@ export default function BookingPage() {
                               onClick={() => setSlotPage(Math.max(0, page - 1))}
                               className={pagerClass}
                             >
-                              <ChevronLeft className="size-u-16" strokeWidth={2.2} />
+                              <ChevronLeft className="size-5 md:size-u-16" strokeWidth={2.2} />
                             </button>
                             <button
                               type="button"
@@ -465,7 +474,7 @@ export default function BookingPage() {
                               onClick={() => setSlotPage(Math.min(slotPages - 1, page + 1))}
                               className={pagerClass}
                             >
-                              <ChevronRight className="size-u-16" strokeWidth={2.2} />
+                              <ChevronRight className="size-5 md:size-u-16" strokeWidth={2.2} />
                             </button>
                           </div>
                         )}
@@ -485,7 +494,10 @@ export default function BookingPage() {
                                 aria-pressed={startUtc === iso}
                                 onClick={() => setStartUtc(iso)}
                                 className={cn(
-                                  "h-u-42 cursor-pointer rounded-u-10 border font-display fs-u-15 font-medium transition-colors duration-200",
+                                  // Los huecos de hora son el segundo toque de la
+                                  // reserva: en móvil van a 44 px, no a los 25 a
+                                  // los que caía `h-u-42`.
+                                  "h-11 cursor-pointer rounded-u-10 border font-display text-[15px] font-medium transition-colors duration-200 md:h-u-42 md:fs-u-15",
                                   startUtc === iso
                                     ? "border-electric bg-electric text-white"
                                     : "border-white/25 bg-white/[0.075] text-[#d2d4d9] hover:border-electric/60"
