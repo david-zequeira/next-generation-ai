@@ -354,16 +354,18 @@ export default function CalculatorPage() {
               }}
               className="ring-conic relative isolate overflow-hidden rounded-u-25 bg-[linear-gradient(180deg,#101837_0%,#050b21_61%)] p-4 pb-u-56 sm:p-u-46"
             >
-              {/* Figma «1619:1878/1879»: los dos brillos radiales que dan volumen al panel */}
+              {/* Figma «1619:1878/1879»: los dos brillos radiales que dan volumen al panel.
+                  Sin `blur()`: dentro de un contenedor con `overflow:hidden` y radio, un
+                  filtro promueve la capa y WebKit deja de recortarla con el radio. */}
               <div
                 aria-hidden
                 style={{ top: "calc(-298 * var(--u))", left: "calc(534 * var(--u))", width: "calc(714 * var(--u))", height: "calc(683 * var(--u))" }}
-                className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0)_100%)] blur-[7.3px]"
+                className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0)_100%)]"
               />
               <div
                 aria-hidden
                 style={{ top: "calc(873 * var(--u))", left: "calc(-231 * var(--u))", width: "calc(1328 * var(--u))", height: "calc(1193 * var(--u))" }}
-                className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0)_100%)] blur-[7.3px]"
+                className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0)_100%)]"
               />
               {/* 1 · Tu negocio */}
               <StepCard ringBg="linear-gradient(360deg, #1a4dff 0%, #102e99 100%)">
@@ -608,11 +610,13 @@ export default function CalculatorPage() {
                 return (
                   <Reveal key={c.title} delay={0.08 * i} className="relative">
                     <div className="ring-conic relative isolate flex h-full flex-col overflow-hidden rounded-u-20 bg-electric/5 px-u-32 pb-u-34 pt-u-25 shadow-[0_0_45px_4px_rgba(26,77,255,0.25)] [--ring-w:2px]">
-                      {/* Figma 1555:66418: el brillo radial recortado por la tarjeta */}
+                      {/* Figma 1555:66418: el brillo radial recortado por la tarjeta.
+                          Sin `blur()`, por el mismo recorte que WebKit se salta cuando la
+                          capa lleva filtro. */}
                       <span
                         aria-hidden
                         style={{ top: "calc(-134 * var(--u))", left: "calc(170 * var(--u))", width: "calc(291 * var(--u))", height: "calc(257 * var(--u))" }}
-                        className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0.12)_81%,rgba(46,107,255,0)_100%)] blur-[17.5px]"
+                        className="pointer-events-none absolute -z-10 bg-[radial-gradient(50%_50%_at_50%_50%,#1a4dff_0%,rgba(46,107,255,0.12)_81%,rgba(46,107,255,0)_100%)]"
                       />
                       <span className="flex size-u-52 items-center justify-center rounded-u-18 bg-[#081248] shadow-[0_0_10px_0_#1a4dff]">
                         <Icon className="size-u-24 text-electric" strokeWidth={2} />

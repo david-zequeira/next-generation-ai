@@ -337,25 +337,26 @@ body {
 
   /* Brillo azul difuminado dentro de un contenedor recortado (Figma: vector
      radial #1a4dff → rgba(46,107,255,.12) 81 % → 0 con blur 7). Posición con
-     --gx/--gy (centro del brillo) y tamaño con --gr. */
+     --gx/--gy (centro del brillo) y tamaño con --gr, intensidad con --go.
+
+     Mismo motivo que en .btn-outline/.tag-pill: el brillo va como capa de
+     `background` y no como pseudoelemento con `filter: blur()` y z-index
+     negativo. Aquí el riesgo era mayor todavía, porque las tarjetas de
+     Servicios llevan `rotateX/rotateY` con `preserve-3d` dentro de un padre con
+     `perspective`: tres motivos para que WebKit componga la capa y deje de
+     recortarla con el radio, y el brillo se salía de la tarjeta. Como fondo lo
+     recorta el `border-radius` del propio elemento. El blur de 7 px se omite:
+     el degradado radial ya es suave y a este tamaño no se distingue. */
   .glow-inset {
     position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .glow-inset::after {
-    content: "";
-    position: absolute;
-    left: calc(var(--gx, 50%) - var(--gr, 50%));
-    top: calc(var(--gy, 0%) - var(--gr, 50%));
-    width: calc(var(--gr, 50%) * 2);
-    height: calc(var(--gr, 50%) * 2);
-    border-radius: 50%;
-    background: radial-gradient(closest-side, #1a4dff 0%, rgba(46, 107, 255, 0.12) 81%, rgba(46, 107, 255, 0) 100%);
-    filter: blur(7px);
-    opacity: var(--go, 0.6);
-    pointer-events: none;
-    z-index: -1;
+    background-image:
+      radial-gradient(
+        var(--gr, 50%) var(--gr, 50%) at var(--gx, 50%) var(--gy, 0%),
+        rgb(26 77 255 / calc(var(--go, 0.6) * 1)) 0%,
+        rgb(46 107 255 / calc(var(--go, 0.6) * 0.12)) 81%,
+        rgb(46 107 255 / 0) 100%
+      ),
+      var(--glow-base, none);
   }
 
   /* Panel azul eléctrico dentro de una tarjeta (mock de producto) */
@@ -583,32 +584,27 @@ body {
 
   /* Botón secundario y etiqueta de producto (Figma «Ver demo», «AI Concierge»):
      degradado navy→abyss, borde azul de marca y un brillo azul que entra por
-     la izquierda (vector con blur en el Figma). */
+     la izquierda (vector con blur en el Figma).
+
+     El brillo va como capa de `background`, no como pseudoelemento con
+     `filter: blur()` y z-index negativo: WebKit (Safari iOS) no recorta con el
+     radio una capa compuesta cuando un ancestro también lo está —y aquí lo
+     está, porque framer-motion anima el bloque al entrar en pantalla—, así que
+     el degradado se escapaba de la pastilla y pintaba un rectángulo azul
+     desbordado. Como degradado de fondo el recorte lo hace el propio
+     `border-radius` del elemento y no hay capa que se pueda escapar.
+     Los topes replican el vector del Figma ya difuminado: el ::after iba de
+     -20 % a 70 % del ancho, así que dentro de la pastilla la rampa empezaba en
+     0,7·0,8 ≈ 0,41 de alfa, pasaba por 0,08 al 43 % y se apagaba al 70 %. */
   .btn-outline,
   .tag-pill {
     position: relative;
-    overflow: hidden;
-    isolation: isolate;
-    background: linear-gradient(180deg, #101837 0%, #050b21 61%);
+    background:
+      linear-gradient(90deg, rgba(26, 77, 255, 0.41) 0%, rgba(46, 107, 255, 0.08) 43%, rgba(46, 107, 255, 0) 70%),
+      linear-gradient(180deg, #101837 0%, #050b21 61%);
     color: var(--color-frost);
     border: 1px solid var(--color-electric);
     box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9);
-  }
-  .btn-outline::after,
-  .tag-pill::after {
-    content: "";
-    position: absolute;
-    inset: -40% 30% -40% -20%;
-    z-index: -1;
-    background: linear-gradient(90deg, rgba(26, 77, 255, 0.7) 0%, rgba(46, 107, 255, 0.1) 70%, rgba(46, 107, 255, 0) 100%);
-    filter: blur(12px);
-    opacity: 0.8;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .btn-outline:hover::after,
-  .tag-pill:hover::after {
-    opacity: 1;
   }
   .btn-outline:hover {
     box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.9), 0 0 32px -8px rgba(26, 77, 255, 0.55);
