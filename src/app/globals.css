@@ -652,11 +652,42 @@ body {
  * gana a todas. El honeypot queda excluido por su `tabindex="-1"` para no
  * alterar la trampa anti-bots.
  */
-@media (max-width: 767px) {
+@media (max-width: 767px), (pointer: coarse) {
   input:not([type="checkbox"]):not([type="radio"]):not([tabindex="-1"]),
   textarea,
   select {
     font-size: 16px;
     min-height: 48px;
+  }
+}
+
+/*
+ * Mínimo táctil en cualquier dispositivo que se maneje con el dedo.
+ *
+ * La unidad `--u` escala desde 1920 con un suelo del 60 %, así que
+ * `N * var(--u)` no supera ese suelo hasta los 1152 px de ancho. Entre 768 y
+ * 1152 todo lo interactivo se quedaba congelado ahí: botones de 43 px, campos
+ * de 25, celdas de calendario de 25, paginadores de 11. Y esa franja es
+ * justamente donde vive el iPad, que es táctil: comprobado en un iPad Pro de
+ * 11" (834 pt), donde el calendario de la reserva es igual de inmanejable que
+ * en el móvil.
+ *
+ * El criterio no es el ancho sino el puntero. Un portátil de 1200 px con ratón
+ * no necesita 44 px y se queda exactamente como está; un iPad de 834 sí los
+ * necesita. `pointer: coarse` pregunta justo eso, y de paso cubre cualquier
+ * tamaño de tablet sin tener que adivinar un marco de Figma que no existe.
+ *
+ * Solo se tocan los controles. Los enlaces quedan fuera a propósito: un enlace
+ * dentro de un párrafo es una caja en línea, `min-height` no le aplicaría, y
+ * forzar los que no lo son descuadraría pies de página y tablas. Esos van uno
+ * a uno. El honeypot anti-bots queda excluido por su `tabindex="-1"`.
+ */
+@media (pointer: coarse) {
+  button:not([tabindex="-1"]),
+  [role="button"],
+  input:not([type="checkbox"]):not([type="radio"]):not([tabindex="-1"]),
+  select,
+  textarea {
+    min-height: 44px;
   }
 }
