@@ -631,3 +631,32 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Campos de formulario en móvil.
+ *
+ * Safari iOS amplía el viewport al enfocar un campo cuyo texto mide menos de
+ * 16 px, y no deshace el zoom al salir: el visitante se queda dentro y tiene
+ * que pellizcar para seguir. Con `fs-u-15` el suelo de la unidad deja el texto
+ * en 12 px, así que pasaba en los dos formularios del sitio —la calculadora y
+ * la reserva de llamada— y en el chat. La alternativa de poner
+ * `maximum-scale=1` en el viewport no se usa: impide ampliar a quien lo
+ * necesita.
+ *
+ * El alto mínimo va junto al cuerpo por necesidad: 16 px de texto no caben en
+ * los 25 px a los que quedaba el campo de la reserva. De paso los campos pasan
+ * el mínimo táctil de 44 px.
+ *
+ * Va fuera de @layer a propósito: las utilidades de Tailwind viven en la capa
+ * `utilities` y ganarían a cualquier regla en `components`; el CSS sin capa
+ * gana a todas. El honeypot queda excluido por su `tabindex="-1"` para no
+ * alterar la trampa anti-bots.
+ */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([tabindex="-1"]),
+  textarea,
+  select {
+    font-size: 16px;
+    min-height: 48px;
+  }
+}
