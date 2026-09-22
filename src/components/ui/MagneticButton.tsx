@@ -49,8 +49,15 @@ export default function MagneticButton({
 
   const baseClasses = cn(
     // Figma: botones del hero 213×72 («Comenzar») y 244×72 («Ver demo»), radio 47 (pastilla),
-    // Montserrat SemiBold 18, icono a 12 px del texto; padding lateral 40 para que «Comenzar» dé 213
-    "group relative inline-flex min-h-u-72 cursor-pointer items-center justify-center gap-u-12 overflow-hidden rounded-full px-u-40 py-2 font-display fs-u-18 font-semibold transition-[background,box-shadow,border-color] duration-300",
+    // Montserrat SemiBold 18, icono a 12 px del texto; padding lateral 40 para que «Comenzar» dé 213.
+    //
+    // Por debajo de `md` van a esas mismas medidas en px, sin escalar. El marco
+    // móvil del Figma («Asenix HOME Cell», 390 de ancho) dibuja los botones a
+    // 72 px de alto igual que el de 1920: la pastilla es la misma pieza, no una
+    // versión reducida. Con `min-h-u-72` caían al suelo del 60 % —43,2 px— en
+    // todo viewport por debajo de 1152, que además no llega al mínimo táctil de
+    // 44 px. De `md` en adelante se mantiene la escala proporcional de siempre.
+    "group relative inline-flex min-h-[72px] cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-full px-10 py-2 font-display text-[18px] font-semibold transition-[background,box-shadow,border-color] duration-300 md:min-h-u-72 md:gap-u-12 md:px-u-40 md:fs-u-18",
     variant === "primary" && "btn-light",
     variant === "ghost" && "btn-outline",
     variant === "blue" && "btn-blue",

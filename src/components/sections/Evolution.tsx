@@ -91,8 +91,13 @@ function Stage({
       style={{ ["--tin" as string]: tin, ["--tout" as string]: tout, opacity: visible }}
       className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center"
     >
-      {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco */}
-      <h3 className="max-w-u-1444 font-display fs-u-85 font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
+      {/* Figma: Montserrat SemiBold 85, tracking -0,05 em, azul de marca; sub 24/28 blanco.
+          El tamaño no usa `fs-u-85` porque su suelo del 62 % (52,7 px) no cabe en
+          un móvil: «Automatizamos» es una sola palabra de 398 px a ese cuerpo y
+          la columna mide 345, así que se salía por los dos lados. El tope de
+          11vw solo entra por debajo de 479 px de ancho; de ahí en adelante la
+          fórmula da exactamente lo mismo que antes. */}
+      <h3 className="max-w-u-1444 font-display text-[max(12px,min(calc(85*0.62px),11vw),calc(85*var(--u)))] font-semibold leading-none tracking-[-0.05em] text-electric text-balance">
         <DustText text={label} seed={index * 100 + 1} spread={40} />
       </h3>
       <p className="mt-u-16 max-w-u-1004 fs-u-24 lh-u-28 text-white">
