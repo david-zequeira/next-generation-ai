@@ -29,7 +29,7 @@ const jsonLd = {
   description:
     "Marca, web premium y agentes de IA que atienden, reservan citas y capturan clientes 24/7 para negocios en España.",
   email: "projects@asenix.es",
-  areaServed: { "@type": "Country", name: "España" },
+  areaServed: "Worldwide",
   inLanguage: ["es", "en"],
   priceRange: "€€",
   knowsAbout: [

@@ -52,18 +52,39 @@ export default function Hero() {
   // Sonido: el autoplay solo se permite en silencio, así que activamos el
   // audio con el primer clic, toque o tecla del visitante (un gesto real),
   // siempre que la película siga en marcha.
+  //
+  // Excepción: la llamada de voz. El clic en «Ver demo» (o en el CTA final) es
+  // también ese primer pointerdown, así que desmutaba la película justo cuando
+  // arrancaba la llamada y su banda sonora sonaba encima del agente. El
+  // pointerdown llega ANTES que el click que lanza `ng:open-voice`, así que el
+  // orden es: se activa el audio → se abre la voz → lo volvemos a silenciar,
+  // en el mismo gesto y sin que llegue a oírse. `ng:voice-call-start` (lo
+  // emite useVoiceCall al empezar cualquier llamada) cubre las demás entradas.
+  // Una vez hay llamada, el vídeo se queda mudo para siempre: al colgar NO se
+  // le devuelve el sonido, porque volver a oír la película de golpe sería peor.
+  const voiceTookOverRef = useRef(false);
   useEffect(() => {
     const unmute = () => {
       const v = videoRef.current;
-      if (v && !v.paused && !v.ended) v.muted = false;
+      if (v && !voiceTookOverRef.current && !v.paused && !v.ended) v.muted = false;
+      window.removeEventListener("pointerdown", unmute);
+      window.removeEventListener("keydown", unmute);
+    };
+    const silenceForVoice = () => {
+      voiceTookOverRef.current = true;
+      if (videoRef.current) videoRef.current.muted = true;
       window.removeEventListener("pointerdown", unmute);
       window.removeEventListener("keydown", unmute);
     };
     window.addEventListener("pointerdown", unmute, { passive: true });
     window.addEventListener("keydown", unmute);
+    window.addEventListener("ng:open-voice", silenceForVoice);
+    window.addEventListener("ng:voice-call-start", silenceForVoice);
     return () => {
       window.removeEventListener("pointerdown", unmute);
       window.removeEventListener("keydown", unmute);
+      window.removeEventListener("ng:open-voice", silenceForVoice);
+      window.removeEventListener("ng:voice-call-start", silenceForVoice);
     };
   }, []);
 

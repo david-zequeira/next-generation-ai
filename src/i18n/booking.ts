@@ -71,7 +71,7 @@ const es: BookingDict = {
   channels: [
     { label: "Correo electrónico", value: "projects@asenix.es", href: "mailto:projects@asenix.es", kind: "email" },
     { label: "Teléfono", value: "+34 624 52 87 21", href: "tel:+34624528721", kind: "phone" },
-    { label: "Ubicación", value: "Remoto · España", href: "", kind: "place" },
+    { label: "Ubicación", value: "Remoto · todo el mundo", href: "", kind: "place" },
   ],
   panelTitle: "Reserva una llamada con nuestro equipo",
   panelSub: "Rellena este formulario y te confirmaremos tu reserva por correo electrónico.",
@@ -91,7 +91,7 @@ const es: BookingDict = {
   goalsPh: "Cuéntanos cuáles son tus objetivos",
   submit: "Reservar llamada",
   sending: "Reservando…",
-  note: "Sin spam. Respondemos en menos de 2 horas",
+  note: "Sin spam. Respondemos en 24 h laborables",
   months: [
     "Ene", "Feb", "Mar", "Abr", "May", "Jun",
     "Jul", "Ago", "Sep", "Oct", "Nov", "Dic",
@@ -120,7 +120,7 @@ const en: BookingDict = {
   channels: [
     { label: "Email", value: "projects@asenix.es", href: "mailto:projects@asenix.es", kind: "email" },
     { label: "Phone", value: "+34 624 52 87 21", href: "tel:+34624528721", kind: "phone" },
-    { label: "Location", value: "Remote · Spain", href: "", kind: "place" },
+    { label: "Location", value: "Remote · worldwide", href: "", kind: "place" },
   ],
   panelTitle: "Book a call with our team",
   panelSub: "Fill in this form and we'll confirm your booking by email.",
@@ -140,7 +140,7 @@ const en: BookingDict = {
   goalsPh: "Tell us what you're trying to achieve",
   submit: "Book the call",
   sending: "Booking…",
-  note: "No spam. We reply within 2 hours",
+  note: "No spam. We reply within 1 business day",
   months: [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
