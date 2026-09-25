@@ -26,7 +26,7 @@ const offersJsonLd = {
   "@type": "Service",
   name: "Asenix — Web premium y agentes de IA",
   provider: { "@type": "ProfessionalService", name: "Asenix", url: SITE_URL },
-  areaServed: { "@type": "Country", name: "España" },
+  areaServed: "Worldwide",
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Planes Asenix 2026",

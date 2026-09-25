@@ -376,6 +376,10 @@ export function useVoiceCall(): VoiceCall {
     callIdRef.current = null;
     setMuted(false);
     setState("connecting");
+    // Aviso a la página de que empieza una llamada: el vídeo del hero lo
+    // escucha para callarse y no sonar encima del agente, entre por donde
+    // entre la llamada (no solo por los CTA que lanzan `ng:open-voice`).
+    window.dispatchEvent(new CustomEvent("ng:voice-call-start"));
 
     // Un solo AbortController para colgar Y para el techo de espera, con el
     // mismo idioma (y el mismo techo) que el ChatWidget: cold start de Render.
