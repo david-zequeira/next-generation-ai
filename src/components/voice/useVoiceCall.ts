@@ -173,37 +173,50 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
   typeof value === "object" && value !== null ? (value as Record<string, unknown>) : null;
 
 /**
- * Última intervención del agente en el `transcript` del evento `update`
- * (últimos 5 turnos `{role, content}`). Todo llega por la red: cualquier forma
- * inesperada se ignora en silencio en vez de tumbar la llamada.
+ * Canal de interfaz del backend (GET /api/voice/web-call/:callId/events, SSE).
+ * Desde el transporte v3 de Retell el SDK ya no reenvía al navegador ni el
+ * `metadata` de nuestro Custom LLM ni el `update` con el transcript, así que
+ * el backend nos manda directamente lo que la interfaz necesita:
+ *
+ * - `state`: lo que antes viajaba en `metadata` (herramienta en curso,
+ *   respondiendo, correo recibido).
+ * - `agent_text`: cada frase del agente según sale hacia el TTS; `turn`
+ *   agrupa los trozos de una misma respuesta y `done` marca el último.
+ * - `user_text`: último parcial del visitante según el ASR de Retell;
+ *   `final` cuando Retell ya ha pedido respuesta (el visitante terminó).
+ * - `end`: la llamada terminó en el backend; se cierra el EventSource.
+ *
+ * Todo llega por la red: cualquier forma inesperada se ignora en silencio.
  */
-/**
- * ¿La ÚLTIMA intervención del `update` es del visitante? Mientras habla, Retell
- * manda parciales con su turno al final; cuando el agente contesta, el final
- * pasa a ser del agente. Es la señal de "el visitante está hablando" según el
- * ASR DE VERDAD (el que oye el agente) — independiente de nuestro micrófono.
- */
-function endsWithUserLine(payload: unknown): boolean {
-  const turns = asRecord(payload)?.transcript;
-  if (!Array.isArray(turns) || turns.length === 0) return false;
-  const last = asRecord(turns[turns.length - 1]);
-  return last?.role === "user" && typeof last.content === "string" && last.content.trim() !== "";
+type UiEvent =
+  | { type: "state"; state: string; tool?: string }
+  | { type: "agent_text"; turn: string; text: string; done: boolean }
+  | { type: "user_text"; text: string; final: boolean }
+  | { type: "end" };
+
+function parseUiEvent(raw: string): UiEvent | null {
+  try {
+    const data = asRecord(JSON.parse(raw));
+    if (!data || typeof data.type !== "string") return null;
+    return data as UiEvent;
+  } catch {
+    return null;
+  }
 }
 
-function lastAgentLine(payload: unknown): string | null {
-  const turns = asRecord(payload)?.transcript;
-  if (!Array.isArray(turns)) return null;
-  for (let i = turns.length - 1; i >= 0; i--) {
-    const turn = asRecord(turns[i]);
-    if (!turn) continue;
-    const { role, content } = turn;
-    if ((role === "agent" || role === "assistant") && typeof content === "string") {
-      const text = content.trim();
-      if (text) return text;
-    }
-  }
-  return null;
-}
+/**
+ * Nivel del agente por debajo del cual se le da por callado (RMS crudo del
+ * analizador del SDK, 0..1 sin normalizar: la voz vive entre 0,05 y 0,3).
+ */
+const AGENT_SILENCE_LEVEL = 0.015;
+/** Silencio continuado del agente (ms) para volver de `speaking` a `listening`. */
+const AGENT_SILENCE_MS = 700;
+/**
+ * Al llegar una frase por `agent_text`, el audio tarda en empezar a sonar
+ * (TTS + red). Durante este margen el agente cuenta como hablando aunque el
+ * nivel sea cero, o el estado caería a `listening` antes de oírse nada.
+ */
+const AGENT_TEXT_GRACE_MS = 1_500;
 
 type VoiceMeta =
   | { state: "tool"; tool: VoiceTool | null }
@@ -211,12 +224,13 @@ type VoiceMeta =
   | { state: "contact_received" };
 
 /**
- * Evento `metadata`: nuestro backend manda `{state:"tool", tool:"<nombre>"}` al
- * empezar una herramienta y `{state:"answering"}` al acabarla
- * (`voice-retell.ts`, Fase 2.5). Retell reenvía el objeto al navegador; el
- * envoltorio exacto no está documentado, así que se acepta tanto anidado bajo
- * `metadata` como en la raíz. Una tool desconocida entra igual en el estado
- * `tool` pero sin etiqueta: mejor "trabajando" genérico que mentir.
+ * Evento `state` del canal de interfaz: nuestro backend manda
+ * `{state:"tool", tool:"<nombre>"}` al empezar una herramienta,
+ * `{state:"answering"}` al acabarla y `{state:"contact_received"}` al aceptar
+ * el correo escrito (`voice-retell.ts`, Fase 2.5). Se acepta tanto anidado
+ * bajo `metadata` (forma antigua del SDK) como en la raíz. Una tool
+ * desconocida entra igual en el estado `tool` pero sin etiqueta: mejor
+ * "trabajando" genérico que mentir.
  */
 function readMeta(payload: unknown): VoiceMeta | null {
   const outer = asRecord(payload);
@@ -244,13 +258,13 @@ function readMeta(payload: unknown): VoiceMeta | null {
  * este último crea la llamada desde el navegador con una public key y se
  * saltaría nuestro backend, que es quien valida plan, cuota y rate-limit.
  *
- * OJO con los eventos: Retell documenta que por el transporte v3 ("gateway")
- * pueden dejar de llegar `update`, `metadata`, `agent_start_talking` y
- * `agent_stop_talking`. Los handlers se mantienen porque el cliente legado
- * los sigue emitiendo si el servidor los manda, y el estado de la UI no
- * depende de ellos para lo esencial (conectar, hablar, colgar): sin ellos se
- * pierde el subtítulo, la etiqueta de herramienta y la apertura automática
- * del campo de correo. Comprobar en una llamada real tras desplegar.
+ * Eventos: por el transporte v3 ("gateway") Retell ya NO reenvía al navegador
+ * `update`, `metadata`, `agent_start_talking` ni `agent_stop_talking`
+ * (comprobado en producción el 09/11/2026). Subtítulo, etiqueta de
+ * herramienta, apertura del campo de correo y "pensando" llegan ahora por el
+ * canal de interfaz de nuestro backend (SSE, ver `UiEvent`); "hablando" se
+ * infiere del nivel de audio del agente. Los handlers del SDK para hablar /
+ * callar se mantienen: son gratis y, si Retell los recupera, afinan.
  */
 export function useVoiceCall(): VoiceCall {
   const t = useDict().voice;
@@ -278,6 +292,12 @@ export function useVoiceCall(): VoiceCall {
   }, []);
 
   const clientRef = useRef<RetellWebClient | null>(null);
+  /** Canal de interfaz del backend (SSE) de ESTA llamada. */
+  const eventsRef = useRef<EventSource | null>(null);
+  /** Respuesta del agente en curso: `turn` agrupa los trozos del subtítulo. */
+  const agentTurnRef = useRef<{ turn: string; text: string } | null>(null);
+  /** Último instante en que el agente sonó (o se le concedió margen por `agent_text`). */
+  const agentLoudUntilRef = useRef(0);
   /**
    * Temporizador de "el ASR dejó de transcribir al visitante" (segunda señal
    * de `thinking`, además del silencio del micro). Cada parcial de usuario lo
@@ -343,6 +363,8 @@ export function useVoiceCall(): VoiceCall {
     if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
     abortRef.current?.abort(); // corta el fetch del token si aún viaja
     abortRef.current = null;
+    eventsRef.current?.close();
+    eventsRef.current = null;
     const client = clientRef.current;
     clientRef.current = null;
     // El `call_ended` de este cliente ya no nos va a llegar (se retiran los
@@ -458,6 +480,89 @@ export function useVoiceCall(): VoiceCall {
         return;
       }
 
+      // 3b. Canal de interfaz del backend, ANTES de entrar en la llamada: el
+      //     saludo del agente sale nada más conectar y su subtítulo no puede
+      //     perderse. Mismo sessionId que creó la llamada: es la credencial.
+      //     Best-effort: si el navegador no tiene EventSource o el canal cae,
+      //     la llamada sigue; solo se pierden subtítulo y etiquetas.
+      if (data.callId && typeof EventSource !== "undefined") {
+        agentTurnRef.current = null;
+        agentLoudUntilRef.current = 0;
+        const es = new EventSource(
+          `${AGENT_URL}/api/voice/web-call/${encodeURIComponent(data.callId)}/events?sessionId=${encodeURIComponent(getSessionId())}`,
+        );
+        eventsRef.current = es;
+        const onUi = (raw: MessageEvent) => {
+          if (cancelled()) return;
+          const ev = parseUiEvent(String(raw.data));
+          if (!ev) return;
+          switch (ev.type) {
+            case "state": {
+              const meta = readMeta(ev);
+              if (!meta) return;
+              if (meta.state === "contact_received") {
+                setContactForm("sent");
+                return;
+              }
+              if (meta.state === "tool") {
+                setTool(meta.tool);
+                setState("tool");
+                // El agente pide el correo: se abre el campo y se queda abierto
+                // aunque el agente siga hablando (el visitante escribe mientras).
+                if (meta.tool === "contacto") setContactForm("open");
+              } else {
+                setTool(null);
+                // La tool terminó y el modelo está redactando la respuesta.
+                if (stateRef.current === "tool") setState("thinking");
+              }
+              return;
+            }
+            case "agent_text": {
+              if (typeof ev.text !== "string" || !ev.text.trim()) return;
+              // Solo la respuesta en curso y sin historial: esto es un
+              // subtítulo, no un chat. Nada se guarda en el navegador.
+              const prev = agentTurnRef.current;
+              const text = prev && prev.turn === ev.turn ? `${prev.text} ${ev.text.trim()}` : ev.text.trim();
+              agentTurnRef.current = { turn: ev.turn, text };
+              setTranscript(text);
+              // El agente va a hablar: margen hasta que el TTS suene.
+              agentLoudUntilRef.current = Math.max(agentLoudUntilRef.current, Date.now() + AGENT_TEXT_GRACE_MS);
+              if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
+              setTool(null);
+              setState("speaking");
+              return;
+            }
+            case "user_text": {
+              if (ev.final) {
+                // Retell ya pidió respuesta: el visitante ha terminado de hablar.
+                if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
+                if (stateRef.current === "listening") setState("thinking");
+                return;
+              }
+              // Parciales del ASR mientras habla: cada uno re-arma el plazo.
+              // 900 ms sin parcial nuevo y sin que el agente haya empezado a
+              // hablar = ha terminado. Más largo que el medio segundo del micro
+              // a propósito: el ASR agrupa palabras y sus parciales llegan más
+              // espaciados que los frames de audio.
+              if (stateRef.current === "listening") {
+                if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
+                asrPauseTimerRef.current = setTimeout(() => {
+                  if (stateRef.current === "listening") setState("thinking");
+                }, 900);
+              }
+              return;
+            }
+            case "end":
+              es.close();
+              if (eventsRef.current === es) eventsRef.current = null;
+              return;
+          }
+        };
+        for (const type of ["state", "agent_text", "user_text", "end"]) es.addEventListener(type, onUi);
+        // Un fallo del canal no es un fallo de la llamada: EventSource reintenta solo.
+        es.onerror = () => {};
+      }
+
       const { RetellWebClient: Client } = await sdkPromise;
       if (cancelled()) return;
 
@@ -488,6 +593,23 @@ export function useVoiceCall(): VoiceCall {
         setState("listening");
       });
 
+      // "Hablando" → "te escucho" por el nivel de audio del agente: el SDK ya
+      // no emite agent_stop_talking por el gateway. `agentLevel` cambia en
+      // cada frame mientras la llamada está enganchada, así que esta
+      // suscripción es el reloj: si el agente lleva AGENT_SILENCE_MS callado
+      // (y pasó el margen del último `agent_text`), ha terminado su turno.
+      const stopAgentWatch = agentLevel.on("change", (level) => {
+        if (cancelled()) {
+          stopAgentWatch();
+          return;
+        }
+        const now = Date.now();
+        if (level > AGENT_SILENCE_LEVEL) agentLoudUntilRef.current = Math.max(agentLoudUntilRef.current, now);
+        if (stateRef.current === "speaking" && now - agentLoudUntilRef.current > AGENT_SILENCE_MS) {
+          setState("listening");
+        }
+      });
+
       client.on("agent_start_talking", () => {
         if (cancelled()) return;
         setTool(null);
@@ -499,47 +621,8 @@ export function useVoiceCall(): VoiceCall {
         setState("listening");
       });
 
-      client.on("update", (payload: unknown) => {
-        if (cancelled()) return;
-        const line = lastAgentLine(payload);
-        // Solo la última del agente y sin historial: esto es un subtítulo, no
-        // un chat. Nada se guarda en el navegador.
-        if (line) setTranscript(line);
-
-        // Señal 2 de "pensando": los parciales del ASR. Mientras el visitante
-        // habla llegan updates acabados en su turno; cada uno re-arma el
-        // plazo. 900 ms sin parcial nuevo y sin que el agente haya empezado a
-        // hablar = ha terminado. Los 900 ms son más largos que el medio
-        // segundo del micro a propósito: el ASR agrupa palabras y sus
-        // parciales llegan más espaciados que los frames de audio.
-        if (endsWithUserLine(payload) && stateRef.current === "listening") {
-          if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
-          asrPauseTimerRef.current = setTimeout(() => {
-            if (stateRef.current === "listening") setState("thinking");
-          }, 900);
-        }
-      });
-
-      client.on("metadata", (payload: unknown) => {
-        if (cancelled()) return;
-        const meta = readMeta(payload);
-        if (!meta) return; // clave desconocida: se ignora, jamás rompe
-        if (meta.state === "contact_received") {
-          setContactForm("sent");
-          return;
-        }
-        if (meta.state === "tool") {
-          setTool(meta.tool);
-          setState("tool");
-          // El agente pide el correo: se abre el campo y se queda abierto
-          // aunque el agente siga hablando (el visitante escribe mientras).
-          if (meta.tool === "contacto") setContactForm("open");
-        } else {
-          setTool(null);
-          // La tool terminó y el modelo está redactando la respuesta.
-          if (stateRef.current === "tool") setState("thinking");
-        }
-      });
+      // `update` y `metadata` del SDK ya no se escuchan: por el gateway v3 no
+      // llegan nunca; su contenido viene por el canal de interfaz (arriba).
 
       // Camino de respaldo del nivel del agente (ver useAudioLevels).
       client.on("audio", (samples: Float32Array) => {
@@ -555,6 +638,9 @@ export function useVoiceCall(): VoiceCall {
           trackEvent("voice_call_ended");
         }
         stopLevels();
+        stopAgentWatch();
+        eventsRef.current?.close();
+        eventsRef.current = null;
         if (cancelled()) return; // ya hay otro flujo al mando del estado
         clientRef.current = null;
         setTool(null);
@@ -572,6 +658,9 @@ export function useVoiceCall(): VoiceCall {
           // ya estaba cerrada
         }
         stopLevels();
+        stopAgentWatch();
+        eventsRef.current?.close();
+        eventsRef.current = null;
         if (cancelled()) return;
         clientRef.current = null;
         // El string del SDK es de depuración ("Error starting call") y no se
@@ -616,6 +705,8 @@ export function useVoiceCall(): VoiceCall {
     } catch (err) {
       if (cancelled()) return; // colgar aborta el fetch: no es un error
       clientRef.current = null;
+      eventsRef.current?.close();
+      eventsRef.current = null;
       stopLevels();
       // AbortError aquí solo puede ser el techo de espera (colgar ya salió por
       // `cancelled`): el backend no contestó a tiempo.
@@ -625,7 +716,7 @@ export function useVoiceCall(): VoiceCall {
       clearTimeout(timer);
       if (abortRef.current === controller) abortRef.current = null;
     }
-  }, [attachLevels, fail, openMic, pushAgentSamples, setState, stopLevels]);
+  }, [agentLevel, attachLevels, fail, openMic, pushAgentSamples, setState, stopLevels]);
 
   // `start` es síncrono a propósito: se llama desde el onClick y el flujo
   // asíncrono arranca dentro del mismo gesto del usuario.
@@ -658,6 +749,7 @@ export function useVoiceCall(): VoiceCall {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       genRef.current++;
       abortRef.current?.abort();
+      eventsRef.current?.close();
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
       if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
       if (startedRef.current) {
