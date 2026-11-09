@@ -95,13 +95,27 @@ export type VoiceCall = {
   toggleMute: () => void;
 };
 
-/** Respuesta de POST /api/voice/web-call (contrato del backend). */
+/**
+ * Respuesta de POST /api/voice/web-call (contrato del backend). Desde la
+ * migración a Retell v3 el backend reenvía, además del token, los datos de
+ * conexión que devuelve `/v3/create-web-call`: `transport` (hoy "gateway") e
+ * `iceServers` (STUN/TURN). Sin ellos el SDK 3.x intentaría el transporte
+ * antiguo (LiveKit) y la llamada no conectaría.
+ */
 type WebCallResponse = {
   accessToken?: string;
   callId?: string;
+  transport?: string;
+  iceServers?: RTCIceServer[];
+  expiresAt?: number;
   reply?: string;
   error?: string;
 };
+
+/** El SDK solo entiende estos dos transportes; otro valor = que decida él. */
+function asTransport(value: string | undefined): "gateway" | "livekit" | undefined {
+  return value === "gateway" || value === "livekit" ? value : undefined;
+}
 
 /** Códigos que el backend puede devolver en `error`. */
 const BACKEND_CODES = [
@@ -224,8 +238,19 @@ function readMeta(payload: unknown): VoiceMeta | null {
  *
  * El navegador NUNCA ve la API key de Retell: pide a nuestro backend
  * (POST /api/voice/web-call) un access_token de un solo uso y entra en la
- * llamada con el SDK oficial `retell-client-js-sdk`
- * (docs.retellai.com/deploy/web-call).
+ * llamada con el SDK oficial `retell-client-js-sdk` 3.x
+ * (docs.retellai.com/deploy/web-call). Se sigue usando `RetellWebClient`
+ * (deprecado pero mantenido hasta la 4.0) y no el nuevo `RetellClient`:
+ * este último crea la llamada desde el navegador con una public key y se
+ * saltaría nuestro backend, que es quien valida plan, cuota y rate-limit.
+ *
+ * OJO con los eventos: Retell documenta que por el transporte v3 ("gateway")
+ * pueden dejar de llegar `update`, `metadata`, `agent_start_talking` y
+ * `agent_stop_talking`. Los handlers se mantienen porque el cliente legado
+ * los sigue emitiendo si el servidor los manda, y el estado de la UI no
+ * depende de ellos para lo esencial (conectar, hablar, colgar): sin ellos se
+ * pierde el subtítulo, la etiqueta de herramienta y la apertura automática
+ * del campo de correo. Comprobar en una llamada real tras desplegar.
  */
 export function useVoiceCall(): VoiceCall {
   const t = useDict().voice;
@@ -556,8 +581,16 @@ export function useVoiceCall(): VoiceCall {
 
       // 4. Entrar en la llamada. `emitRawAudioSamples` es lo que hace que el
       //    SDK cree su analizador del agente (y, de paso, emita `audio`): sin
-      //    él no hay nivel con el que animar el orbe.
-      await client.startCall({ accessToken: data.accessToken, emitRawAudioSamples: true });
+      //    él no hay nivel con el que animar el orbe. `callId`, `transport` e
+      //    `iceServers` son los campos de la respuesta v3 que la guía de
+      //    migración de Retell manda reenviar tal cual a startCall().
+      await client.startCall({
+        accessToken: data.accessToken,
+        callId: data.callId,
+        transport: asTransport(data.transport),
+        iceServers: data.iceServers,
+        emitRawAudioSamples: true,
+      });
       if (cancelled()) {
         // Colgaron mientras el SDK negociaba: se corta también aquí por si
         // el evento call_started de arriba no llegara a dispararse.
