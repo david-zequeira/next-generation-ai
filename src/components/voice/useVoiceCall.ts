@@ -590,7 +590,11 @@ export function useVoiceCall(): VoiceCall {
       client.on("call_ready", () => {
         if (cancelled()) return;
         attachLevels(client);
-        setState("listening");
+        // Solo desde "conectando": el saludo llega por el canal de interfaz
+        // (agent_text → "hablando") a veces ANTES de que el SDK suscriba la
+        // pista de audio, y pisarlo aquí dejaba la interfaz en "te escucho"
+        // mientras el agente saludaba (visto en producción el 09/11/2026).
+        if (stateRef.current === "connecting") setState("listening");
       });
 
       // "Hablando" → "te escucho" por el nivel de audio del agente: el SDK ya
