@@ -7,7 +7,8 @@ let warmed = false;
  * Calentamiento del modo voz, en `pointerenter`/`focus` de cualquier CTA de
  * voz. Dos cosas que hoy se pagan EN el clic y ahí duelen:
  *
- * 1. El bundle del SDK de Retell (arrastra livekit-client). Descargarlo
+ * 1. El bundle del SDK de Retell (la 3.x aún arrastra livekit-client por el
+ *    cliente legado). Descargarlo
  *    después de pedir el token quemaría parte de los 30 s de vida del token.
  * 2. El backend en el plan gratuito de Render, que se duerme: el primer
  *    request tras la siesta tarda ~40 s. Es el mismo ping que hace el
