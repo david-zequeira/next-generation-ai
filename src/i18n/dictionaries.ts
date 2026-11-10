@@ -252,6 +252,7 @@ const en = {
   },
   voice: {
     ariaStart: "Start a voice call with the assistant",
+    you: "You:",
     ariaHangup: "Hang up",
     ariaDialog: "Voice call with the assistant",
     ariaOverlay: "Voice call with the Asenix assistant",
@@ -587,6 +588,7 @@ const es: typeof en = {
   },
   voice: {
     ariaStart: "Iniciar una llamada de voz con el asistente",
+    you: "Tú:",
     ariaHangup: "Colgar",
     ariaDialog: "Llamada de voz con el asistente",
     ariaOverlay: "Llamada de voz con el asistente de Asenix",

@@ -40,7 +40,7 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const hangupRef = useRef<HTMLButtonElement>(null);
 
-  const { state, error, tool, transcript, contactForm } = call;
+  const { state, error, tool, transcript, userTranscript, contactForm } = call;
   const finished = state === "ended" || state === "error";
   const [email, setEmail] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
@@ -217,13 +217,22 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
             {status}
           </p>
 
-          {/* Subtítulo: SOLO la última intervención del agente. Sin historial:
-            esto no es un chat. */}
+          {/* Subtítulo: la última intervención de quien habla. Mientras habla
+            el agente, la suya; mientras escucha o piensa, lo que el servidor
+            ha transcrito del visitante (10/11/2026: sin verse a sí mismo no
+            sabía si le estaban entendiendo). Sin historial: no es un chat. */}
           <p
             aria-live="polite"
             className="min-h-[3.5rem] max-w-xl text-balance text-sm leading-relaxed text-mist md:text-base"
           >
-            {state === "speaking" ? transcript : null}
+            {state === "speaking" ? (
+              transcript
+            ) : userTranscript && (state === "listening" || state === "thinking" || state === "tool") ? (
+              <>
+                <span className="text-frost/60">{t.you} </span>
+                {userTranscript}
+              </>
+            ) : null}
           </p>
 
           {/* Campo de correo en pantalla (07/09/2026): lo abre el agente con la
