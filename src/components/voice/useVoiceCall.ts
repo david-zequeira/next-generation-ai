@@ -82,6 +82,8 @@ export type VoiceCall = {
   tool: VoiceTool | null;
   /** Última intervención del AGENTE, para el subtítulo. */
   transcript: string | null;
+  /** Lo que va diciendo el VISITANTE según lo transcribe el servidor, en vivo. */
+  userTranscript: string | null;
   /** Campo de correo en pantalla, pedido por el agente. */
   contactForm: ContactForm;
   /** Envía el correo escrito; resuelve cuando el backend lo acepta. */
@@ -274,6 +276,7 @@ export function useVoiceCall(): VoiceCall {
   const [errorReply, setErrorReply] = useState<string | null>(null);
   const [tool, setTool] = useState<VoiceTool | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
+  const [userTranscript, setUserTranscript] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);
   const [contactForm, setContactForm] = useState<ContactForm>("closed");
   /** call_id de Retell de ESTA llamada: lo devuelve el backend con el token. */
@@ -419,6 +422,7 @@ export function useVoiceCall(): VoiceCall {
     setErrorReply(null);
     setTool(null);
     setTranscript(null);
+    setUserTranscript(null);
     setContactForm("closed");
     callIdRef.current = null;
     setMuted(false);
@@ -533,6 +537,8 @@ export function useVoiceCall(): VoiceCall {
               return;
             }
             case "user_text": {
+              // Sus palabras, parciales y finales, para el subtítulo.
+              if (typeof ev.text === "string" && ev.text.trim()) setUserTranscript(ev.text.trim());
               if (ev.final) {
                 // Retell ya pidió respuesta: el visitante ha terminado de hablar.
                 if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
@@ -815,6 +821,7 @@ export function useVoiceCall(): VoiceCall {
       errorCode: state === "error" ? errorCode : null,
       tool,
       transcript,
+      userTranscript,
       contactForm,
       submitContact,
       muted,
@@ -830,6 +837,7 @@ export function useVoiceCall(): VoiceCall {
       errorCode,
       tool,
       transcript,
+      userTranscript,
       contactForm,
       submitContact,
       muted,
