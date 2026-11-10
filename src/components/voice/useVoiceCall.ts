@@ -193,6 +193,7 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
 type UiEvent =
   | { type: "state"; state: string; tool?: string }
   | { type: "agent_text"; turn: string; text: string; done: boolean }
+  | { type: "agent_spoken"; text: string }
   | { type: "user_text"; text: string; final: boolean }
   | { type: "end" };
 
@@ -496,6 +497,12 @@ export function useVoiceCall(): VoiceCall {
           `${AGENT_URL}/api/voice/web-call/${encodeURIComponent(data.callId)}/events?sessionId=${encodeURIComponent(getSessionId())}`,
         );
         eventsRef.current = es;
+        // El subtítulo de verdad es `agent_spoken`: lo que el agente lleva
+        // dicho, palabra a palabra, al ritmo de la voz. `agent_text` llega con
+        // la frase entera antes de sonar: solo se pinta, con 1,5 s de espera,
+        // si el backend no manda el otro.
+        let spokenSeen = false;
+        let textTimer: ReturnType<typeof setTimeout> | undefined;
         const onUi = (raw: MessageEvent) => {
           if (cancelled()) return;
           const ev = parseUiEvent(String(raw.data));
@@ -528,12 +535,24 @@ export function useVoiceCall(): VoiceCall {
               const prev = agentTurnRef.current;
               const text = prev && prev.turn === ev.turn ? `${prev.text} ${ev.text.trim()}` : ev.text.trim();
               agentTurnRef.current = { turn: ev.turn, text };
-              setTranscript(text);
+              if (!spokenSeen) {
+                clearTimeout(textTimer);
+                textTimer = setTimeout(() => {
+                  if (!spokenSeen && !cancelled() && eventsRef.current === es) setTranscript(text);
+                }, 1500);
+              }
               // El agente va a hablar: margen hasta que el TTS suene.
               agentLoudUntilRef.current = Math.max(agentLoudUntilRef.current, Date.now() + AGENT_TEXT_GRACE_MS);
               if (asrPauseTimerRef.current) clearTimeout(asrPauseTimerRef.current);
               setTool(null);
               setState("speaking");
+              return;
+            }
+            case "agent_spoken": {
+              if (typeof ev.text !== "string" || !ev.text.trim()) return;
+              spokenSeen = true;
+              clearTimeout(textTimer);
+              setTranscript(ev.text.trim());
               return;
             }
             case "user_text": {
@@ -564,7 +583,7 @@ export function useVoiceCall(): VoiceCall {
               return;
           }
         };
-        for (const type of ["state", "agent_text", "user_text", "end"]) es.addEventListener(type, onUi);
+        for (const type of ["state", "agent_text", "agent_spoken", "user_text", "end"]) es.addEventListener(type, onUi);
         // Un fallo del canal no es un fallo de la llamada: EventSource reintenta solo.
         es.onerror = () => {};
       }
