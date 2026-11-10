@@ -223,16 +223,20 @@ export default function VoiceOverlay({ call, onClose }: VoiceOverlayProps) {
             sabía si le estaban entendiendo). Sin historial: no es un chat. */}
           <p
             aria-live="polite"
-            className="min-h-[3.5rem] max-w-xl text-balance text-sm leading-relaxed text-mist md:text-base"
+            className="flex max-h-[4.875em] min-h-[3.5rem] max-w-xl flex-col justify-end overflow-hidden text-sm leading-relaxed text-mist md:text-base"
           >
-            {state === "speaking" ? (
-              transcript
-            ) : userTranscript && (state === "listening" || state === "thinking" || state === "tool") ? (
-              <>
-                <span className="text-frost/60">{t.you} </span>
-                {userTranscript}
-              </>
-            ) : null}
+            {/* Como mucho tres líneas, las ÚLTIMAS: una respuesta larga
+              empujaba los controles fuera de la pantalla. */}
+            <span className="block">
+              {state === "speaking" ? (
+                transcript
+              ) : userTranscript && (state === "listening" || state === "thinking" || state === "tool") ? (
+                <>
+                  <span className="text-frost/60">{t.you} </span>
+                  {userTranscript}
+                </>
+              ) : null}
+            </span>
           </p>
 
           {/* Campo de correo en pantalla (07/09/2026): lo abre el agente con la
